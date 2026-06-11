@@ -34,4 +34,22 @@ export const colors = {
   gradDorado:   ['#C49010', '#F5C842', '#C49010'],
   gradLogro:    ['#F5C842', '#C49010', '#8B4513'],
   gradOscuro:   ['rgba(26,16,8,0.85)', 'rgba(26,16,8,0.55)'],
+
+  // === FUTURISMO ANDINO ===
+  noche:        '#0B1F2A',   // Fondo principal (noche andina)
+  nocheCard:    '#11353F',   // Tarjetas sobre la noche
+  nocheHeader:  '#102C36',   // Headers y tab bar
+  nocheProfundo:'#0E2730',   // Tarjetas bloqueadas
+  turquesa:     '#1D9E75',   // Acento principal vivo (laguna viva)
+  turquesaClaro:'#5DCAA5',   // Bordes y texto secundario
+  turquesaSuave:'#9FE1CB',   // Textos sobre noche
+  doradoNeon:   '#FAC775',   // XP, recompensas, brillos
+  verdeVivo:    '#639922',   // Chagra viva
+  coral:        '#F2785C',   // Errores / fallos
+  cielo:        '#E1F5EE',   // Texto principal sobre noche
+
+  // Gradientes nuevos
+  gradAurora:   ['#0B1F2A', '#0F6E56', '#1D9E75'],     // Fondos hero
+  gradXP:       ['#FAC775', '#EF9F27'],                 // Barras de XP
+  gradVictoria: ['#1D9E75', '#FAC775'],                 // Celebraciones
 };

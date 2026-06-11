@@ -1,18 +1,44 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, StyleSheet, Animated, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, Image, StyleSheet, Animated, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../theme/colors';
-import Glass from '../components/Glass';
+import { fonts } from '../theme/fonts';
 import BotonGlow from '../components/BotonGlow';
 
 const { width, height } = Dimensions.get('window');
+
+// Estrella decorativa con opacidad pulsante (posición fija)
+function Estrella({ style, size = 8, dur = 1600, delay = 0 }) {
+  const pulso = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulso, { toValue: 1, duration: dur, delay, useNativeDriver: true }),
+        Animated.timing(pulso, { toValue: 0, duration: dur, useNativeDriver: true }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, []);
+  const opacity = pulso.interpolate({ inputRange: [0, 1], outputRange: [0.2, 1] });
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={[
+        { position: 'absolute', width: size, height: size, borderRadius: size / 2, backgroundColor: colors.doradoNeon, opacity },
+        { shadowColor: colors.doradoNeon, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.9, shadowRadius: 6, elevation: 4 },
+        style,
+      ]}
+    />
+  );
+}
 
 export default function BienvenidaScreen({ navigation }) {
   const fadeTitle = useRef(new Animated.Value(0)).current;
   const fadeCard  = useRef(new Animated.Value(0)).current;
   const fadeBtn   = useRef(new Animated.Value(0)).current;
-  const shinePts  = useRef(new Animated.Value(0)).current;
+  const levita    = useRef(new Animated.Value(0)).current;
   const [introVista, setIntroVista] = useState(null);
 
   useEffect(() => {
@@ -25,19 +51,23 @@ export default function BienvenidaScreen({ navigation }) {
       }
     })();
 
-    Animated.sequence([
+    const entrada = Animated.sequence([
       Animated.delay(300),
-      Animated.timing(fadeTitle, { toValue: 1, duration: 900,  useNativeDriver: true }),
-      Animated.timing(fadeCard,  { toValue: 1, duration: 800,  useNativeDriver: true }),
-      Animated.timing(fadeBtn,   { toValue: 1, duration: 600,  useNativeDriver: true }),
-    ]).start();
+      Animated.timing(fadeTitle, { toValue: 1, duration: 900, useNativeDriver: true }),
+      Animated.timing(fadeCard,  { toValue: 1, duration: 800, useNativeDriver: true }),
+      Animated.timing(fadeBtn,   { toValue: 1, duration: 600, useNativeDriver: true }),
+    ]);
+    entrada.start();
 
-    Animated.loop(
+    const flotar = Animated.loop(
       Animated.sequence([
-        Animated.timing(shinePts, { toValue: 1, duration: 1500, useNativeDriver: true }),
-        Animated.timing(shinePts, { toValue: 0, duration: 1500, useNativeDriver: true }),
+        Animated.timing(levita, { toValue: 1, duration: 2000, useNativeDriver: true }),
+        Animated.timing(levita, { toValue: 0, duration: 2000, useNativeDriver: true }),
       ])
-    ).start();
+    );
+    flotar.start();
+
+    return () => { entrada.stop(); flotar.stop(); };
   }, []);
 
   const comenzar = async () => {
@@ -49,71 +79,48 @@ export default function BienvenidaScreen({ navigation }) {
     }
   };
 
-  return (
-    <ImageBackground
-      source={require('../../assets/images/personajes/kinti.jpg')}
-      style={s.bg}
-      resizeMode="cover"
-    >
-      <LinearGradient
-        colors={['rgba(13,37,64,0.88)', 'rgba(30,64,16,0.75)', 'rgba(139,69,19,0.70)']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+  const translateY = levita.interpolate({ inputRange: [0, 1], outputRange: [-6, 6] });
 
-      {/* Logo PUMA-MAKI */}
-      <View style={s.logoWrap}>
-        <View style={s.logoFrame}>
-          <Image
-            source={require('../../assets/images/logo-pumamaki.png')}
-            style={s.logo}
-            resizeMode="contain"
-          />
-        </View>
-      </View>
+  return (
+    <View style={s.bg}>
+      <LinearGradient colors={colors.gradAurora} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+
+      {/* Estrellas decorativas */}
+      <Estrella style={{ top: height * 0.12, left: width * 0.14 }} size={9} dur={1500} />
+      <Estrella style={{ top: height * 0.20, right: width * 0.16 }} size={6} dur={1900} delay={400} />
+      <Estrella style={{ top: height * 0.55, left: width * 0.18 }} size={7} dur={1700} delay={800} />
+      <Estrella style={{ top: height * 0.50, right: width * 0.12 }} size={5} dur={2100} delay={200} />
+
+      {/* Logo flotante */}
+      <Animated.View style={[s.logoWrap, { transform: [{ translateY }] }]}>
+        <Image source={require('../../assets/images/icon.png')} style={s.logo} resizeMode="contain" />
+      </Animated.View>
 
       {/* Títulos */}
-      <Animated.View style={{ opacity: fadeTitle, alignItems: 'center', marginTop: 6 }}>
-        <Text style={s.ornamentoTxt}>◆ ◆ ◆</Text>
+      <Animated.View style={{ opacity: fadeTitle, alignItems: 'center' }}>
         <Text style={s.tituloApp}>El Camino</Text>
         <Text style={s.tituloApp2}>de la Lengua</Text>
-        <Text style={s.ornamentoTxt}>◆ ◆ ◆</Text>
         <Text style={s.subtitulo}>Pueblo Pasto · Nariño · Colombia</Text>
       </Animated.View>
 
-      {/* Story card en Glass */}
-      <Animated.View style={{ opacity: fadeCard, marginHorizontal: 22 }}>
-        <Glass tipo="oscuro" intensidad={72} bordeBrillante style={s.storyCard}>
-          <Text style={s.storyBadge}>◆ KINTI ◆</Text>
+      {/* Story card */}
+      <Animated.View style={{ opacity: fadeCard, marginHorizontal: 24 }}>
+        <View style={s.storyCard}>
+          <Text style={s.storyBadge}>✨ KINTI ✨</Text>
           <Text style={s.storyTxt}>
-            Las palabras del{' '}
-            <Text style={s.dorado}>pastoker</Text>
-            {' '}están desapareciendo del territorio.
+            Las palabras del <Text style={s.dorado}>pastoker</Text> están desapareciendo del territorio.
           </Text>
           <View style={s.storyDivider} />
           <Text style={s.storyTxt2}>
-            Ayuda a recuperarlas y restaura el{' '}
-            <Animated.Text style={[s.dorado, {
-              opacity: shinePts.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }),
-            }]}>
-              Tuta
-            </Animated.Text>
-            {' '}y el{' '}
-            <Animated.Text style={[s.dorado, {
-              opacity: shinePts.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }),
-            }]}>
-              Pued
-            </Animated.Text>
-            {' '}sagrados.
+            Ayuda a recuperarlas y enciende otra vez el <Text style={s.dorado}>Tuta</Text> y el <Text style={s.dorado}>Pued</Text> sagrados.
           </Text>
-        </Glass>
+        </View>
       </Animated.View>
 
-      {/* Botón CTA */}
+      {/* CTA */}
       <Animated.View style={[s.btnWrap, { opacity: fadeBtn }]}>
         <BotonGlow
-          texto={introVista ? 'Continuar el Camino' : 'Comenzar el Camino'}
+          texto={introVista ? 'Continuar el camino' : 'Comenzar el camino'}
           onPress={comenzar}
           variante="primario"
           icono="🌿"
@@ -121,43 +128,36 @@ export default function BienvenidaScreen({ navigation }) {
         />
         <Text style={s.creditos}>Asociación PUMA-MAKI · Crea Digital 2026</Text>
       </Animated.View>
-    </ImageBackground>
+    </View>
   );
 }
 
 const s = StyleSheet.create({
-  bg:           { flex: 1, width, height, justifyContent: 'space-between' },
-  logoWrap:     { alignItems: 'center', marginTop: 44, zIndex: 2 },
-  logoFrame:    {
-    width: width * 0.50,
-    height: 64,
-    backgroundColor: 'rgba(26,16,8,0.45)',
-    borderRadius: 14,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: colors.glassBorde,
-    alignItems: 'center',
-    justifyContent: 'center',
+  bg: { flex: 1, width, height, justifyContent: 'space-around', paddingVertical: 40 },
+
+  logoWrap: { alignItems: 'center' },
+  logo: { width: width * 0.34, height: width * 0.34 },
+
+  tituloApp: {
+    fontSize: 44, fontFamily: fonts.extra, color: colors.cielo, letterSpacing: 0.5,
+    textShadowColor: 'rgba(250,199,117,0.4)', textShadowRadius: 16,
   },
-  logo:         { width: '100%', height: '100%' },
-  ornamentoTxt: { color: colors.doradoBrillo, fontSize: 12, letterSpacing: 8, opacity: 0.85, marginVertical: 3 },
-  tituloApp:    {
-    fontSize: 40, fontWeight: '900', color: colors.doradoBrillo,
-    fontFamily: 'serif', letterSpacing: 1,
-    textShadowColor: 'rgba(245,200,66,0.45)', textShadowRadius: 14,
+  tituloApp2: {
+    fontSize: 34, fontFamily: fonts.bold, color: colors.turquesaSuave, marginTop: -4,
   },
-  tituloApp2:   {
-    fontSize: 33, fontWeight: '900', color: colors.crema,
-    fontFamily: 'serif', marginTop: -6, marginBottom: 6,
-    textShadowColor: 'rgba(0,0,0,0.65)', textShadowRadius: 8,
+  subtitulo: { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 10, letterSpacing: 3, opacity: 0.85 },
+
+  storyCard: {
+    padding: 22, borderRadius: 22,
+    backgroundColor: 'rgba(11,31,42,0.55)',
+    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.35)',
   },
-  subtitulo:    { fontSize: 12, color: colors.arena, fontStyle: 'italic', marginTop: 8, letterSpacing: 3, opacity: 0.85 },
-  storyCard:    { padding: 22 },
-  storyBadge:   { color: colors.doradoBrillo, fontSize: 11, fontWeight: '900', letterSpacing: 4, textAlign: 'center', marginBottom: 14 },
-  storyTxt:     { color: colors.crema, fontSize: 14, textAlign: 'center', lineHeight: 22, fontStyle: 'italic' },
-  storyDivider: { height: 1, backgroundColor: colors.glassBorde, marginVertical: 12 },
-  storyTxt2:    { color: colors.crema, fontSize: 13, textAlign: 'center', lineHeight: 21 },
-  dorado:       { color: colors.doradoBrillo, fontWeight: '900', textShadowColor: 'rgba(245,200,66,0.3)', textShadowRadius: 6 },
-  btnWrap:      { alignItems: 'center', marginBottom: 36, zIndex: 2, gap: 16 },
-  creditos:     { fontSize: 10, color: 'rgba(247,240,224,0.5)', letterSpacing: 2 },
+  storyBadge:   { color: colors.doradoNeon, fontSize: 11, fontFamily: fonts.extra, letterSpacing: 4, textAlign: 'center', marginBottom: 14 },
+  storyTxt:     { color: colors.cielo, fontSize: 14, textAlign: 'center', lineHeight: 22, fontStyle: 'italic' },
+  storyDivider: { height: 1, backgroundColor: 'rgba(93,202,165,0.3)', marginVertical: 12 },
+  storyTxt2:    { color: colors.cielo, fontSize: 13, textAlign: 'center', lineHeight: 21 },
+  dorado:       { color: colors.doradoNeon, fontFamily: fonts.bold },
+
+  btnWrap:  { alignItems: 'center', gap: 16 },
+  creditos: { fontSize: 10, color: colors.turquesaSuave, letterSpacing: 2, opacity: 0.7 },
 });

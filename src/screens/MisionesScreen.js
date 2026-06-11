@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
+import { fonts } from '../theme/fonts';
 import { palabras, mundos, shuffle } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import Acompanante from '../components/Acompanante';
-import Glass from '../components/Glass';
 import BotonGlow from '../components/BotonGlow';
-import { imgMundoColor, imgMundoGris } from '../data/imagenes';
+import Confeti from '../components/Confeti';
 
 // ══════════════════════════════════════════════════════════
 // PAREJAS — Uma acompaña
@@ -23,6 +23,7 @@ export function ParejasScreen({ route, navigation }) {
   const [resueltas, setResueltas] = useState(new Set());
   const [intentos, setIntentos] = useState(0);
   const [erroneas, setErroneas] = useState([]);
+  const [aciertoFlash, setAciertoFlash] = useState([]);
 
   useEffect(() => {
     const pals = palabras.filter(p => mundo.palabrasIds.includes(p.id)).slice(0, 6);
@@ -38,12 +39,14 @@ export function ParejasScreen({ route, navigation }) {
     if (selec1 !== null && selec2 !== null) {
       setIntentos(i => i + 1);
       if (tarjetas[selec1].grupo === tarjetas[selec2].grupo) {
+        setAciertoFlash([selec1, selec2]);
         setTimeout(() => {
           const nuevas = new Set(resueltas);
           nuevas.add(tarjetas[selec1].grupo);
           setResueltas(nuevas);
           setSelec1(null);
           setSelec2(null);
+          setAciertoFlash([]);
           ganarPuntos(5);
           if (nuevas.size === 6) {
             completarMision(`parejas-${mundoId}`);
@@ -75,61 +78,53 @@ export function ParejasScreen({ route, navigation }) {
 
   if (terminado) {
     return (
-      <ImageBackground source={imgMundoColor[mundoId]} style={s.resBg} resizeMode="cover">
-        <LinearGradient
-          colors={['rgba(26,16,8,0.88)', 'rgba(26,16,8,0.60)']}
-          style={StyleSheet.absoluteFill}
-        />
-        <View style={s.resContent}>
+      <View style={s.resBg}>
+        <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
+        <ScrollView contentContainerStyle={s.resContent}>
           <Text style={s.resEmoji}>🎉</Text>
           <Text style={s.resTit}>¡Parejas completadas!</Text>
-          <Glass tipo="dorado" bordeBrillante style={s.resScoreGlass}>
+          <View style={s.resScoreCard}>
             <Text style={s.resSub}>{intentos} intentos</Text>
-          </Glass>
-          <View style={{ height: 24 }} />
+          </View>
+          <View style={{ height: 20 }} />
           <Acompanante
             personaje="uma"
             mensaje="Pas wawa... has unido las palabras como se unen los hilos en el chumbe. El tejido de la lengua vive en ti."
           />
-          <BotonGlow
-            texto="← Volver al mundo"
-            onPress={() => navigation.goBack()}
-            variante="primario"
-            tamano="lg"
-          />
-        </View>
-      </ImageBackground>
+          <BotonGlow texto="← Volver al mundo" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
+        </ScrollView>
+        <Confeti activo cantidad={28} />
+      </View>
     );
   }
 
   return (
-    <ImageBackground source={imgMundoGris[mundoId]} style={s.bg} resizeMode="cover">
-      <LinearGradient
-        colors={['rgba(26,16,8,0.82)', 'rgba(26,16,8,0.58)']}
-        style={StyleSheet.absoluteFill}
-      />
-      <ScrollView contentContainerStyle={{ padding: 14 }}>
+    <View style={s.bg}>
+      <ScrollView contentContainerStyle={{ padding: 14 }} showsVerticalScrollIndicator={false}>
 
-        <Glass tipo="oscuro" intensidad={65} style={s.header}>
-          <View style={s.headerBadge}>
-            <Text style={s.headerBadgeTxt}>{mundo.emoji} {mundo.titulo}</Text>
+        <View style={s.header}>
+          <View style={s.headerTop}>
+            <Text style={s.headerBadge}>{mundo.emoji} {mundo.titulo}</Text>
+            <Text style={s.headerInfo}>✓ {resueltas.size}/6 · {intentos}</Text>
           </View>
           <Text style={s.headerSub}>🃏 Une las parejas: pastoker ↔ español</Text>
-          <Text style={s.headerInfo}>✓ {resueltas.size}/6 · {intentos} intentos</Text>
-        </Glass>
+        </View>
 
         <View style={s.grid}>
           {tarjetas.map((t, i) => {
-            const resuelta    = resueltas.has(t.grupo);
+            const resuelta     = resueltas.has(t.grupo);
             const seleccionada = i === selec1 || i === selec2;
-            const errada      = erroneas.includes(i);
+            const errada       = erroneas.includes(i);
+            const acertada     = aciertoFlash.includes(i);
+            const esPast       = t.tipo === 'pastoker';
             return (
               <TouchableOpacity
                 key={t.id}
                 style={[
                   s.tarjeta,
-                  t.tipo === 'pastoker' && s.tarjetaPast,
+                  esPast ? s.tarjetaPast : s.tarjetaEsp,
                   seleccionada && s.tarjetaSel,
+                  acertada     && s.tarjetaAcierto,
                   errada       && s.tarjetaError,
                   resuelta     && s.tarjetaResuelta,
                 ]}
@@ -138,22 +133,20 @@ export function ParejasScreen({ route, navigation }) {
                 activeOpacity={0.85}
               >
                 <Text style={s.tarjEmoji}>{t.emoji}</Text>
-                <Text style={[s.tarjTxt, t.tipo === 'pastoker' && s.tarjTxtPast]}>
-                  {t.texto}
-                </Text>
+                <Text style={[s.tarjTxt, esPast && s.tarjTxtPast]}>{t.texto}</Text>
               </TouchableOpacity>
             );
           })}
         </View>
 
-        <View style={{ marginTop: 10 }}>
+        <View style={{ marginTop: 12 }}>
           <Acompanante
             personaje="uma"
             mensaje="Pas wawa... toca primero una palabra dorada en pastoker y después su significado. Si aciertas, ambas se unen en el tejido."
           />
         </View>
       </ScrollView>
-    </ImageBackground>
+    </View>
   );
 }
 
@@ -173,6 +166,7 @@ export function DictadoScreen({ route, navigation }) {
   const [verif, setVerif] = useState(null);
   const [aciertos, setAciertos] = useState(0);
   const [fin, setFin] = useState(false);
+  const [foco, setFoco] = useState(false);
 
   const pal = listaDict[idx];
 
@@ -203,85 +197,75 @@ export function DictadoScreen({ route, navigation }) {
   if (fin) {
     const exito = aciertos >= 3;
     return (
-      <ImageBackground
-        source={exito ? imgMundoColor[mundoId] : imgMundoGris[mundoId]}
-        style={s.resBg}
-        resizeMode="cover"
-      >
+      <View style={s.resBg}>
         <LinearGradient
-          colors={['rgba(26,16,8,0.88)', 'rgba(26,16,8,0.60)']}
+          colors={exito ? colors.gradAurora : ['#0B1F2A', '#0E2730', '#11353F']}
           style={StyleSheet.absoluteFill}
         />
-        <View style={s.resContent}>
+        <ScrollView contentContainerStyle={s.resContent}>
           <Text style={s.resEmoji}>{exito ? '📜' : '💪'}</Text>
           <Text style={s.resTit}>{exito ? '¡Dictado completado!' : 'Sigue practicando'}</Text>
-          <Glass tipo="dorado" bordeBrillante style={s.resScoreGlass}>
+          <View style={s.resScoreCard}>
             <Text style={s.resSub}>{aciertos} / {listaDict.length}</Text>
-          </Glass>
-          <View style={{ height: 24 }} />
+          </View>
+          <View style={{ height: 20 }} />
           <Acompanante
             personaje="taita_rimay"
             mensaje={exito
               ? 'Las palabras que escribes son piedras del camino, Kinti. Cada letra trae de regreso una memoria.'
               : 'No te desanimes, wawa. Cada intento es un paso más en el camino de la lengua.'}
           />
-          <BotonGlow
-            texto="← Volver al mundo"
-            onPress={() => navigation.goBack()}
-            variante="primario"
-            tamano="lg"
-          />
-        </View>
-      </ImageBackground>
+          <BotonGlow texto="← Volver al mundo" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
+        </ScrollView>
+        {exito && <Confeti activo cantidad={28} />}
+      </View>
     );
   }
 
   return (
-    <ImageBackground source={imgMundoGris[mundoId]} style={s.bg} resizeMode="cover">
-      <LinearGradient
-        colors={['rgba(26,16,8,0.82)', 'rgba(26,16,8,0.58)']}
-        style={StyleSheet.absoluteFill}
-      />
-      <ScrollView contentContainerStyle={{ padding: 16, flexGrow: 1 }}>
+    <KeyboardAvoidingView
+      style={s.bg}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <ScrollView contentContainerStyle={{ padding: 16, flexGrow: 1 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 
-        <Glass tipo="oscuro" intensidad={65} style={s.header}>
-          <View style={s.headerBadge}>
-            <Text style={s.headerBadgeTxt}>{mundo.emoji} {mundo.titulo}</Text>
+        <View style={s.header}>
+          <View style={s.headerTop}>
+            <Text style={s.headerBadge}>{mundo.emoji} {mundo.titulo}</Text>
+            <Text style={s.headerInfo}>{idx + 1}/{listaDict.length} · ✓ {aciertos}</Text>
           </View>
           <Text style={s.headerSub}>✍️ Escribe la palabra en pastoker</Text>
-          <Text style={s.headerInfo}>{idx + 1} / {listaDict.length} · ✓ {aciertos} aciertos</Text>
-        </Glass>
+        </View>
 
-        <Glass tipo="claro" bordeBrillante style={s.qCard}>
+        <View style={s.qCard}>
           <Text style={s.qLabel}>¿CÓMO SE DICE EN PASTOKER?</Text>
           <Text style={s.qEmoji}>{pal.emoji}</Text>
           <Text style={s.qEsp}>{pal.e}</Text>
           <Text style={s.qCat}>{pal.cat}</Text>
-        </Glass>
+        </View>
 
-        <View style={[s.inputWrap, verif === 'ok' && s.inputWrapOk, verif === 'err' && s.inputWrapErr]}>
+        <View style={[
+          s.inputWrap,
+          foco && s.inputWrapFoco,
+          verif === 'ok' && s.inputWrapOk,
+          verif === 'err' && s.inputWrapErr,
+        ]}>
           <TextInput
             style={s.input}
             placeholder="Escribe aquí..."
-            placeholderTextColor="rgba(90,70,50,0.5)"
+            placeholderTextColor={colors.turquesaSuave}
             value={texto}
             onChangeText={setTexto}
+            onFocus={() => setFoco(true)}
+            onBlur={() => setFoco(false)}
             editable={verif === null}
             autoCapitalize="none"
             autoCorrect={false}
           />
         </View>
 
-        {verif === 'ok' && (
-          <Glass tipo="claro" style={s.msgWrap}>
-            <Text style={s.msgOk}>✓ ¡Correcto! "{pal.p}"</Text>
-          </Glass>
-        )}
-        {verif === 'err' && (
-          <Glass tipo="claro" style={s.msgWrap}>
-            <Text style={s.msgErr}>✗ La correcta era: "{pal.p}"</Text>
-          </Glass>
-        )}
+        {verif === 'ok'  && <Text style={s.msgOk}>✓ ¡Correcto! "{pal.p}"</Text>}
+        {verif === 'err' && <Text style={s.msgErr}>✗ La correcta era: "{pal.p}"</Text>}
 
         <BotonGlow
           texto="Verificar"
@@ -300,74 +284,59 @@ export function DictadoScreen({ route, navigation }) {
           />
         </View>
       </ScrollView>
-    </ImageBackground>
+    </KeyboardAvoidingView>
   );
 }
 
 
 const s = StyleSheet.create({
-  bg: { flex: 1 },
+  bg: { flex: 1, backgroundColor: colors.noche },
 
   // ─── Header compartido ───
-  header:         { alignItems: 'center', marginBottom: 14, padding: 14, borderRadius: 18 },
-  headerBadge:    { backgroundColor: colors.dorado, paddingHorizontal: 16, paddingVertical: 6, borderRadius: 20, marginBottom: 8 },
-  headerBadgeTxt: { color: colors.negro, fontSize: 12, fontWeight: '900' },
-  headerSub:      { color: colors.crema, fontSize: 14, fontWeight: '700' },
-  headerInfo:     { color: colors.doradoBrillo, fontSize: 11, fontWeight: '700', marginTop: 4 },
+  header:      { marginBottom: 14, padding: 14, borderRadius: 16, backgroundColor: colors.nocheCard, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  headerTop:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+  headerBadge: { color: colors.cielo, fontSize: 13, fontFamily: fonts.bold },
+  headerInfo:  { color: colors.doradoNeon, fontSize: 12, fontFamily: fonts.bold },
+  headerSub:   { color: colors.turquesaSuave, fontSize: 13, fontFamily: fonts.semibold },
 
   // ─── Parejas ───
-  grid:           { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  tarjeta:        {
-    width: '48%', minHeight: 80,
-    backgroundColor: 'rgba(247,240,224,0.90)',
-    borderRadius: 14, alignItems: 'center', justifyContent: 'center',
-    padding: 10, borderWidth: 1.5, borderColor: colors.glassBorde,
-    marginBottom: 8,
-    shadowColor: colors.doradoBrillo, shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15, shadowRadius: 6, elevation: 4,
+  grid:    { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  tarjeta: {
+    width: '48%', minHeight: 84,
+    borderRadius: 16, alignItems: 'center', justifyContent: 'center',
+    padding: 10, borderWidth: 1.5, marginBottom: 10,
   },
-  tarjetaPast:    {
-    backgroundColor: 'rgba(196,144,16,0.88)',
-    borderColor: colors.doradoBrillo, borderWidth: 2,
-  },
-  tarjetaSel:     { borderColor: colors.verdeM, borderWidth: 3, transform: [{ scale: 0.96 }] },
-  tarjetaError:   { borderColor: '#d04040', borderWidth: 3, backgroundColor: 'rgba(208,64,64,0.2)' },
-  tarjetaResuelta:{ opacity: 0.35, borderColor: colors.verdeM },
-  tarjEmoji:      { fontSize: 22, marginBottom: 4 },
-  tarjTxt:        { fontSize: 13, fontWeight: '700', color: colors.negro, textAlign: 'center' },
-  tarjTxtPast:    { color: colors.negro, fontSize: 15, fontWeight: '900' },
+  tarjetaPast:     { backgroundColor: 'rgba(250,199,117,0.20)', borderColor: colors.doradoNeon, borderWidth: 2 },
+  tarjetaEsp:      { backgroundColor: colors.nocheCard, borderColor: 'rgba(93,202,165,0.25)' },
+  tarjetaSel:      { borderColor: colors.turquesaClaro, borderWidth: 3, transform: [{ scale: 0.96 }] },
+  tarjetaAcierto:  { borderColor: colors.turquesa, borderWidth: 3, backgroundColor: 'rgba(29,158,117,0.30)' },
+  tarjetaError:    { borderColor: colors.coral, borderWidth: 3, backgroundColor: 'rgba(242,120,92,0.18)' },
+  tarjetaResuelta: { opacity: 0.3, borderColor: colors.turquesa },
+  tarjEmoji:       { fontSize: 24, marginBottom: 4 },
+  tarjTxt:         { fontSize: 13, fontFamily: fonts.semibold, color: colors.cielo, textAlign: 'center' },
+  tarjTxtPast:     { color: colors.doradoNeon, fontSize: 15, fontWeight: '900', fontFamily: 'serif' },
 
   // ─── Dictado ───
-  qCard:          { padding: 20, alignItems: 'center', marginBottom: 14, borderRadius: 22 },
-  qLabel:         { fontSize: 10, color: colors.gris, fontWeight: '900', letterSpacing: 3, marginBottom: 4 },
-  qEmoji:         { fontSize: 54, marginVertical: 8 },
-  qEsp:           { fontSize: 26, fontWeight: '900', color: colors.negro },
-  qCat:           { fontSize: 11, color: colors.dorado, fontStyle: 'italic', marginTop: 4, letterSpacing: 2 },
+  qCard:  { padding: 22, alignItems: 'center', marginBottom: 14, borderRadius: 22, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: colors.turquesa },
+  qLabel: { fontSize: 10, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 4 },
+  qEmoji: { fontSize: 56, marginVertical: 8 },
+  qEsp:   { fontSize: 28, fontFamily: fonts.extra, color: colors.cielo },
+  qCat:   { fontSize: 11, color: colors.doradoNeon, fontStyle: 'italic', marginTop: 4, letterSpacing: 2 },
 
-  inputWrap:      {
-    backgroundColor: 'rgba(247,240,224,0.92)',
-    borderRadius: 14, borderWidth: 2, borderColor: colors.glassBorde,
-    marginBottom: 8, overflow: 'hidden',
-    shadowColor: colors.doradoBrillo, shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2, shadowRadius: 8, elevation: 4,
-  },
-  inputWrapOk:    { borderColor: colors.verdeM },
-  inputWrapErr:   { borderColor: '#d04040' },
-  input:          { padding: 14, fontSize: 18, color: colors.negro, textAlign: 'center', fontWeight: '700' },
+  inputWrap:     { backgroundColor: colors.nocheProfundo, borderRadius: 16, borderWidth: 2, borderColor: 'rgba(93,202,165,0.3)', marginBottom: 10, height: 52, justifyContent: 'center' },
+  inputWrapFoco: { borderColor: colors.turquesa, shadowColor: colors.turquesa, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.6, shadowRadius: 10, elevation: 6 },
+  inputWrapOk:   { borderColor: colors.turquesa, shadowColor: colors.turquesa, shadowOpacity: 0.6, shadowRadius: 10, elevation: 6 },
+  inputWrapErr:  { borderColor: colors.coral },
+  input:         { paddingHorizontal: 16, fontSize: 18, color: colors.cielo, textAlign: 'center', fontFamily: fonts.bold },
 
-  msgWrap:        { padding: 10, marginBottom: 10, borderRadius: 12 },
-  msgOk:          { color: colors.verdeM, fontSize: 14, fontWeight: '900', textAlign: 'center' },
-  msgErr:         { color: '#d04040', fontSize: 14, fontWeight: '900', textAlign: 'center' },
+  msgOk:  { color: colors.turquesaClaro, fontSize: 14, fontFamily: fonts.bold, textAlign: 'center', marginBottom: 10 },
+  msgErr: { color: colors.coral, fontSize: 14, fontFamily: fonts.bold, textAlign: 'center', marginBottom: 10 },
 
   // ─── Resultados (compartidos) ───
-  resBg:          { flex: 1 },
-  resContent:     { flex: 1, padding: 20, justifyContent: 'center' },
-  resEmoji:       { fontSize: 72, textAlign: 'center' },
-  resTit:         {
-    fontSize: 24, fontWeight: '900', color: colors.doradoBrillo,
-    textAlign: 'center', marginTop: 8, letterSpacing: 0.5,
-    textShadowColor: 'rgba(245,200,66,0.3)', textShadowRadius: 8,
-  },
-  resScoreGlass:  { alignItems: 'center', padding: 18, marginTop: 12, borderRadius: 18 },
-  resSub:         { fontSize: 22, fontWeight: '900', color: colors.tierra },
+  resBg:        { flex: 1 },
+  resContent:   { flexGrow: 1, padding: 22, justifyContent: 'center' },
+  resEmoji:     { fontSize: 72, textAlign: 'center' },
+  resTit:       { fontSize: 24, fontFamily: fonts.extra, color: colors.doradoNeon, textAlign: 'center', marginTop: 8, textShadowColor: 'rgba(250,199,117,0.4)', textShadowRadius: 10 },
+  resScoreCard: { alignItems: 'center', padding: 18, marginTop: 14, borderRadius: 18, alignSelf: 'center', backgroundColor: colors.nocheCard, borderWidth: 2, borderColor: colors.doradoNeon, paddingHorizontal: 40 },
+  resSub:       { fontSize: 24, fontFamily: fonts.extra, color: colors.cielo },
 });

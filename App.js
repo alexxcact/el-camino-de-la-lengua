@@ -1,12 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Text, StatusBar } from 'react-native';
+import { Text, View, StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SplashScreen from 'expo-splash-screen';
+import {
+  useFonts,
+  Baloo2_400Regular,
+  Baloo2_500Medium,
+  Baloo2_600SemiBold,
+  Baloo2_700Bold,
+  Baloo2_800ExtraBold,
+} from '@expo-google-fonts/baloo-2';
 import { JuegoProvider } from './src/context/JuegoContext';
 import { colors } from './src/theme/colors';
+import { fonts } from './src/theme/fonts';
+
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 import BienvenidaScreen from './src/screens/BienvenidaScreen';
 import IntroScreen      from './src/screens/IntroScreen';
@@ -22,15 +33,15 @@ const RootStack  = createStackNavigator();
 const MapaStack  = createStackNavigator();
 
 const hdrOpts = {
-  headerStyle:      { backgroundColor: colors.verde },
-  headerTintColor:  colors.crema,
+  headerStyle:      { backgroundColor: colors.nocheHeader, shadowColor: 'transparent', elevation: 0 },
+  headerTintColor:  colors.cielo,
   headerTitleStyle: { fontWeight: '900', fontSize: 17 },
 };
 
 function MapaStackScreen() {
   return (
     <MapaStack.Navigator screenOptions={hdrOpts}>
-      <MapaStack.Screen name="Mapa"    component={MapaScreen}    options={{ title: '🗺️ El Camino de la Lengua' }} />
+      <MapaStack.Screen name="Mapa"    component={MapaScreen}    options={{ headerShown: false }} />
       <MapaStack.Screen name="Mundo"   component={MundoScreen}   options={{ title: '📚 Mundo' }} />
       <MapaStack.Screen name="Quiz"    component={QuizScreen}    options={{ title: '🧠 Quiz de palabras' }} />
       <MapaStack.Screen name="Parejas" component={ParejasScreen} options={{ title: '🃏 Une las parejas' }} />
@@ -67,7 +78,9 @@ function PerfilStackScreen() {
 }
 
 function TabIcon({ emoji, focused }) {
-  return <Text style={{ fontSize: focused ? 22 : 18, opacity: focused ? 1 : 0.55 }}>{emoji}</Text>;
+  return (
+    <Text style={{ fontSize: focused ? 24 : 19, opacity: focused ? 1 : 0.6 }}>{emoji}</Text>
+  );
 }
 
 function MainTabs() {
@@ -75,10 +88,10 @@ function MainTabs() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: colors.blanco, borderTopWidth: 2, borderTopColor: colors.arena, height: 64, paddingBottom: 8, paddingTop: 4 },
-        tabBarActiveTintColor:   colors.tierra,
-        tabBarInactiveTintColor: '#aaa',
-        tabBarLabelStyle:        { fontSize: 10, fontWeight: '700' },
+        tabBarStyle: { backgroundColor: colors.nocheHeader, borderTopWidth: 0, height: 68, paddingBottom: 10, paddingTop: 6, elevation: 0 },
+        tabBarActiveTintColor:   colors.doradoNeon,
+        tabBarInactiveTintColor: colors.turquesaSuave,
+        tabBarLabelStyle:        { fontSize: 10, fontFamily: fonts.bold },
       }}
     >
       <Tab.Screen name="MapaTab"       component={MapaStackScreen}
@@ -94,10 +107,27 @@ function MainTabs() {
 }
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Baloo2_400Regular,
+    Baloo2_500Medium,
+    Baloo2_600SemiBold,
+    Baloo2_700Bold,
+    Baloo2_800ExtraBold,
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync().catch(() => {});
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) return null;
+
   return (
     <SafeAreaProvider>
+      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <JuegoProvider>
-        <StatusBar barStyle="light-content" backgroundColor={colors.verde} />
+        <StatusBar barStyle="light-content" backgroundColor={colors.noche} />
         <NavigationContainer>
           <RootStack.Navigator screenOptions={{ headerShown: false }}>
             <RootStack.Screen name="Bienvenida" component={BienvenidaScreen} />
@@ -106,6 +136,7 @@ export default function App() {
           </RootStack.Navigator>
         </NavigationContainer>
       </JuegoProvider>
+      </View>
     </SafeAreaProvider>
   );
 }

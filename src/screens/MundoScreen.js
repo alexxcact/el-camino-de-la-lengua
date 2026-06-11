@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
+import { fonts } from '../theme/fonts';
 import { palabras, mundos } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import { imgMundoColor, imgMundoGris } from '../data/imagenes';
-import Glass from '../components/Glass';
 import BotonGlow from '../components/BotonGlow';
+import HudJugador from '../components/HudJugador';
+import Confeti from '../components/Confeti';
+import PishkuMascota from '../components/PishkuMascota';
 
 // ═══════════════════════════════════════════════════════════
 // VISTA DE LECCIÓN (aprendizaje de vocabulario)
@@ -26,9 +29,9 @@ function LeccionView({ mundo, onTerminar }) {
 
   return (
     <View style={ls.wrap}>
-      <Glass tipo="claro" intensidad={50} bordeBrillante style={ls.card}>
+      <View style={ls.card}>
         <LinearGradient
-          colors={[mundo.color, colors.negro]}
+          colors={[mundo.color, colors.noche]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFill}
@@ -42,7 +45,7 @@ function LeccionView({ mundo, onTerminar }) {
         <View style={ls.dots}>
           {pals.map((_, i) => <View key={i} style={[ls.dot, i === idx && ls.dotOn]} />)}
         </View>
-      </Glass>
+      </View>
       <View style={ls.catWrap}>
         <Text style={ls.catBadge}>{pal.cat}</Text>
       </View>
@@ -89,9 +92,9 @@ export default function MundoScreen({ route, navigation }) {
   // ─── Vista de lección ───
   if (vistaActiva === 'leccion') {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.negro }}>
-        <TouchableOpacity style={estilos.backBtn} onPress={() => setVistaActiva(null)}>
-          <Text style={estilos.backTxt}>← Volver</Text>
+      <View style={{ flex: 1, backgroundColor: colors.noche }}>
+        <TouchableOpacity style={est.backBtn} onPress={() => setVistaActiva(null)}>
+          <Text style={est.backTxt}>← Volver</Text>
         </TouchableOpacity>
         <LeccionView mundo={mundo} onTerminar={handleTerminarLeccion} />
       </View>
@@ -99,42 +102,49 @@ export default function MundoScreen({ route, navigation }) {
   }
 
   // ─── Vista principal ───
-  const fondoMundo = mundoYaCompletado ? imgMundoColor[mundoId] : imgMundoGris[mundoId];
+  const bannerImg      = mundoYaCompletado ? imgMundoColor[mundoId] : imgMundoGris[mundoId];
   const misionesHechas = misiones.filter(m => estado.misionesCompletadas.has(m.id)).length;
 
   return (
-    <ImageBackground source={fondoMundo} style={{ flex: 1 }} resizeMode="cover">
-      <LinearGradient
-        colors={['rgba(247,240,224,0.92)', 'rgba(247,240,224,0.88)']}
-        style={StyleSheet.absoluteFill}
-      />
-      <ScrollView style={estilos.container} contentContainerStyle={estilos.content}>
+    <View style={est.container}>
+      <HudJugador />
 
-        {/* Banner del mundo */}
-        <Glass tipo="oscuro" intensidad={60} style={[estilos.banner, { backgroundColor: mundo.color + 'CC' }]}>
-          <Text style={estilos.bannerEmoji}>{mundo.emoji}</Text>
-          <Text style={estilos.bannerTit}>{mundo.titulo}</Text>
-          <Text style={estilos.bannerSub}>{mundo.desc}</Text>
-          <View style={estilos.miniProgRow}>
-            {misiones.map(m => (
-              <View key={m.id} style={[estilos.miniProgDot, estado.misionesCompletadas.has(m.id) && estilos.miniProgDotOn]} />
-            ))}
-          </View>
-        </Glass>
+      <ScrollView contentContainerStyle={est.content} showsVerticalScrollIndicator={false}>
 
-        <Text style={estilos.seccion}>📚 Lección de vocabulario</Text>
-        <TouchableOpacity style={estilos.leccionCard} onPress={() => setVistaActiva('leccion')} activeOpacity={0.8}>
-          <Glass tipo="dorado" intensidad={50} style={estilos.leccionGlass}>
-            <Text style={estilos.leccionIco}>📖</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={estilos.leccionTit}>Aprender las palabras</Text>
-              <Text style={estilos.leccionSub}>{mundo.palabrasIds.length} palabras de este mundo</Text>
+        {/* Banner del mundo (imagen dentro de tarjeta) */}
+        <View style={est.banner}>
+          <Image source={bannerImg} style={est.bannerImg} resizeMode="cover" />
+          <LinearGradient
+            colors={['transparent', 'rgba(11,31,42,0.55)', colors.noche]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={est.bannerTxt}>
+            <Text style={est.bannerEmoji}>{mundo.emoji}</Text>
+            <Text style={est.bannerTit}>{mundo.titulo}</Text>
+            <Text style={est.bannerSub}>{mundo.desc}</Text>
+            <View style={est.miniProgRow}>
+              {misiones.map(m => (
+                <View key={m.id} style={[est.miniDot, estado.misionesCompletadas.has(m.id) && est.miniDotOn]} />
+              ))}
             </View>
-            <Text style={{ fontSize: 20, color: colors.dorado }}>›</Text>
-          </Glass>
+          </View>
+        </View>
+
+        <Text style={est.seccion}>📚 LECCIÓN</Text>
+        <TouchableOpacity style={est.card} onPress={() => setVistaActiva('leccion')} activeOpacity={0.85}>
+          <View style={[est.iconBox, { backgroundColor: 'rgba(250,199,117,0.18)' }]}>
+            <Text style={est.iconEmoji}>📖</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={est.cardTit}>Aprender las palabras</Text>
+            <Text style={est.cardSub}>{mundo.palabrasIds.length} palabras de este mundo</Text>
+          </View>
+          <Text style={est.chevron}>›</Text>
         </TouchableOpacity>
 
-        <Text style={[estilos.seccion, { marginTop: 8 }]}>🎮 Misiones</Text>
+        <Text style={est.seccion}>🎮 MISIONES</Text>
         {misiones.map(m => {
           const comp = estado.misionesCompletadas.has(m.id);
           return (
@@ -142,156 +152,153 @@ export default function MundoScreen({ route, navigation }) {
               key={m.id}
               onPress={() => navigation.navigate(m.pantalla, m.params)}
               activeOpacity={0.85}
+              style={[est.card, comp && est.cardDone]}
             >
-              <Glass
-                tipo={comp ? 'dorado' : 'claro'}
-                intensidad={50}
-                bordeBrillante={!comp}
-                style={estilos.misionGlass}
-              >
-                <Text style={estilos.misionEmoji}>{m.emoji}</Text>
-                <View style={{ flex: 1 }}>
-                  <Text style={estilos.misionTit}>{m.titulo}</Text>
-                  <Text style={estilos.misionDesc}>{m.desc}</Text>
-                </View>
-                {comp
-                  ? <Text style={estilos.compBadge}>✓</Text>
-                  : <Text style={{ fontSize: 18, color: colors.arena }}>›</Text>
-                }
-              </Glass>
+              <View style={[est.iconBox, comp && est.iconBoxDone]}>
+                <Text style={est.iconEmoji}>{m.emoji}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={est.cardTit}>{m.titulo}</Text>
+                <Text style={est.cardSub}>{m.desc}</Text>
+              </View>
+              {comp
+                ? <Text style={est.check}>✓</Text>
+                : <Text style={est.chevron}>›</Text>}
             </TouchableOpacity>
           );
         })}
 
         {/* Progreso de misiones */}
-        <Glass tipo="claro" intensidad={40} style={estilos.progresoGlass}>
-          <Text style={estilos.progresoTxt}>Misiones completadas: {misionesHechas} / {misiones.length}</Text>
-          <View style={estilos.progresoBar}>
+        <View style={est.progCard}>
+          <Text style={est.progTxt}>Misiones completadas: {misionesHechas} / {misiones.length}</Text>
+          <View style={est.progBar}>
             <LinearGradient
-              colors={colors.gradDorado}
+              colors={colors.gradXP}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[estilos.progresoFill, { width: `${(misionesHechas / misiones.length) * 100}%` }]}
+              style={[est.progFill, { width: `${(misionesHechas / misiones.length) * 100}%` }]}
             />
           </View>
-        </Glass>
+        </View>
 
-        {/* Banner de mundo completado */}
+        {/* Banner persistente de mundo completado */}
         {mundoYaCompletado && (
-          <Glass tipo="dorado" bordeBrillante style={estilos.completadoBanner}>
-            <Text style={estilos.compTit}>🏆 ¡Mundo completado!</Text>
-            <Text style={estilos.compSub}>+20 puntos · Siguiente mundo desbloqueado</Text>
-            <BotonGlow
-              texto="🗺️ Ir al mapa"
-              onPress={() => navigation.navigate('Mapa')}
-              variante="secundario"
-              tamano="sm"
-            />
-          </Glass>
+          <LinearGradient
+            colors={colors.gradVictoria}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={est.compBanner}
+          >
+            <Text style={est.compTit}>🏆 ¡Mundo completado!</Text>
+            <Text style={est.compSub}>+20 puntos · Siguiente mundo desbloqueado</Text>
+            <BotonGlow texto="🗺️ Ir al mapa" onPress={() => navigation.navigate('Mapa')} variante="secundario" tamano="sm" />
+          </LinearGradient>
         )}
+      </ScrollView>
 
-        {/* Modal de felicitación */}
-        {mostrarFelicitacion && (
-          <View style={estilos.modalFeli}>
-            <LinearGradient
-              colors={colors.gradLogro}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <Text style={estilos.feliEmoji}>🎉</Text>
-            <Text style={estilos.feliTit}>¡Mundo completado!</Text>
-            <Text style={estilos.feliSub}>
+      {/* Modal de felicitación */}
+      {mostrarFelicitacion && (
+        <View style={est.modalOverlay}>
+          <LinearGradient
+            colors={['rgba(11,31,42,0.92)', 'rgba(15,110,86,0.85)']}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={est.modalCard}>
+            <PishkuMascota celebrando tamano={92} />
+            <Text style={est.feliTit}>¡Mundo completado!</Text>
+            <Text style={est.feliSub}>
               Has restaurado el {mundo.titulo.toLowerCase()}.
-              {mundoId < 5 ? ' El siguiente mundo se ha desbloqueado.' : ' ¡Has completado todo el camino!'}
+              {mundoId < 5 ? ' El siguiente mundo se ha encendido.' : ' ¡Has iluminado todo el camino!'}
             </Text>
-            <Text style={estilos.feliPuntos}>+20 puntos</Text>
-            <View style={{ gap: 10, marginTop: 8 }}>
+            <Text style={est.feliPuntos}>+20</Text>
+            <View style={{ gap: 10, marginTop: 6, alignSelf: 'stretch' }}>
               <BotonGlow
                 texto="🗺️ Ir al mapa"
                 onPress={() => { setMostrarFelicitacion(false); navigation.navigate('Mapa'); }}
                 variante="primario"
                 tamano="lg"
               />
-              <BotonGlow
-                texto="Seguir aquí"
-                onPress={() => setMostrarFelicitacion(false)}
-                variante="fantasma"
-                tamano="md"
-              />
+              <BotonGlow texto="Seguir aquí" onPress={() => setMostrarFelicitacion(false)} variante="fantasma" tamano="md" />
             </View>
           </View>
-        )}
-      </ScrollView>
-    </ImageBackground>
+          <Confeti activo={mostrarFelicitacion} cantidad={30} />
+        </View>
+      )}
+    </View>
   );
 }
 
 const ls = StyleSheet.create({
   wrap:    { flex: 1, padding: 16 },
-  card:    { borderRadius: 20, padding: 24, alignItems: 'center', marginBottom: 14, overflow: 'hidden' },
+  card:    {
+    borderRadius: 22, padding: 24, alignItems: 'center', marginBottom: 14, overflow: 'hidden',
+    borderWidth: 1.5, borderColor: colors.turquesa,
+  },
   emoji:   { fontSize: 60, marginBottom: 10 },
   past:    {
-    fontSize: 34, fontWeight: '900', color: colors.doradoBrillo, fontFamily: 'serif',
-    textShadowColor: 'rgba(245,200,66,0.4)', textShadowRadius: 10,
+    fontSize: 36, fontWeight: '900', color: colors.doradoNeon, fontFamily: 'serif',
+    textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 12,
   },
-  fon:     { fontSize: 13, color: 'rgba(247,240,224,0.55)', fontStyle: 'italic', marginTop: 4 },
-  esp:     { fontSize: 18, color: 'rgba(247,240,224,0.85)', marginTop: 6 },
+  fon:     { fontSize: 13, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 4 },
+  esp:     { fontSize: 18, color: colors.cielo, marginTop: 6, fontFamily: fonts.semibold },
   divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.2)', width: '100%', marginVertical: 12 },
-  ej:      { fontSize: 12, color: 'rgba(247,240,224,0.65)', fontStyle: 'italic', textAlign: 'center' },
+  ej:      { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', textAlign: 'center' },
   dots:    { flexDirection: 'row', gap: 5, marginTop: 14 },
   dot:     { width: 7, height: 7, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.3)' },
-  dotOn:   { backgroundColor: colors.doradoBrillo },
+  dotOn:   { backgroundColor: colors.doradoNeon },
   catWrap: { alignItems: 'center', marginBottom: 14 },
-  catBadge:{ fontSize: 11, backgroundColor: colors.verdeM, color: colors.crema, paddingHorizontal: 12, paddingVertical: 3, borderRadius: 12 },
-  contador:{ textAlign: 'center', fontSize: 12, color: colors.gris, fontStyle: 'italic', marginTop: 12 },
+  catBadge:{ fontSize: 11, backgroundColor: colors.verdeVivo, color: colors.cielo, paddingHorizontal: 12, paddingVertical: 3, borderRadius: 12, fontFamily: fonts.semibold, overflow: 'hidden' },
+  contador:{ textAlign: 'center', fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 12 },
 });
 
-const estilos = StyleSheet.create({
-  container:   { flex: 1 },
-  content:     { padding: 16, paddingBottom: 30 },
-  backBtn:     { padding: 16, paddingBottom: 0 },
-  backTxt:     { fontSize: 14, color: colors.tierra },
+const est = StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.noche },
+  content:   { padding: 14, paddingBottom: 36 },
+  backBtn:   { padding: 16, paddingBottom: 4 },
+  backTxt:   { fontSize: 14, color: colors.turquesaClaro, fontFamily: fonts.semibold },
 
-  banner:      { borderRadius: 18, padding: 20, alignItems: 'center', marginBottom: 18 },
-  bannerEmoji: { fontSize: 42, marginBottom: 8 },
-  bannerTit:   { fontSize: 20, fontWeight: '900', color: colors.doradoBrillo, textAlign: 'center', textShadowColor: 'rgba(245,200,66,0.3)', textShadowRadius: 8 },
-  bannerSub:   { fontSize: 12, color: 'rgba(247,240,224,0.75)', fontStyle: 'italic', marginTop: 6, textAlign: 'center' },
-  miniProgRow: { flexDirection: 'row', gap: 8, marginTop: 12 },
-  miniProgDot: { width: 28, height: 5, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.3)' },
-  miniProgDotOn:{ backgroundColor: colors.doradoBrillo },
+  banner:      { borderRadius: 20, overflow: 'hidden', marginBottom: 18, height: 170, justifyContent: 'flex-end', borderWidth: 1, borderColor: 'rgba(93,202,165,0.2)' },
+  bannerImg:    { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
+  bannerTxt:    { padding: 16 },
+  bannerEmoji:  { fontSize: 34 },
+  bannerTit:    { fontSize: 24, fontFamily: fonts.extra, color: colors.cielo },
+  bannerSub:    { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 3 },
+  miniProgRow:  { flexDirection: 'row', gap: 8, marginTop: 12 },
+  miniDot:      { width: 28, height: 5, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.25)' },
+  miniDotOn:    { backgroundColor: colors.doradoNeon },
 
-  seccion:     { fontSize: 16, fontWeight: '700', color: colors.negro, marginBottom: 10 },
+  seccion: { fontSize: 12, fontFamily: fonts.bold, color: colors.turquesaSuave, letterSpacing: 2, marginTop: 6, marginBottom: 10, marginLeft: 4 },
 
-  leccionCard: { marginBottom: 10 },
-  leccionGlass:{ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16, borderRadius: 14 },
-  leccionIco:  { fontSize: 30 },
-  leccionTit:  { fontSize: 14, fontWeight: '700', color: colors.tierra },
-  leccionSub:  { fontSize: 11, color: colors.gris, fontStyle: 'italic', marginTop: 2 },
-
-  misionGlass: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14, borderRadius: 14, marginBottom: 9 },
-  misionEmoji: { fontSize: 28 },
-  misionTit:   { fontSize: 14, fontWeight: '700', color: colors.tierra },
-  misionDesc:  { fontSize: 11, color: colors.gris, fontStyle: 'italic', marginTop: 2 },
-  compBadge:   { fontSize: 12, backgroundColor: colors.verdeM, color: colors.blanco, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10 },
-
-  progresoGlass:{ padding: 12, borderRadius: 12, marginTop: 8 },
-  progresoTxt:  { fontSize: 12, color: colors.tierra, marginBottom: 6, fontWeight: '700' },
-  progresoBar:  { height: 7, backgroundColor: colors.arena, borderRadius: 4, overflow: 'hidden' },
-  progresoFill: { height: 7, borderRadius: 4 },
-
-  completadoBanner: { padding: 18, alignItems: 'center', marginTop: 12, gap: 8 },
-  compTit:      { fontSize: 18, fontWeight: '900', color: colors.doradoBrillo },
-  compSub:      { fontSize: 13, color: colors.negro, opacity: 0.75 },
-
-  modalFeli:    {
-    position: 'absolute', top: 80, left: 10, right: 10,
-    borderRadius: 24, padding: 28, alignItems: 'center', overflow: 'hidden',
-    borderWidth: 2, borderColor: colors.glassBorde,
-    shadowColor: colors.doradoBrillo, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.6, shadowRadius: 20, elevation: 20,
+  card: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    backgroundColor: colors.nocheCard, borderRadius: 18, padding: 12, marginBottom: 10,
+    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.18)',
   },
-  feliEmoji:    { fontSize: 72 },
-  feliTit:      { fontSize: 24, fontWeight: '900', color: colors.negro, marginTop: 10 },
-  feliSub:      { fontSize: 14, color: colors.negro, textAlign: 'center', marginTop: 10, lineHeight: 20, opacity: 0.8 },
-  feliPuntos:   { fontSize: 36, fontWeight: '900', color: colors.negro, marginTop: 12 },
+  cardDone:   { borderWidth: 2, borderColor: colors.doradoNeon },
+  iconBox:    { width: 54, height: 54, borderRadius: 14, backgroundColor: colors.nocheProfundo, alignItems: 'center', justifyContent: 'center' },
+  iconBoxDone:{ backgroundColor: 'rgba(250,199,117,0.18)' },
+  iconEmoji:  { fontSize: 28 },
+  cardTit:    { fontSize: 15, fontFamily: fonts.bold, color: colors.cielo },
+  cardSub:    { fontSize: 11, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 2 },
+  chevron:    { fontSize: 24, color: colors.turquesaClaro, paddingHorizontal: 6 },
+  check:      { fontSize: 26, color: colors.doradoNeon, fontFamily: fonts.extra, paddingHorizontal: 6 },
+
+  progCard: { backgroundColor: colors.nocheCard, padding: 14, borderRadius: 16, marginTop: 6, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  progTxt:  { fontSize: 12, color: colors.cielo, marginBottom: 7, fontFamily: fonts.semibold },
+  progBar:  { height: 8, backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 4, overflow: 'hidden' },
+  progFill: { height: '100%', borderRadius: 4 },
+
+  compBanner: { padding: 18, alignItems: 'center', marginTop: 14, borderRadius: 18, gap: 8 },
+  compTit:    { fontSize: 18, fontFamily: fonts.extra, color: colors.noche },
+  compSub:    { fontSize: 13, color: colors.noche, opacity: 0.8, fontFamily: fonts.medium },
+
+  modalOverlay: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', padding: 22 },
+  modalCard: {
+    backgroundColor: colors.nocheCard, borderRadius: 26, padding: 24, alignItems: 'center', alignSelf: 'stretch',
+    borderWidth: 2, borderColor: colors.doradoNeon,
+    shadowColor: colors.doradoNeon, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.6, shadowRadius: 20, elevation: 20,
+  },
+  feliTit:    { fontSize: 22, fontFamily: fonts.extra, color: colors.cielo, marginTop: 14 },
+  feliSub:    { fontSize: 13, color: colors.turquesaSuave, textAlign: 'center', marginTop: 8, lineHeight: 19 },
+  feliPuntos: { fontSize: 56, fontFamily: fonts.extra, color: colors.doradoNeon, marginTop: 8, textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 16 },
 });

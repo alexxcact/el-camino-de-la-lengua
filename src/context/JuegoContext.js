@@ -16,6 +16,10 @@ const estadoInicial = {
   quizJugados: 0,
   parejasJugadas: 0,
   dictadosCorrectos: 0,
+  // Racha diaria (primitivos — se serializan directo, no son Sets)
+  racha: 0,            // días seguidos jugando
+  ultimaSesion: null,  // 'YYYY-MM-DD' de la última vez que se abrió el juego
+  palabrasHoy: 0,      // palabras nuevas aprendidas en el día actual
 };
 
 const niveles = [
@@ -26,6 +30,27 @@ const niveles = [
   { min: 50, nombre: "Taita de la Lengua" },
 ];
 
+// ── Helpers de fecha local (para la racha) ──
+const fechaISO = (d) => {
+  const y  = d.getFullYear();
+  const m  = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${dd}`;
+};
+const fechaHoy  = () => fechaISO(new Date());
+const fechaAyer = () => { const d = new Date(); d.setDate(d.getDate() - 1); return fechaISO(d); };
+
+// Calcula racha/palabrasHoy según cuándo fue la última sesión
+function aplicarSesion(base) {
+  const hoy = fechaHoy();
+  if (base.ultimaSesion === hoy) return base;            // misma sesión del día: sin cambios
+  if (base.ultimaSesion === fechaAyer()) {
+    return { ...base, racha: (base.racha || 0) + 1, palabrasHoy: 0, ultimaSesion: hoy };
+  }
+  // primera vez o se rompió la racha
+  return { ...base, racha: 1, palabrasHoy: 0, ultimaSesion: hoy };
+}
+
 export function JuegoProvider({ children }) {
   const [estado, setEstado] = useState(estadoInicial);
   const [cargado, setCargado] = useState(false);
@@ -34,20 +59,25 @@ export function JuegoProvider({ children }) {
   useEffect(() => { cargarEstado(); }, []);
 
   const cargarEstado = async () => {
+    let base = estadoInicial;
     try {
       const raw = await AsyncStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        setEstado({
+        base = {
           ...estadoInicial,
           ...parsed,
           palabrasVistas:    new Set(parsed.palabrasVistas    || []),
           mundosCompletados: new Set(parsed.mundosCompletados || []),
           misionesCompletadas: new Set(parsed.misionesCompletadas || []),
           logrosDesbloqueados: new Set(parsed.logrosDesbloqueados || []),
-        });
+        };
       }
     } catch (e) { console.log('Error cargando estado:', e); }
+
+    const conSesion = aplicarSesion(base);
+    setEstado(conSesion);
+    guardarEstado(conSesion);
     setCargado(true);
   };
 
@@ -87,7 +117,8 @@ export function JuegoProvider({ children }) {
       palabrasVistas.add(id);
       const puntos = prev.puntos + 2;
       const nivel = niveles.filter(nv => puntos >= nv.min).length;
-      return { ...prev, palabrasVistas, puntos, nivel };
+      const palabrasHoy = (prev.palabrasHoy || 0) + 1;
+      return { ...prev, palabrasVistas, puntos, nivel, palabrasHoy };
     });
   }, [actualizarEstado]);
 
