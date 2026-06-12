@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
@@ -69,6 +69,15 @@ export default function MundoScreen({ route, navigation }) {
   const { estado, completarMundo, verificarLogros } = useJuego();
   const [vistaActiva, setVistaActiva] = useState(null);
   const [mostrarFelicitacion, setMostrarFelicitacion] = useState(false);
+  const popPuntos = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (!mostrarFelicitacion) return;
+    popPuntos.setValue(0);
+    const a = Animated.spring(popPuntos, { toValue: 1, friction: 4, tension: 80, useNativeDriver: true });
+    a.start();
+    return () => a.stop();
+  }, [mostrarFelicitacion]);
 
   const misiones = [
     { id: `quiz-${mundoId}`,    titulo: 'Quiz de palabras', emoji: '🧠', desc: 'Adivina la traducción correcta',  pantalla: 'Quiz',    params: { mundoId } },
@@ -210,7 +219,9 @@ export default function MundoScreen({ route, navigation }) {
               {estado.nombreJugador || 'Caminante'}, has restaurado el {mundo.titulo.toLowerCase()}.
               {mundoId < 5 ? ' El siguiente mundo se ha encendido.' : ' ¡Has iluminado todo el camino!'}
             </Text>
-            <Text style={est.feliPuntos}>+20</Text>
+            <Animated.Text style={[est.feliPuntos, { transform: [{ scale: popPuntos.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) }] }]}>
+              +20
+            </Animated.Text>
             <View style={{ gap: 10, marginTop: 6, alignSelf: 'stretch' }}>
               <BotonGlow
                 texto="🗺️ Ir al mapa"

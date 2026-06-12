@@ -1,9 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { useJuego } from '../context/JuegoContext';
+import ContadorAnimado from './ContadorAnimado';
 
 // Mismos umbrales de nivel que el JuegoContext (para la barra de XP del HUD)
 const NIVELES = [0, 10, 20, 30, 50];
@@ -43,6 +44,34 @@ export default function HudJugador({ expandido = false }) {
     return () => anim.stop();
   }, [puntos]);
 
+  // Pulso de la píldora + "+X" flotante al ganar puntos
+  const pulso    = useRef(new Animated.Value(0)).current;
+  const flotante = useRef(new Animated.Value(0)).current;
+  const prevPuntos = useRef(puntos);
+  const [delta, setDelta] = useState(0);
+
+  useEffect(() => {
+    const d = puntos - prevPuntos.current;
+    prevPuntos.current = puntos;
+    if (d <= 0) return;
+    setDelta(d);
+    pulso.setValue(0);
+    flotante.setValue(0);
+    const a = Animated.sequence([
+      Animated.timing(pulso, { toValue: 1, duration: 150, useNativeDriver: true }),
+      Animated.timing(pulso, { toValue: 0, duration: 150, useNativeDriver: true }),
+    ]);
+    const b = Animated.timing(flotante, { toValue: 1, duration: 600, useNativeDriver: true });
+    a.start();
+    b.start();
+    return () => { a.stop(); b.stop(); };
+  }, [puntos]);
+
+  const pillScale  = pulso.interpolate({ inputRange: [0, 1], outputRange: [1, 1.12] });
+  const glowOp     = pulso.interpolate({ inputRange: [0, 1], outputRange: [0, 0.85] });
+  const flotanteY  = flotante.interpolate({ inputRange: [0, 1], outputRange: [0, -22] });
+  const flotanteOp = flotante.interpolate({ inputRange: [0, 0.2, 1], outputRange: [0, 1, 0] });
+
   return (
     <View style={[s.wrap, expandido && s.wrapExp]}>
       {/* Avatar con inicial + insignia de Kinti */}
@@ -72,10 +101,16 @@ export default function HudJugador({ expandido = false }) {
         </View>
       </View>
 
-      {/* Píldora de puntos */}
-      <View style={s.puntosPill}>
-        <Text style={s.puntosNum}>{puntos}</Text>
-        <Text style={s.puntosLbl}>pts</Text>
+      {/* Píldora de puntos animada */}
+      <View style={s.puntosBox}>
+        <Animated.Text style={[s.flotante, { opacity: flotanteOp, transform: [{ translateY: flotanteY }] }]}>
+          +{delta}
+        </Animated.Text>
+        <Animated.View style={[s.pillGlow, { opacity: glowOp }]} />
+        <Animated.View style={[s.puntosPill, { transform: [{ scale: pillScale }] }]}>
+          <ContadorAnimado valor={puntos} estilo={s.puntosNum} duracion={600} />
+          <Text style={s.puntosLbl}>pts</Text>
+        </Animated.View>
       </View>
     </View>
   );
@@ -117,11 +152,20 @@ const s = StyleSheet.create({
   chips: { flexDirection: 'row', gap: 10, marginTop: 5 },
   chip: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.semibold },
 
+  puntosBox: { position: 'relative', alignItems: 'center' },
+  flotante: {
+    position: 'absolute', top: -16, alignSelf: 'center', zIndex: 10,
+    color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.bold,
+  },
   puntosPill: {
     backgroundColor: colors.nocheProfundo,
     borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6,
     alignItems: 'center', minWidth: 56,
     borderWidth: 1, borderColor: 'rgba(93,202,165,0.3)',
+  },
+  pillGlow: {
+    position: 'absolute', top: -5, left: -5, right: -5, bottom: -5,
+    borderRadius: 20, backgroundColor: colors.doradoNeon,
   },
   puntosNum: { color: colors.doradoNeon, fontSize: 20, fontFamily: fonts.extra, lineHeight: 22 },
   puntosLbl: { color: colors.turquesaSuave, fontSize: 9, fontFamily: fonts.medium, letterSpacing: 1 },

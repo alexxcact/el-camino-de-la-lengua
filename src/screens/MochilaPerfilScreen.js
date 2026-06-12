@@ -6,6 +6,7 @@ import { fonts } from '../theme/fonts';
 import { palabras, logros as todosLogros } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import HudJugador from '../components/HudJugador';
+import ContadorAnimado from '../components/ContadorAnimado';
 
 // ── MOCHILA ───────────────────────────────────────────────────
 export function MochilaScreen({ navigation }) {
@@ -158,11 +159,11 @@ export function PerfilScreen() {
         <Text style={ps.rango}>{getNivel()}</Text>
         <Text style={ps.rangoSub}>Pueblo Pasto · Nariño · Colombia</Text>
 
-        {/* Stats 2x2 */}
+        {/* Stats 2x2 — animan desde 0 al entrar (escalonado) */}
         <View style={ps.statsGrid}>
-          {stats.map(stat => (
+          {stats.map((stat, i) => (
             <View key={stat.l} style={ps.statCard}>
-              <Text style={ps.statN}>{stat.n}</Text>
+              <ContadorAnimado valor={stat.n} estilo={ps.statN} duracion={800} delay={i * 100} animarEntrada />
               <Text style={ps.statL}>{stat.l}</Text>
             </View>
           ))}
