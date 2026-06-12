@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { useJuego } from '../context/JuegoContext';
 import BotonGlow from '../components/BotonGlow';
 
 const { width, height } = Dimensions.get('window');
@@ -35,6 +36,7 @@ function Estrella({ style, size = 8, dur = 1600, delay = 0 }) {
 }
 
 export default function BienvenidaScreen({ navigation }) {
+  const { estado, cargado } = useJuego();
   const fadeTitle = useRef(new Animated.Value(0)).current;
   const fadeCard  = useRef(new Animated.Value(0)).current;
   const fadeBtn   = useRef(new Animated.Value(0)).current;
@@ -71,6 +73,11 @@ export default function BienvenidaScreen({ navigation }) {
   }, []);
 
   const comenzar = async () => {
+    // Si aún no dio su nombre, pedirlo primero (NombreScreen decide a dónde sigue)
+    if (estado.nombreJugador == null) {
+      navigation.replace('Nombre');
+      return;
+    }
     if (introVista) {
       navigation.replace('MainTabs');
     } else {
@@ -125,6 +132,7 @@ export default function BienvenidaScreen({ navigation }) {
           variante="primario"
           icono="🌿"
           tamano="lg"
+          desactivado={!cargado}
         />
         <Text style={s.creditos}>Asociación PUMA-MAKI · Crea Digital 2026</Text>
       </Animated.View>

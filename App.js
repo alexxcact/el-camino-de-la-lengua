@@ -20,6 +20,7 @@ import { fonts } from './src/theme/fonts';
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 import BienvenidaScreen from './src/screens/BienvenidaScreen';
+import NombreScreen     from './src/screens/NombreScreen';
 import IntroScreen      from './src/screens/IntroScreen';
 import MapaScreen       from './src/screens/MapaScreen';
 import MundoScreen      from './src/screens/MundoScreen';
@@ -131,6 +132,7 @@ export default function App() {
         <NavigationContainer>
           <RootStack.Navigator screenOptions={{ headerShown: false }}>
             <RootStack.Screen name="Bienvenida" component={BienvenidaScreen} />
+            <RootStack.Screen name="Nombre"     component={NombreScreen} />
             <RootStack.Screen name="Intro"      component={IntroScreen} />
             <RootStack.Screen name="MainTabs"   component={MainTabs} />
           </RootStack.Navigator>

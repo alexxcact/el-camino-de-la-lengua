@@ -2,13 +2,13 @@ import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, Animated } from 'react-native';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { useJuego } from '../context/JuegoContext';
 
-const FRASES = [
-  '¡Pas! ¡Muy bien!',
-  '¡Pío! Una palabra más viva',
-  '¡Lo lograste!',
-  '¡El territorio brilla otra vez!',
-  '¡Sigamos el camino, Kinti!',
+const frasesCon = (n) => [
+  `¡Pío, ${n}! ¡Una palabra más viva!`,
+  `¡Pas, ${n}! ¡Lo lograste!`,
+  `¡${n}, el territorio brilla otra vez!`,
+  `¡Sigamos el camino, ${n}!`,
 ];
 
 /**
@@ -19,9 +19,14 @@ const FRASES = [
  *  tamano     número — diámetro del círculo (default 96)
  */
 export default function PishkuMascota({ celebrando = true, mensaje, tamano = 96 }) {
+  const { estado } = useJuego();
   const sway = useRef(new Animated.Value(0)).current;
   const salto = useRef(new Animated.Value(0)).current;
-  const [frase] = useState(() => mensaje || FRASES[Math.floor(Math.random() * FRASES.length)]);
+  const [frase] = useState(() => {
+    if (mensaje) return mensaje;
+    const fr = frasesCon(estado.nombreJugador || 'Caminante');
+    return fr[Math.floor(Math.random() * fr.length)];
+  });
 
   // Balanceo idle continuo
   useEffect(() => {

@@ -15,7 +15,8 @@ import Confeti from '../components/Confeti';
 export function ParejasScreen({ route, navigation }) {
   const { mundoId } = route.params || {};
   const mundo = mundos.find(m => m.id === mundoId);
-  const { ganarPuntos, completarMision, sumarParejas, verificarLogros } = useJuego();
+  const { estado, ganarPuntos, completarMision, sumarParejas, verificarLogros } = useJuego();
+  const nombre = estado.nombreJugador || 'Caminante';
 
   const [tarjetas, setTarjetas] = useState([]);
   const [selec1, setSelec1] = useState(null);
@@ -82,14 +83,14 @@ export function ParejasScreen({ route, navigation }) {
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
         <ScrollView contentContainerStyle={s.resContent}>
           <Text style={s.resEmoji}>🎉</Text>
-          <Text style={s.resTit}>¡Parejas completadas!</Text>
+          <Text style={s.resTit}>¡Muy bien, {nombre}!</Text>
           <View style={s.resScoreCard}>
             <Text style={s.resSub}>{intentos} intentos</Text>
           </View>
           <View style={{ height: 20 }} />
           <Acompanante
             personaje="uma"
-            mensaje="Pas wawa... has unido las palabras como se unen los hilos en el chumbe. El tejido de la lengua vive en ti."
+            mensaje={`Pas wawa ${nombre}... has unido las palabras como se unen los hilos en el chumbe. El tejido de la lengua vive en ti.`}
           />
           <BotonGlow texto="← Volver al mundo" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
@@ -157,7 +158,8 @@ export function ParejasScreen({ route, navigation }) {
 export function DictadoScreen({ route, navigation }) {
   const { mundoId } = route.params || {};
   const mundo = mundos.find(m => m.id === mundoId);
-  const { ganarPuntos, completarMision, verificarLogros } = useJuego();
+  const { estado, ganarPuntos, completarMision, verificarLogros } = useJuego();
+  const nombre = estado.nombreJugador || 'Caminante';
 
   const palabrasMundo = palabras.filter(p => mundo.palabrasIds.includes(p.id));
   const [listaDict] = useState(() => shuffle(palabrasMundo).slice(0, 5));
@@ -204,7 +206,7 @@ export function DictadoScreen({ route, navigation }) {
         />
         <ScrollView contentContainerStyle={s.resContent}>
           <Text style={s.resEmoji}>{exito ? '📜' : '💪'}</Text>
-          <Text style={s.resTit}>{exito ? '¡Dictado completado!' : 'Sigue practicando'}</Text>
+          <Text style={s.resTit}>{exito ? `¡Muy bien, ${nombre}!` : `Sigue intentando, ${nombre}`}</Text>
           <View style={s.resScoreCard}>
             <Text style={s.resSub}>{aciertos} / {listaDict.length}</Text>
           </View>
@@ -212,7 +214,7 @@ export function DictadoScreen({ route, navigation }) {
           <Acompanante
             personaje="taita_rimay"
             mensaje={exito
-              ? 'Las palabras que escribes son piedras del camino, Kinti. Cada letra trae de regreso una memoria.'
+              ? `Las palabras que escribes son piedras del camino, ${nombre}. Cada letra trae de regreso una memoria.`
               : 'No te desanimes, wawa. Cada intento es un paso más en el camino de la lengua.'}
           />
           <BotonGlow texto="← Volver al mundo" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />

@@ -13,7 +13,8 @@ import PishkuMascota from '../components/PishkuMascota';
 export default function QuizScreen({ route, navigation }) {
   const { mundoId } = route.params || {};
   const mundo = mundos.find(m => m.id === mundoId);
-  const { ganarPuntos, completarMision, sumarQuiz, verificarLogros } = useJuego();
+  const { estado, ganarPuntos, completarMision, sumarQuiz, verificarLogros } = useJuego();
+  const nombre = estado.nombreJugador || 'Caminante';
 
   const palabrasMundo = palabras.filter(p => mundo.palabrasIds.includes(p.id));
   const [preguntas, setPreguntas] = useState([]);
@@ -75,7 +76,7 @@ export default function QuizScreen({ route, navigation }) {
             ? <PishkuMascota celebrando tamano={96} />
             : <Acompanante personaje="chutun" mensaje="Ji ji ji... el olvido aún es fuerte. ¡Inténtalo de nuevo!" lado="izq" />}
 
-          <Text style={s.resultTit}>{exito ? '¡Misión cumplida!' : 'Sigue intentando'}</Text>
+          <Text style={s.resultTit}>{exito ? `¡Muy bien, ${nombre}!` : `Sigue intentando, ${nombre}`}</Text>
 
           <View style={s.scoreCard}>
             <Text style={s.resultScore}>{aciertos} / {preguntas.length}</Text>

@@ -29,6 +29,10 @@ export default function MapaScreen({ navigation }) {
     return () => anim.stop();
   }, []);
 
+  const nombre = estado.nombreJugador || 'Caminante';
+  const hora = new Date().getHours();
+  const saludo = hora >= 5 && hora < 12 ? '¡Buenos días' : hora >= 12 && hora < 18 ? '¡Buenas tardes' : '¡Buenas noches';
+
   const desbloqueado = (id) => id === 1 || estado.mundosCompletados.has(id - 1);
 
   const mundosRestaurados = mundos.filter(m => {
@@ -43,6 +47,8 @@ export default function MapaScreen({ navigation }) {
       </SafeAreaView>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 36 }} showsVerticalScrollIndicator={false}>
+
+        <Text style={s.saludo}>{saludo}, {nombre}!</Text>
 
         {/* Medidor de restauración del territorio */}
         <View style={s.restCard}>
@@ -121,6 +127,8 @@ export default function MapaScreen({ navigation }) {
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.noche },
   hudSafe:   { backgroundColor: colors.nocheHeader },
+
+  saludo: { color: colors.cielo, fontSize: 20, fontFamily: fonts.extra, marginTop: 16, marginHorizontal: 16, marginBottom: -2 },
 
   restCard: {
     backgroundColor: colors.nocheCard,

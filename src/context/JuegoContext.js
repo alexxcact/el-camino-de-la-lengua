@@ -7,6 +7,7 @@ const JuegoContext = createContext(null);
 const STORAGE_KEY = '@camino_lengua_estado';
 
 const estadoInicial = {
+  nombreJugador: null,   // string o null si aún no lo ha dado (primitivo: se serializa solo)
   puntos: 0,
   nivel: 1,
   palabrasVistas: new Set(),
@@ -102,6 +103,16 @@ export function JuegoProvider({ children }) {
     });
   }, [guardarEstado]);
 
+  // Guarda el nombre del jugador: trim, valida 2-15, capitaliza la inicial.
+  // Si queda fuera de rango usa "Caminante" (nunca bloquea el flujo).
+  const guardarNombre = useCallback((nombre) => {
+    let limpio = (nombre || '').trim();
+    if (limpio.length > 15) limpio = limpio.slice(0, 15).trim();
+    if (limpio.length < 2)  limpio = 'Caminante';
+    const final = limpio.charAt(0).toUpperCase() + limpio.slice(1);
+    actualizarEstado(prev => ({ ...prev, nombreJugador: final }));
+  }, [actualizarEstado]);
+
   const ganarPuntos = useCallback((n) => {
     actualizarEstado(prev => {
       const puntos = prev.puntos + n;
@@ -171,7 +182,7 @@ export function JuegoProvider({ children }) {
       estado, cargado, toastLogro, setToastLogro,
       ganarPuntos, marcarPalabraVista, completarMundo,
       completarMision, sumarQuiz, sumarParejas,
-      verificarLogros, getNivel,
+      verificarLogros, getNivel, guardarNombre,
     }}>
       {children}
     </JuegoContext.Provider>

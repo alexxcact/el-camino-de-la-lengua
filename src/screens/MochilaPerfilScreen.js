@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, FlatList } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
@@ -121,7 +121,13 @@ export function MochilaScreen({ navigation }) {
 
 // ── PERFIL ────────────────────────────────────────────────────
 export function PerfilScreen() {
-  const { estado, getNivel } = useJuego();
+  const { estado, getNivel, guardarNombre } = useJuego();
+  const nombre = estado.nombreJugador || 'Caminante';
+  const [editando, setEditando] = useState(false);
+  const [nuevoNombre, setNuevoNombre] = useState(nombre);
+
+  const abrirEditor = () => { setNuevoNombre(nombre); setEditando(true); };
+  const guardar = () => { guardarNombre(nuevoNombre); setEditando(false); };
 
   const stats = [
     { n: estado.puntos,                  l: 'Puntos ⭐' },
@@ -143,6 +149,12 @@ export function PerfilScreen() {
 
       <ScrollView contentContainerStyle={ps.content} showsVerticalScrollIndicator={false}>
 
+        <View style={ps.nameRow}>
+          <Text style={ps.nombreGrande}>{nombre}</Text>
+          <TouchableOpacity style={ps.editBtn} onPress={abrirEditor} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+            <Text style={ps.editIco}>✏️</Text>
+          </TouchableOpacity>
+        </View>
         <Text style={ps.rango}>{getNivel()}</Text>
         <Text style={ps.rangoSub}>Pueblo Pasto · Nariño · Colombia</Text>
 
@@ -194,6 +206,43 @@ export function PerfilScreen() {
 
         <Text style={ps.footer}>🌄 Asociación PUMA-MAKI · El Camino de la Lengua</Text>
       </ScrollView>
+
+      {/* Modal cambiar nombre */}
+      {editando && (
+        <View style={ps.modalOverlay}>
+          <LinearGradient colors={['rgba(11,31,42,0.94)', 'rgba(15,110,86,0.88)']} style={StyleSheet.absoluteFill} />
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={ps.modalKav}>
+            <View style={ps.modalCard}>
+              <Text style={ps.modalTit}>Cambiar nombre</Text>
+              <View style={ps.modalInputWrap}>
+                <TextInput
+                  style={ps.modalInput}
+                  value={nuevoNombre}
+                  onChangeText={setNuevoNombre}
+                  maxLength={15}
+                  autoCapitalize="words"
+                  autoCorrect={false}
+                  autoFocus
+                  placeholder="Tu nombre..."
+                  placeholderTextColor={colors.turquesaSuave}
+                />
+              </View>
+              <View style={ps.modalBtns}>
+                <TouchableOpacity style={ps.modalCancel} onPress={() => setEditando(false)}>
+                  <Text style={ps.modalCancelTxt}>Cancelar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[ps.modalSave, nuevoNombre.trim().length < 2 && ps.modalSaveOff]}
+                  onPress={guardar}
+                  disabled={nuevoNombre.trim().length < 2}
+                >
+                  <Text style={ps.modalSaveTxt}>Guardar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        </View>
+      )}
     </View>
   );
 }
@@ -255,8 +304,25 @@ const ps = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.noche },
   content:   { padding: 16, paddingBottom: 30 },
 
-  rango:    { fontSize: 20, fontFamily: fonts.extra, color: colors.doradoNeon, textAlign: 'center', marginTop: 8 },
+  nameRow:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 10 },
+  nombreGrande:{ fontSize: 26, fontFamily: fonts.extra, color: colors.cielo },
+  editBtn:     { width: 32, height: 32, borderRadius: 16, backgroundColor: colors.nocheCard, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: 'rgba(93,202,165,0.3)' },
+  editIco:     { fontSize: 14 },
+  rango:    { fontSize: 14, fontFamily: fonts.bold, color: colors.doradoNeon, textAlign: 'center', marginTop: 4 },
   rangoSub: { fontSize: 11, color: colors.turquesaSuave, textAlign: 'center', marginTop: 2, marginBottom: 16, letterSpacing: 1 },
+
+  modalOverlay:  { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', padding: 24 },
+  modalKav:      { alignSelf: 'stretch' },
+  modalCard:     { backgroundColor: colors.nocheCard, borderRadius: 22, padding: 22, borderWidth: 2, borderColor: colors.doradoNeon },
+  modalTit:      { fontSize: 18, fontFamily: fonts.extra, color: colors.cielo, textAlign: 'center', marginBottom: 16 },
+  modalInputWrap:{ height: 52, justifyContent: 'center', backgroundColor: colors.nocheProfundo, borderRadius: 14, borderWidth: 2, borderColor: colors.turquesa, marginBottom: 16 },
+  modalInput:    { paddingHorizontal: 16, fontSize: 18, color: colors.cielo, textAlign: 'center', fontFamily: fonts.bold },
+  modalBtns:     { flexDirection: 'row', gap: 10 },
+  modalCancel:   { flex: 1, height: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.4)' },
+  modalCancelTxt:{ color: colors.turquesaSuave, fontFamily: fonts.bold, fontSize: 14 },
+  modalSave:     { flex: 1, height: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.turquesa },
+  modalSaveOff:  { opacity: 0.4 },
+  modalSaveTxt:  { color: colors.cielo, fontFamily: fonts.extra, fontSize: 14 },
 
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 16 },
   statCard:  { width: '48%', backgroundColor: colors.nocheCard, borderRadius: 16, padding: 16, alignItems: 'center', marginBottom: 12, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },

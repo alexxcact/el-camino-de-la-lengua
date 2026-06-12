@@ -24,10 +24,12 @@ function fraccionXP(puntos) {
  *  expandido  bool  (margen/padding un poco mayor para la pantalla de perfil)
  */
 export default function HudJugador({ expandido = false }) {
-  const { estado, getNivel } = useJuego();
+  const { estado } = useJuego();
   const puntos = estado.puntos;
   const racha = estado.racha || 0;
   const palabrasHoy = estado.palabrasHoy || 0;
+  const nombre = estado.nombreJugador || 'Caminante';
+  const inicial = nombre.charAt(0).toUpperCase();
 
   const xpAnim = useRef(new Animated.Value(fraccionXP(puntos))).current;
 
@@ -43,17 +45,17 @@ export default function HudJugador({ expandido = false }) {
 
   return (
     <View style={[s.wrap, expandido && s.wrapExp]}>
-      {/* Avatar */}
+      {/* Avatar con inicial + insignia de Kinti */}
       <View style={s.avatarBox}>
-        <Image source={require('../../assets/images/personajes/kinti.jpg')} style={s.avatar} />
-        <View style={s.lvlBadge}>
-          <Text style={s.lvlTxt}>{estado.nivel}</Text>
+        <View style={s.avatarInicial}>
+          <Text style={s.inicialTxt}>{inicial}</Text>
         </View>
+        <Image source={require('../../assets/images/personajes/kinti.jpg')} style={s.kintiBadge} />
       </View>
 
       {/* Nombre + barra XP + chips */}
       <View style={s.center}>
-        <Text style={s.nombre} numberOfLines={1}>Kinti · Nivel {estado.nivel}</Text>
+        <Text style={s.nombre} numberOfLines={1}>{nombre} · Nivel {estado.nivel}</Text>
         <View style={s.xpTrack}>
           <Animated.View style={[s.xpFillWrap, { transform: [{ scaleX: xpAnim }], transformOrigin: 'left' }]}>
             <LinearGradient
@@ -90,20 +92,19 @@ const s = StyleSheet.create({
   },
   wrapExp: { paddingVertical: 16 },
 
-  avatarBox: { position: 'relative' },
-  avatar: {
+  avatarBox: { position: 'relative', width: 50, height: 50 },
+  avatarInicial: {
     width: 50, height: 50, borderRadius: 25,
-    borderWidth: 2.5, borderColor: colors.turquesa,
-  },
-  lvlBadge: {
-    position: 'absolute', bottom: -4, right: -4,
-    minWidth: 20, height: 20, borderRadius: 10,
-    backgroundColor: colors.doradoNeon,
+    backgroundColor: colors.turquesa,
     alignItems: 'center', justifyContent: 'center',
-    paddingHorizontal: 4,
-    borderWidth: 1.5, borderColor: colors.nocheHeader,
+    borderWidth: 2, borderColor: colors.turquesaClaro,
   },
-  lvlTxt: { fontSize: 11, color: colors.noche, fontFamily: fonts.extra },
+  inicialTxt: { fontSize: 24, color: colors.cielo, fontFamily: fonts.extra, marginTop: -1 },
+  kintiBadge: {
+    position: 'absolute', bottom: -3, right: -3,
+    width: 24, height: 24, borderRadius: 12,
+    borderWidth: 2, borderColor: colors.nocheHeader,
+  },
 
   center: { flex: 1 },
   nombre: { color: colors.cielo, fontSize: 14, fontFamily: fonts.bold, marginBottom: 4 },

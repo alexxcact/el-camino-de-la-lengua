@@ -207,7 +207,7 @@ export default function MundoScreen({ route, navigation }) {
             <PishkuMascota celebrando tamano={92} />
             <Text style={est.feliTit}>¡Mundo completado!</Text>
             <Text style={est.feliSub}>
-              Has restaurado el {mundo.titulo.toLowerCase()}.
+              {estado.nombreJugador || 'Caminante'}, has restaurado el {mundo.titulo.toLowerCase()}.
               {mundoId < 5 ? ' El siguiente mundo se ha encendido.' : ' ¡Has iluminado todo el camino!'}
             </Text>
             <Text style={est.feliPuntos}>+20</Text>
