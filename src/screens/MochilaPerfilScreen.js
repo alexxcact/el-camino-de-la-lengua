@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, FlatList, KeyboardAvoidingView, Platform, Switch } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
@@ -7,6 +7,7 @@ import { palabras, logros as todosLogros } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import HudJugador from '../components/HudJugador';
 import ContadorAnimado from '../components/ContadorAnimado';
+import MedallaPasto, { MEDALLAS_INFO } from '../components/MedallaPasto';
 
 // ── MOCHILA ───────────────────────────────────────────────────
 export function MochilaScreen({ navigation }) {
@@ -121,14 +122,15 @@ export function MochilaScreen({ navigation }) {
 }
 
 // ── PERFIL ────────────────────────────────────────────────────
-export function PerfilScreen() {
-  const { estado, getNivel, guardarNombre } = useJuego();
+export function PerfilScreen({ navigation }) {
+  const { estado, getNivel, guardarNombre, cambiarSonido } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
   const [editando, setEditando] = useState(false);
   const [nuevoNombre, setNuevoNombre] = useState(nombre);
 
   const abrirEditor = () => { setNuevoNombre(nombre); setEditando(true); };
   const guardar = () => { guardarNombre(nuevoNombre); setEditando(false); };
+  const [medallaSel, setMedallaSel] = useState(null);
 
   const stats = [
     { n: estado.puntos,                  l: 'Puntos ⭐' },
@@ -190,6 +192,27 @@ export function PerfilScreen() {
           ))}
         </View>
 
+        {/* Vitrina de medallas Pasto */}
+        <Text style={ps.seccion}>🏅 VITRINA</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={ps.vitrina}>
+          {[1, 2, 3, 4, 5].map(id => {
+            const ganada = estado.mundosCompletados.has(id);
+            return (
+              <TouchableOpacity
+                key={id}
+                style={ps.medallaCol}
+                activeOpacity={ganada ? 0.7 : 1}
+                onPress={() => ganada && setMedallaSel(id)}
+              >
+                <MedallaPasto mundoId={id} ganada={ganada} tamano={64} />
+                <Text style={[ps.medallaNom, ganada && { color: colors.cielo }]} numberOfLines={2}>
+                  {MEDALLAS_INFO[id].nombre}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+
         {/* Logros */}
         <Text style={ps.seccion}>🏆 LOGROS</Text>
         <View style={ps.logrosGrid}>
@@ -205,8 +228,39 @@ export function PerfilScreen() {
           })}
         </View>
 
+        {/* Ver final otra vez (solo si ya lo vio) */}
+        {estado.finalVisto && (
+          <TouchableOpacity style={ps.finalBtn} onPress={() => navigation.navigate('Final')} activeOpacity={0.85}>
+            <Text style={ps.finalBtnTxt}>🌄 Ver final otra vez</Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Ajustes */}
+        <View style={ps.ajusteRow}>
+          <Text style={ps.ajusteLbl}>🔊 Sonidos y vibración</Text>
+          <Switch
+            value={estado.sonidoActivado !== false}
+            onValueChange={cambiarSonido}
+            trackColor={{ false: colors.nocheProfundo, true: colors.turquesa }}
+            thumbColor={colors.cielo}
+          />
+        </View>
+
         <Text style={ps.footer}>🌄 Asociación PUMA-MAKI · El Camino de la Lengua</Text>
       </ScrollView>
+
+      {/* Modal significado de medalla */}
+      {medallaSel && (
+        <TouchableOpacity style={ps.modalOverlay} activeOpacity={1} onPress={() => setMedallaSel(null)}>
+          <LinearGradient colors={['rgba(11,31,42,0.94)', 'rgba(15,110,86,0.88)']} style={StyleSheet.absoluteFill} />
+          <View style={ps.medModalCard}>
+            <MedallaPasto mundoId={medallaSel} ganada tamano={96} />
+            <Text style={ps.medModalNom}>{MEDALLAS_INFO[medallaSel].nombre}</Text>
+            <Text style={ps.medModalSig}>{MEDALLAS_INFO[medallaSel].significado}</Text>
+            <Text style={ps.medModalTap}>Toca para cerrar</Text>
+          </View>
+        </TouchableOpacity>
+      )}
 
       {/* Modal cambiar nombre */}
       {editando && (
@@ -338,6 +392,15 @@ const ps = StyleSheet.create({
   barFill: { height: '100%', borderRadius: 4 },
 
   seccion:    { fontSize: 13, fontFamily: fonts.bold, color: colors.turquesaSuave, letterSpacing: 2, marginBottom: 12 },
+
+  vitrina:    { gap: 14, paddingVertical: 4, paddingHorizontal: 2, marginBottom: 18 },
+  medallaCol: { width: 76, alignItems: 'center' },
+  medallaNom: { fontSize: 11, fontFamily: fonts.semibold, color: colors.turquesaSuave, textAlign: 'center', marginTop: 8 },
+
+  medModalCard: { backgroundColor: colors.nocheCard, borderRadius: 22, padding: 24, alignItems: 'center', marginHorizontal: 30, borderWidth: 2, borderColor: colors.doradoNeon },
+  medModalNom:  { fontSize: 18, fontFamily: fonts.extra, color: colors.doradoNeon, marginTop: 14, textAlign: 'center' },
+  medModalSig:  { fontSize: 14, color: colors.cielo, textAlign: 'center', marginTop: 10, lineHeight: 21, fontStyle: 'italic' },
+  medModalTap:  { fontSize: 11, color: colors.turquesaSuave, marginTop: 16 },
   logrosGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   logroCard:  { width: '48%', borderRadius: 16, padding: 14, alignItems: 'center', marginBottom: 12 },
   logroOn:    { backgroundColor: colors.nocheCard, borderWidth: 2, borderColor: colors.doradoNeon },
@@ -347,5 +410,9 @@ const ps = StyleSheet.create({
   logroNom:   { fontSize: 12, fontFamily: fonts.bold, color: colors.turquesaSuave, textAlign: 'center' },
   logroDesc:  { fontSize: 10, color: colors.turquesaSuave, marginTop: 2, textAlign: 'center', opacity: 0.8 },
 
+  finalBtn:    { backgroundColor: 'rgba(250,199,117,0.15)', borderRadius: 16, paddingVertical: 14, alignItems: 'center', marginBottom: 12, borderWidth: 1.5, borderColor: colors.doradoNeon },
+  finalBtnTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.bold },
+  ajusteRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.nocheCard, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 12, marginTop: 4, marginBottom: 16, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  ajusteLbl: { color: colors.cielo, fontSize: 14, fontFamily: fonts.semibold },
   footer: { textAlign: 'center', fontSize: 11, color: colors.turquesaSuave, fontStyle: 'italic', opacity: 0.6, marginTop: 8 },
 });

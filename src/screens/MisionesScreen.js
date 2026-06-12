@@ -8,6 +8,8 @@ import { useJuego } from '../context/JuegoContext';
 import Acompanante from '../components/Acompanante';
 import BotonGlow from '../components/BotonGlow';
 import Confeti from '../components/Confeti';
+import { sonar } from '../utils/sonidos';
+import { vibrar } from '../utils/feedback';
 
 // ══════════════════════════════════════════════════════════
 // PAREJAS — Uma acompaña
@@ -41,6 +43,7 @@ export function ParejasScreen({ route, navigation }) {
       setIntentos(i => i + 1);
       if (tarjetas[selec1].grupo === tarjetas[selec2].grupo) {
         setAciertoFlash([selec1, selec2]);
+        sonar.acierto(); vibrar.suave();
         setTimeout(() => {
           const nuevas = new Set(resueltas);
           nuevas.add(tarjetas[selec1].grupo);
@@ -54,10 +57,12 @@ export function ParejasScreen({ route, navigation }) {
             sumarParejas();
             ganarPuntos(15);
             verificarLogros();
+            sonar.mision(); vibrar.exito();
           }
         }, 600);
       } else {
         setErroneas([selec1, selec2]);
+        sonar.error(); vibrar.error();
         setTimeout(() => {
           setSelec1(null);
           setSelec2(null);
@@ -178,6 +183,9 @@ export function DictadoScreen({ route, navigation }) {
     if (correcto) {
       setAciertos(a => a + 1);
       ganarPuntos(8);
+      sonar.acierto(); vibrar.suave();
+    } else {
+      sonar.error(); vibrar.error();
     }
     setTimeout(() => {
       if (idx + 1 < listaDict.length) {
@@ -190,6 +198,7 @@ export function DictadoScreen({ route, navigation }) {
         if (total >= 3) {
           completarMision(`dictado-${mundoId}`);
           ganarPuntos(20);
+          sonar.mision(); vibrar.exito();
         }
         verificarLogros();
       }

@@ -9,6 +9,8 @@ import Acompanante from '../components/Acompanante';
 import BotonGlow from '../components/BotonGlow';
 import Confeti from '../components/Confeti';
 import PishkuMascota from '../components/PishkuMascota';
+import { sonar } from '../utils/sonidos';
+import { vibrar } from '../utils/feedback';
 
 export default function QuizScreen({ route, navigation }) {
   const { mundoId } = route.params || {};
@@ -44,17 +46,22 @@ export default function QuizScreen({ route, navigation }) {
       setAciertos(a => a + 1);
       ganarPuntos(10);
       setFlashAcierto(true);
+      sonar.acierto(); vibrar.suave();
+    } else {
+      sonar.error(); vibrar.error();
     }
     setTimeout(() => {
       if (idx + 1 < preguntas.length) {
         setIdx(idx + 1);
         setSeleccion(null);
       } else {
+        const exito = aciertos + (acerto ? 1 : 0) >= 3;
         setFin(true);
         sumarQuiz();
-        if (aciertos + (acerto ? 1 : 0) >= 3) {
+        if (exito) {
           completarMision(`quiz-${mundoId}`);
           ganarPuntos(20);
+          sonar.mision(); vibrar.exito();
         }
         verificarLogros();
       }

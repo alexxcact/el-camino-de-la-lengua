@@ -16,12 +16,14 @@ import {
 import { JuegoProvider } from './src/context/JuegoContext';
 import { colors } from './src/theme/colors';
 import { fonts } from './src/theme/fonts';
+import { cargarSonidos } from './src/utils/sonidos';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 import BienvenidaScreen from './src/screens/BienvenidaScreen';
 import NombreScreen     from './src/screens/NombreScreen';
 import IntroScreen      from './src/screens/IntroScreen';
+import FinalScreen      from './src/screens/FinalScreen';
 import MapaScreen       from './src/screens/MapaScreen';
 import MundoScreen      from './src/screens/MundoScreen';
 import QuizScreen       from './src/screens/QuizScreen';
@@ -116,6 +118,8 @@ export default function App() {
     Baloo2_800ExtraBold,
   });
 
+  useEffect(() => { cargarSonidos(); }, []);
+
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync().catch(() => {});
@@ -135,6 +139,7 @@ export default function App() {
             <RootStack.Screen name="Nombre"     component={NombreScreen} />
             <RootStack.Screen name="Intro"      component={IntroScreen} />
             <RootStack.Screen name="MainTabs"   component={MainTabs} />
+            <RootStack.Screen name="Final"      component={FinalScreen} />
           </RootStack.Navigator>
         </NavigationContainer>
       </JuegoProvider>

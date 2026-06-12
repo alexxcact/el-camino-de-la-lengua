@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { logros } from '../data/datos';
+import { setSonido } from '../utils/ajustes';
 
 const JuegoContext = createContext(null);
 
@@ -21,6 +22,8 @@ const estadoInicial = {
   racha: 0,            // días seguidos jugando
   ultimaSesion: null,  // 'YYYY-MM-DD' de la última vez que se abrió el juego
   palabrasHoy: 0,      // palabras nuevas aprendidas en el día actual
+  sonidoActivado: true,// sonidos + vibración (primitivo, se serializa solo)
+  finalVisto: false,   // si ya vio la cinemática final (primitivo)
 };
 
 const niveles = [
@@ -77,6 +80,7 @@ export function JuegoProvider({ children }) {
     } catch (e) { console.log('Error cargando estado:', e); }
 
     const conSesion = aplicarSesion(base);
+    setSonido(conSesion.sonidoActivado !== false);
     setEstado(conSesion);
     guardarEstado(conSesion);
     setCargado(true);
@@ -111,6 +115,15 @@ export function JuegoProvider({ children }) {
     if (limpio.length < 2)  limpio = 'Caminante';
     const final = limpio.charAt(0).toUpperCase() + limpio.slice(1);
     actualizarEstado(prev => ({ ...prev, nombreJugador: final }));
+  }, [actualizarEstado]);
+
+  const cambiarSonido = useCallback((v) => {
+    setSonido(v);
+    actualizarEstado(prev => ({ ...prev, sonidoActivado: v }));
+  }, [actualizarEstado]);
+
+  const marcarFinalVisto = useCallback(() => {
+    actualizarEstado(prev => prev.finalVisto ? prev : { ...prev, finalVisto: true });
   }, [actualizarEstado]);
 
   const ganarPuntos = useCallback((n) => {
@@ -182,7 +195,7 @@ export function JuegoProvider({ children }) {
       estado, cargado, toastLogro, setToastLogro,
       ganarPuntos, marcarPalabraVista, completarMundo,
       completarMision, sumarQuiz, sumarParejas,
-      verificarLogros, getNivel, guardarNombre,
+      verificarLogros, getNivel, guardarNombre, cambiarSonido, marcarFinalVisto,
     }}>
       {children}
     </JuegoContext.Provider>

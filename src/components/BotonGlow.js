@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
+import { sonar } from '../utils/sonidos';
 
 /**
  * Botón con gradiente y efecto glow dorado.
@@ -24,10 +25,12 @@ export default function BotonGlow({
   const padding  = tamano === 'sm' ? 10 : tamano === 'lg' ? 18 : 14;
   const fontSize = tamano === 'sm' ? 13 : tamano === 'lg' ? 17 : 15;
 
+  const press = () => { sonar.pop(); onPress && onPress(); };
+
   if (variante === 'fantasma') {
     return (
       <TouchableOpacity
-        onPress={onPress}
+        onPress={press}
         disabled={desactivado}
         style={[s.fantasma, { paddingVertical: padding }, desactivado && s.off]}
         activeOpacity={0.7}
@@ -42,7 +45,7 @@ export default function BotonGlow({
 
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={press}
       disabled={desactivado}
       activeOpacity={0.85}
       style={[s.wrap, desactivado && s.off]}

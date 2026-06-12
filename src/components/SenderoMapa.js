@@ -4,6 +4,8 @@ import Svg, { Path, Circle, G } from 'react-native-svg';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import Confeti from './Confeti';
+import MedallaPasto from './MedallaPasto';
+import { sonar } from '../utils/sonidos';
 
 const { width: W, height: H } = Dimensions.get('window');
 
@@ -60,8 +62,8 @@ function NodoMundo({ data, pop, onPress, onBloqueado }) {
   const translateX  = shake.interpolate({ inputRange: [-1, 1], outputRange: [-6, 6] });
 
   const handlePress = () => {
-    if (bloqueado) { sacudir(); onBloqueado(); }
-    else onPress();
+    if (bloqueado) { sacudir(); sonar.error(); onBloqueado(); }
+    else { sonar.pop(); onPress(); }
   };
 
   const sublabel = completado ? 'Completado' : bloqueado ? 'Bloqueado' : `${misionesDone} de 3 misiones`;
@@ -101,7 +103,9 @@ function NodoMundo({ data, pop, onPress, onBloqueado }) {
             <Text style={[s.emoji, bloqueado && s.emojiOff]}>{bloqueado ? '🔒' : mundo.emoji}</Text>
 
             {completado && (
-              <View style={s.checkBadge}><Text style={s.checkTxt}>✓</Text></View>
+              <View style={s.medallaBadge}>
+                <MedallaPasto mundoId={mundo.id} ganada tamano={30} />
+              </View>
             )}
           </View>
         </Animated.View>
@@ -287,12 +291,7 @@ const s = StyleSheet.create({
     width: 36, height: 36, borderRadius: 18,
     borderWidth: 2, borderColor: colors.doradoNeon,
   },
-  checkBadge: {
-    position: 'absolute', top: -2, right: -2,
-    width: 26, height: 26, borderRadius: 13, backgroundColor: colors.doradoNeon,
-    alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.noche,
-  },
-  checkTxt: { color: colors.noche, fontSize: 14, fontFamily: fonts.extra },
+  medallaBadge: { position: 'absolute', top: -8, right: -8 },
 
   nodoTit:    { color: colors.cielo, fontSize: 13, fontFamily: fonts.bold, marginTop: 8, textAlign: 'center', width: 120 },
   nodoTitOff: { color: colors.turquesaSuave },

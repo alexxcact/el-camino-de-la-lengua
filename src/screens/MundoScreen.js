@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Animated } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
@@ -10,6 +10,10 @@ import BotonGlow from '../components/BotonGlow';
 import HudJugador from '../components/HudJugador';
 import Confeti from '../components/Confeti';
 import PishkuMascota from '../components/PishkuMascota';
+import ReveladoColor from '../components/ReveladoColor';
+import MedallaPasto, { MEDALLAS_INFO } from '../components/MedallaPasto';
+import { sonar } from '../utils/sonidos';
+import { vibrar } from '../utils/feedback';
 
 // ═══════════════════════════════════════════════════════════
 // VISTA DE LECCIÓN (aprendizaje de vocabulario)
@@ -69,7 +73,11 @@ export default function MundoScreen({ route, navigation }) {
   const { estado, completarMundo, verificarLogros } = useJuego();
   const [vistaActiva, setVistaActiva] = useState(null);
   const [mostrarFelicitacion, setMostrarFelicitacion] = useState(false);
+  const [ondaMedio, setOndaMedio] = useState(false);
+  const [ondaFin, setOndaFin] = useState(false);
   const popPuntos = useRef(new Animated.Value(0)).current;
+
+  const cerrarModal = () => { setMostrarFelicitacion(false); setOndaMedio(false); setOndaFin(false); };
 
   useEffect(() => {
     if (!mostrarFelicitacion) return;
@@ -111,7 +119,6 @@ export default function MundoScreen({ route, navigation }) {
   }
 
   // ─── Vista principal ───
-  const bannerImg      = mundoYaCompletado ? imgMundoColor[mundoId] : imgMundoGris[mundoId];
   const misionesHechas = misiones.filter(m => estado.misionesCompletadas.has(m.id)).length;
 
   return (
@@ -122,7 +129,12 @@ export default function MundoScreen({ route, navigation }) {
 
         {/* Banner del mundo (imagen dentro de tarjeta) */}
         <View style={est.banner}>
-          <Image source={bannerImg} style={est.bannerImg} resizeMode="cover" />
+          <ReveladoColor
+            imagenGris={imgMundoGris[mundoId]}
+            imagenColor={imgMundoColor[mundoId]}
+            revelado={mundoYaCompletado}
+            style={StyleSheet.absoluteFill}
+          />
           <LinearGradient
             colors={['transparent', 'rgba(11,31,42,0.55)', colors.noche]}
             start={{ x: 0, y: 0 }}
@@ -213,26 +225,42 @@ export default function MundoScreen({ route, navigation }) {
             style={StyleSheet.absoluteFill}
           />
           <View style={est.modalCard}>
+            <ReveladoColor
+              imagenGris={imgMundoGris[mundoId]}
+              imagenColor={imgMundoColor[mundoId]}
+              revelado
+              animarAhora={mostrarFelicitacion}
+              onMedio={() => { setOndaMedio(true); sonar.mundo(); vibrar.exito(); }}
+              onFin={() => setOndaFin(true)}
+              style={est.modalBanner}
+            />
             <PishkuMascota celebrando tamano={92} />
             <Text style={est.feliTit}>¡Mundo completado!</Text>
             <Text style={est.feliSub}>
               {estado.nombreJugador || 'Caminante'}, has restaurado el {mundo.titulo.toLowerCase()}.
               {mundoId < 5 ? ' El siguiente mundo se ha encendido.' : ' ¡Has iluminado todo el camino!'}
             </Text>
+
+            {ondaFin && (
+              <View style={est.medallaBox}>
+                <MedallaPasto mundoId={mundoId} ganada tamano={84} animarEntrada />
+                <Text style={est.medallaTxt}>¡Medalla ganada: {MEDALLAS_INFO[mundoId].nombre}!</Text>
+              </View>
+            )}
             <Animated.Text style={[est.feliPuntos, { transform: [{ scale: popPuntos.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) }] }]}>
               +20
             </Animated.Text>
             <View style={{ gap: 10, marginTop: 6, alignSelf: 'stretch' }}>
               <BotonGlow
                 texto="🗺️ Ir al mapa"
-                onPress={() => { setMostrarFelicitacion(false); navigation.navigate('Mapa'); }}
+                onPress={() => { cerrarModal(); navigation.navigate('Mapa'); }}
                 variante="primario"
                 tamano="lg"
               />
-              <BotonGlow texto="Seguir aquí" onPress={() => setMostrarFelicitacion(false)} variante="fantasma" tamano="md" />
+              <BotonGlow texto="Seguir aquí" onPress={cerrarModal} variante="fantasma" tamano="md" />
             </View>
           </View>
-          <Confeti activo={mostrarFelicitacion} cantidad={30} />
+          <Confeti activo={ondaMedio} cantidad={30} />
         </View>
       )}
     </View>
@@ -309,6 +337,9 @@ const est = StyleSheet.create({
     borderWidth: 2, borderColor: colors.doradoNeon,
     shadowColor: colors.doradoNeon, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.6, shadowRadius: 20, elevation: 20,
   },
+  modalBanner:{ alignSelf: 'stretch', height: 140, borderRadius: 16, overflow: 'hidden', marginBottom: 14, borderWidth: 1, borderColor: 'rgba(250,199,117,0.4)' },
+  medallaBox: { alignItems: 'center', marginTop: 10, marginBottom: 4 },
+  medallaTxt: { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold, textAlign: 'center', marginTop: 8 },
   feliTit:    { fontSize: 22, fontFamily: fonts.extra, color: colors.cielo, marginTop: 14 },
   feliSub:    { fontSize: 13, color: colors.turquesaSuave, textAlign: 'center', marginTop: 8, lineHeight: 19 },
   feliPuntos: { fontSize: 56, fontFamily: fonts.extra, color: colors.doradoNeon, marginTop: 8, textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 16 },
