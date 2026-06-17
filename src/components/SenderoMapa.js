@@ -118,13 +118,14 @@ function NodoMundo({ data, pop, onPress, onBloqueado }) {
 }
 
 // ── Sendero completo ──
-export default function SenderoMapa({ mundos, estado, saludo, nombre, onSelect }) {
+export default function SenderoMapa({ mundos, estado, saludo, nombre, onSelect, cabecera }) {
   const scrollRef = useRef(null);
   const prevCompletados = useRef(null);
   const celebAnim = useRef(new Animated.Value(1)).current;
   const [celeb, setCeleb] = useState(null);       // { seg, node } o null
   const [confeti, setConfeti] = useState(false);
   const [aviso, setAviso] = useState(false);
+  const [cabeceraH, setCabeceraH] = useState(0);  // alto medido de la cabecera (palabra del día)
 
   const ROWS = mundos.length;
   const canvasH = HEADER_H + ROWS * ROW + PAD_BOTTOM;
@@ -148,13 +149,14 @@ export default function SenderoMapa({ mundos, estado, saludo, nombre, onSelect }
 
   const activoId = mundos.find(m => nodos[m.id].estado === 'activo')?.id;
 
-  // Auto-scroll para dejar el nodo activo en el tercio inferior
+  // Auto-scroll para dejar el nodo activo en el tercio inferior.
+  // Suma cabeceraH (la palabra del día va sobre el lienzo y lo empuja hacia abajo).
   useEffect(() => {
-    const target = activoId ? nodos[activoId].cy : canvasH;
-    const y = Math.max(0, Math.min(canvasH - H + 120, target - H * 0.6));
+    const target = (activoId ? nodos[activoId].cy : canvasH) + cabeceraH;
+    const y = Math.max(0, Math.min(canvasH + cabeceraH - H + 120, target - H * 0.6));
     const t = setTimeout(() => scrollRef.current?.scrollTo({ y, animated: false }), 0);
     return () => clearTimeout(t);
-  }, []);
+  }, [cabeceraH]);
 
   // Celebración al volver tras completar un mundo
   useEffect(() => {
@@ -199,6 +201,11 @@ export default function SenderoMapa({ mundos, estado, saludo, nombre, onSelect }
   return (
     <View style={{ flex: 1 }}>
       <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false}>
+        {cabecera != null && (
+          <View onLayout={(e) => setCabeceraH(e.nativeEvent.layout.height)}>
+            {cabecera}
+          </View>
+        )}
         <View style={{ height: canvasH }}>
 
           {/* Cabecera */}

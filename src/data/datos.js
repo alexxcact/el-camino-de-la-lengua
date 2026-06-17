@@ -193,6 +193,7 @@ export const logros = [
   { id: "tulpa", nom: "Fuego del Hogar", desc: "Completa Tulpa", emoji: "🔥", cond: (e) => e.mundosCompletados.has(4) },
   { id: "la-bolsa", nom: "Guardián de La Bolsa", desc: "Completa Laguna La Bolsa", emoji: "💧", cond: (e) => e.mundosCompletados.has(5) },
   { id: "quiz-master", nom: "Quiz Master", desc: "Juega 3 partidas de quiz", emoji: "🧠", cond: (e) => e.quizJugados >= 3 },
+  { id: "constante", nom: "Constante", desc: "Completa 7 retos diarios", emoji: "📅", cond: (e) => (e.retosDiariosTotal || 0) >= 7 },
   { id: "50-palabras", nom: "Vocabulario Rico", desc: "50 palabras aprendidas", emoji: "🌟", cond: (e) => e.palabrasVistas.size >= 50 },
   { id: "75-palabras", nom: "Conocedor del Pastoker", desc: "75 palabras aprendidas", emoji: "📚", cond: (e) => e.palabrasVistas.size >= 75 },
   { id: "camino-completo", nom: "El Camino Completo", desc: "Completa los 5 mundos", emoji: "🏆", cond: (e) => e.mundosCompletados.size >= 5 },

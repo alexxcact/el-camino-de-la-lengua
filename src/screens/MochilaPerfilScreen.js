@@ -8,6 +8,14 @@ import { useJuego } from '../context/JuegoContext';
 import HudJugador from '../components/HudJugador';
 import ContadorAnimado from '../components/ContadorAnimado';
 import MedallaPasto, { MEDALLAS_INFO } from '../components/MedallaPasto';
+import { programarNotificacionDiaria, cancelarNotificaciones } from '../utils/notificaciones';
+
+// Formatea una hora 0-23 a "4:00 PM"
+const formatoHora = (h) => {
+  const ampm = h < 12 ? 'AM' : 'PM';
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:00 ${ampm}`;
+};
 
 // ── MOCHILA ───────────────────────────────────────────────────
 export function MochilaScreen({ navigation }) {
@@ -123,10 +131,32 @@ export function MochilaScreen({ navigation }) {
 
 // ── PERFIL ────────────────────────────────────────────────────
 export function PerfilScreen({ navigation }) {
-  const { estado, getNivel, guardarNombre, cambiarSonido } = useJuego();
+  const { estado, getNivel, guardarNombre, cambiarSonido, cambiarNotificaciones, guardarHoraNotificacion } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
   const [editando, setEditando] = useState(false);
   const [nuevoNombre, setNuevoNombre] = useState(nombre);
+
+  const notifOn = estado.notificacionesActivadas === true;
+  const horaNotif = estado.horaNotificacion ?? 16;
+
+  // Activa/desactiva el recordatorio diario. Si el permiso se niega, deja el flag
+  // en false y no insiste (la util ya es silenciosa).
+  const toggleNotif = async (v) => {
+    if (v) {
+      const ok = await programarNotificacionDiaria(horaNotif, nombre);
+      cambiarNotificaciones(ok);
+    } else {
+      cambiarNotificaciones(false);
+      await cancelarNotificaciones();
+    }
+  };
+
+  // Cambia la hora del recordatorio (paso de 1h, envuelve 0-23) y reprograma si está activo.
+  const cambiarHora = async (delta) => {
+    const nueva = (horaNotif + delta + 24) % 24;
+    guardarHoraNotificacion(nueva);
+    if (notifOn) await programarNotificacionDiaria(nueva, nombre);
+  };
 
   const abrirEditor = () => { setNuevoNombre(nombre); setEditando(true); };
   const guardar = () => { guardarNombre(nuevoNombre); setEditando(false); };
@@ -245,6 +275,31 @@ export function PerfilScreen({ navigation }) {
             thumbColor={colors.cielo}
           />
         </View>
+
+        {/* Recordatorio diario de Pishku */}
+        <View style={ps.ajusteRow}>
+          <Text style={ps.ajusteLbl}>🐦 Recordatorio diario</Text>
+          <Switch
+            value={notifOn}
+            onValueChange={toggleNotif}
+            trackColor={{ false: colors.nocheProfundo, true: colors.turquesa }}
+            thumbColor={colors.cielo}
+          />
+        </View>
+        {notifOn && (
+          <View style={ps.horaRow}>
+            <Text style={ps.horaLbl}>Hora del aviso</Text>
+            <View style={ps.horaCtrl}>
+              <TouchableOpacity style={ps.horaBtn} onPress={() => cambiarHora(-1)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                <Text style={ps.horaBtnTxt}>−</Text>
+              </TouchableOpacity>
+              <Text style={ps.horaVal}>{formatoHora(horaNotif)}</Text>
+              <TouchableOpacity style={ps.horaBtn} onPress={() => cambiarHora(1)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                <Text style={ps.horaBtnTxt}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
 
         <Text style={ps.footer}>🌄 Asociación PUMA-MAKI · El Camino de la Lengua</Text>
       </ScrollView>
@@ -412,7 +467,14 @@ const ps = StyleSheet.create({
 
   finalBtn:    { backgroundColor: 'rgba(250,199,117,0.15)', borderRadius: 16, paddingVertical: 14, alignItems: 'center', marginBottom: 12, borderWidth: 1.5, borderColor: colors.doradoNeon },
   finalBtnTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.bold },
-  ajusteRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.nocheCard, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 12, marginTop: 4, marginBottom: 16, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  ajusteRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.nocheCard, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 12, marginTop: 4, marginBottom: 12, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
   ajusteLbl: { color: colors.cielo, fontSize: 14, fontFamily: fonts.semibold },
+
+  horaRow:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.nocheProfundo, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 10, marginBottom: 16, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  horaLbl:  { color: colors.turquesaSuave, fontSize: 13, fontFamily: fonts.medium },
+  horaCtrl: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  horaBtn:  { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.turquesa, alignItems: 'center', justifyContent: 'center' },
+  horaBtnTxt: { color: colors.cielo, fontSize: 22, fontFamily: fonts.extra, marginTop: -2 },
+  horaVal:  { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.bold, minWidth: 84, textAlign: 'center' },
   footer: { textAlign: 'center', fontSize: 11, color: colors.turquesaSuave, fontStyle: 'italic', opacity: 0.6, marginTop: 8 },
 });
