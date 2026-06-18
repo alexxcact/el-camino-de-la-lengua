@@ -33,6 +33,7 @@ const estadoInicial = {
   horaNotificacion: 16,    // hora local (0-23) del recordatorio, default 4:00 PM
   memoriaPerfecta: false,  // ganó alguna vez Memoria sin errores (primitivo)
   diccionarioAbierto: 0,   // veces que abrió el diccionario (para logro Consultor)
+  practicasTotal: 0,       // sesiones de práctica libre completadas (logro Repaso constante)
   // Avatar personalizable (objetos planos: se serializan con JSON.stringify igual
   // que el resto del estado no-Set; se mergean con default para usuarios viejos)
   avatar: { piel: 0, ropa: 0, sombrero: 0, accesorio: 0 },
@@ -216,6 +217,17 @@ export function JuegoProvider({ children }) {
     actualizarEstado(prev => ({ ...prev, diccionarioAbierto: (prev.diccionarioAbierto || 0) + 1 }));
   }, [actualizarEstado]);
 
+  // Completa una sesión de práctica libre: suma el contador y da un bonus simbólico
+  // (+5, inline para no depender de ganarPuntos definido más abajo). NO completa
+  // misiones ni afecta desbloqueos. La racha la mantiene aplicarSesion() al abrir.
+  const completarPractica = useCallback(() => {
+    actualizarEstado(prev => {
+      const puntos = prev.puntos + 5;
+      const nivel = niveles.filter(nv => puntos >= nv.min).length;
+      return { ...prev, practicasTotal: (prev.practicasTotal || 0) + 1, puntos, nivel };
+    });
+  }, [actualizarEstado]);
+
   // ── Avatar ──
 
   // Guarda la selección de avatar (objeto { piel, ropa, sombrero, accesorio }).
@@ -322,6 +334,7 @@ export function JuegoProvider({ children }) {
       getPalabraDelDia, retoDiarioDisponible, completarRetoDiario,
       cambiarNotificaciones, guardarHoraNotificacion, marcarMemoriaPerfecta,
       guardarAvatar, verificarDesbloqueoAvatar, registrarAperturaDiccionario,
+      completarPractica,
     }}>
       {children}
     </JuegoContext.Provider>

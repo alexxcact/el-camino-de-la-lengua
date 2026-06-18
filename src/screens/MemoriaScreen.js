@@ -62,10 +62,16 @@ function Carta({ carta, faceUp, resuelta, onPress }) {
 // MEMORIA ANDINA — memorama palabra ↔ dibujo
 // ══════════════════════════════════════════════════════════
 export default function MemoriaScreen({ route, navigation }) {
-  const { mundoId } = route.params || {};
-  const mundo = mundos.find(m => m.id === mundoId);
-  const { estado, ganarPuntos, completarMision, verificarLogros, marcarMemoriaPerfecta } = useJuego();
+  const { mundoId, palabrasPractica, modoPractica = false } = route.params || {};
+  const mundo = mundoId ? mundos.find(m => m.id === mundoId) : null;
+  const { estado, ganarPuntos, completarMision, verificarLogros, marcarMemoriaPerfecta, completarPractica } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
+
+  const premiar = (n) => ganarPuntos(modoPractica ? Math.max(1, Math.round(n / 2)) : n);
+  const fuente = modoPractica
+    ? (palabrasPractica || [])
+    : palabras.filter(p => mundo.palabrasIds.includes(p.id));
+  const pares = Math.min(PARES, fuente.length); // pares reales del tablero (máx 6)
 
   const [cartas, setCartas] = useState([]);
   const [volteadas, setVolteadas] = useState([]);   // índices boca arriba (máx 2)
@@ -76,7 +82,7 @@ export default function MemoriaScreen({ route, navigation }) {
   const timeoutRef = useRef(null);
 
   useEffect(() => {
-    const pals = shuffle(palabras.filter(p => mundo.palabrasIds.includes(p.id))).slice(0, PARES);
+    const pals = shuffle(fuente).slice(0, pares);
     const baraja = [];
     pals.forEach((p, i) => {
       baraja.push({ key: `p${i}`, grupo: i, tipo: 'past',  contenido: p.p });
@@ -111,8 +117,8 @@ export default function MemoriaScreen({ route, navigation }) {
         setResueltas(r);
         setVolteadas([]);
         setBloqueo(false);
-        ganarPuntos(3);
-        if (r.size === PARES) finalizar();
+        premiar(3);
+        if (r.size === pares) finalizar();
       }, 600);
     } else {
       sonar.error(); vibrar.error();
@@ -124,12 +130,16 @@ export default function MemoriaScreen({ route, navigation }) {
   };
 
   const finalizar = () => {
-    // menos intentos = más bonus (mínimo posible = 6 intentos)
+    // menos intentos = más bonus (mínimo posible = nº de pares)
     const totalIntentos = intentos + 1;
-    const bonus = Math.max(15, 45 - (totalIntentos - PARES) * 5);
-    completarMision(`memoria-${mundoId}`);
-    ganarPuntos(bonus);
-    if (totalIntentos === PARES) marcarMemoriaPerfecta();
+    const bonus = Math.max(15, 45 - (totalIntentos - pares) * 5);
+    if (!modoPractica) {
+      completarMision(`memoria-${mundoId}`);
+      ganarPuntos(bonus);
+      if (totalIntentos === pares) marcarMemoriaPerfecta();
+    } else {
+      completarPractica();
+    }
     verificarLogros();
     sonar.mision(); vibrar.exito();
     setFin(true);
@@ -139,7 +149,7 @@ export default function MemoriaScreen({ route, navigation }) {
 
   // ─── Resultado ───
   if (fin) {
-    const perfecto = intentos === PARES;
+    const perfecto = intentos === pares;
     return (
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
@@ -155,7 +165,7 @@ export default function MemoriaScreen({ route, navigation }) {
             personaje="uma"
             mensaje={`Pas wawa ${nombre}, tu memoria guarda las palabras como la tierra guarda las semillas.`}
           />
-          <BotonGlow texto="← Volver al mundo" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
+          <BotonGlow texto={modoPractica ? '← Volver a practicar' : '← Volver al mundo'} onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
         <Confeti activo cantidad={30} />
       </View>
@@ -168,8 +178,8 @@ export default function MemoriaScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{mundo.emoji} {mundo.titulo}</Text>
-            <Text style={s.headerInfo}>✓ {resueltas.size}/{PARES} · {intentos} intentos</Text>
+            <Text style={s.headerBadge}>{modoPractica ? '🎯 Práctica libre' : `${mundo.emoji} ${mundo.titulo}`}</Text>
+            <Text style={s.headerInfo}>✓ {resueltas.size}/{pares} · {intentos} intentos</Text>
           </View>
           <Text style={s.headerSub}>🧠 Encuentra las parejas: palabra ↔ dibujo</Text>
         </View>

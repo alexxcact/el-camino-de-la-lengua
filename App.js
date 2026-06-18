@@ -27,6 +27,7 @@ import FinalScreen      from './src/screens/FinalScreen';
 import MapaScreen       from './src/screens/MapaScreen';
 import MundoScreen      from './src/screens/MundoScreen';
 import RetoDiarioScreen from './src/screens/RetoDiarioScreen';
+import PracticaScreen   from './src/screens/PracticaScreen';
 import QuizScreen       from './src/screens/QuizScreen';
 import EscuchaScreen    from './src/screens/EscuchaScreen';
 import MemoriaScreen    from './src/screens/MemoriaScreen';
@@ -52,6 +53,7 @@ function MapaStackScreen() {
       <MapaStack.Screen name="Mapa"    component={MapaScreen}    options={{ headerShown: false }} />
       <MapaStack.Screen name="Mundo"   component={MundoScreen}   options={{ title: '📚 Mundo' }} />
       <MapaStack.Screen name="RetoDiario" component={RetoDiarioScreen} options={{ title: '🎯 Reto del día' }} />
+      <MapaStack.Screen name="Practica" component={PracticaScreen} options={{ title: '🔁 Práctica libre' }} />
       <MapaStack.Screen name="Quiz"    component={QuizScreen}    options={{ title: '🧠 Quiz de palabras' }} />
       <MapaStack.Screen name="Parejas" component={ParejasScreen} options={{ title: '🃏 Une las parejas' }} />
       <MapaStack.Screen name="Dictado" component={DictadoScreen} options={{ title: '✍️ Dictado cultural' }} />

@@ -19,12 +19,15 @@ const RONDAS = 5;
 // ESCUCHA Y ELIGE — refuerza lo oral (Pishku acompaña)
 // ══════════════════════════════════════════════════════════
 export default function EscuchaScreen({ route, navigation }) {
-  const { mundoId } = route.params || {};
-  const mundo = mundos.find(m => m.id === mundoId);
-  const { estado, ganarPuntos, completarMision, verificarLogros } = useJuego();
+  const { mundoId, palabrasPractica, modoPractica = false, nPreguntas } = route.params || {};
+  const mundo = mundoId ? mundos.find(m => m.id === mundoId) : null;
+  const { estado, ganarPuntos, completarMision, verificarLogros, completarPractica } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
 
-  const palabrasMundo = palabras.filter(p => mundo.palabrasIds.includes(p.id));
+  const premiar = (n) => ganarPuntos(modoPractica ? Math.max(1, Math.round(n / 2)) : n);
+  const palabrasMundo = modoPractica
+    ? (palabrasPractica || [])
+    : palabras.filter(p => mundo.palabrasIds.includes(p.id));
   const [rondas, setRondas] = useState([]);
   const [idx, setIdx] = useState(0);
   const [seleccion, setSeleccion] = useState(null);
@@ -35,7 +38,7 @@ export default function EscuchaScreen({ route, navigation }) {
   const pulso = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const nuevas = shuffle(palabrasMundo).slice(0, RONDAS).map(p => {
+    const nuevas = shuffle(palabrasMundo).slice(0, nPreguntas || RONDAS).map(p => {
       const otras = shuffle(palabras.filter(x => x.id !== p.id)).slice(0, 3);
       return { palabra: p, opciones: shuffle([p, ...otras]) };
     });
@@ -70,7 +73,7 @@ export default function EscuchaScreen({ route, navigation }) {
     if (seleccion !== null) return;
     setSeleccion(op.id);
     const acerto = op.id === ronda.palabra.id;
-    if (acerto) { setAciertos(a => a + 1); ganarPuntos(8); setFlash(true); sonar.acierto(); vibrar.suave(); }
+    if (acerto) { setAciertos(a => a + 1); premiar(8); setFlash(true); sonar.acierto(); vibrar.suave(); }
     else { sonar.error(); vibrar.error(); }
     timeoutRef.current = setTimeout(() => {
       if (idx + 1 < rondas.length) {
@@ -79,10 +82,15 @@ export default function EscuchaScreen({ route, navigation }) {
       } else {
         const total = aciertos + (acerto ? 1 : 0);
         setFin(true);
-        if (total >= 3) {
-          completarMision(`escucha-${mundoId}`);
-          ganarPuntos(20);
-          sonar.mision(); vibrar.exito();
+        if (!modoPractica) {
+          if (total >= 3) {
+            completarMision(`escucha-${mundoId}`);
+            ganarPuntos(20);
+            sonar.mision(); vibrar.exito();
+          }
+        } else {
+          completarPractica();
+          if (total >= 3) { sonar.mision(); vibrar.exito(); }
         }
         verificarLogros();
       }
@@ -104,7 +112,7 @@ export default function EscuchaScreen({ route, navigation }) {
             <Text style={s.scoreNum}>{aciertos} / {rondas.length}</Text>
             <Text style={s.scoreLbl}>palabras reconocidas</Text>
           </View>
-          <BotonGlow texto="← Volver al mundo" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
+          <BotonGlow texto={modoPractica ? '← Volver a practicar' : '← Volver al mundo'} onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
         {exito && <Confeti activo cantidad={28} />}
       </View>
@@ -119,7 +127,7 @@ export default function EscuchaScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{mundo.emoji} {mundo.titulo}</Text>
+            <Text style={s.headerBadge}>{modoPractica ? '🎯 Práctica libre' : `${mundo.emoji} ${mundo.titulo}`}</Text>
             <Text style={s.aciertosTxt}>{idx + 1}/{rondas.length} · ✓ {aciertos}</Text>
           </View>
           <View style={s.progBar}>

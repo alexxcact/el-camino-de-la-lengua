@@ -13,12 +13,17 @@ import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 
 export default function QuizScreen({ route, navigation }) {
-  const { mundoId } = route.params || {};
-  const mundo = mundos.find(m => m.id === mundoId);
-  const { estado, ganarPuntos, completarMision, sumarQuiz, verificarLogros } = useJuego();
+  const { mundoId, palabrasPractica, modoPractica = false, nPreguntas } = route.params || {};
+  const mundo = mundoId ? mundos.find(m => m.id === mundoId) : null;
+  const { estado, ganarPuntos, completarMision, sumarQuiz, verificarLogros, completarPractica } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
 
-  const palabrasMundo = palabras.filter(p => mundo.palabrasIds.includes(p.id));
+  // En práctica, mitad de puntos por acierto (la historia sigue siendo la vía oficial)
+  const premiar = (n) => ganarPuntos(modoPractica ? Math.max(1, Math.round(n / 2)) : n);
+
+  const palabrasMundo = modoPractica
+    ? (palabrasPractica || [])
+    : palabras.filter(p => mundo.palabrasIds.includes(p.id));
   const [preguntas, setPreguntas] = useState([]);
   const [idx, setIdx] = useState(0);
   const [seleccion, setSeleccion] = useState(null);
@@ -27,7 +32,7 @@ export default function QuizScreen({ route, navigation }) {
   const [flashAcierto, setFlashAcierto] = useState(false);
 
   useEffect(() => {
-    const nuevas = shuffle(palabrasMundo).slice(0, 5).map(p => {
+    const nuevas = shuffle(palabrasMundo).slice(0, nPreguntas || 5).map(p => {
       const otras = shuffle(palabras.filter(x => x.id !== p.id)).slice(0, 3);
       const opciones = shuffle([p, ...otras]);
       return { palabra: p, opciones };
@@ -44,7 +49,7 @@ export default function QuizScreen({ route, navigation }) {
     const acerto = op.id === pregunta.palabra.id;
     if (acerto) {
       setAciertos(a => a + 1);
-      ganarPuntos(10);
+      premiar(10);
       setFlashAcierto(true);
       sonar.acierto(); vibrar.suave();
     } else {
@@ -57,11 +62,16 @@ export default function QuizScreen({ route, navigation }) {
       } else {
         const exito = aciertos + (acerto ? 1 : 0) >= 3;
         setFin(true);
-        sumarQuiz();
-        if (exito) {
-          completarMision(`quiz-${mundoId}`);
-          ganarPuntos(20);
-          sonar.mision(); vibrar.exito();
+        if (!modoPractica) {
+          sumarQuiz();
+          if (exito) {
+            completarMision(`quiz-${mundoId}`);
+            ganarPuntos(20);
+            sonar.mision(); vibrar.exito();
+          }
+        } else {
+          completarPractica();
+          if (exito) { sonar.mision(); vibrar.exito(); }
         }
         verificarLogros();
       }
@@ -97,7 +107,7 @@ export default function QuizScreen({ route, navigation }) {
             </View>
           </View>
 
-          <BotonGlow texto="← Volver al mundo" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
+          <BotonGlow texto={modoPractica ? '← Volver a practicar' : '← Volver al mundo'} onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
         {exito && <Confeti activo cantidad={28} />}
       </View>
@@ -121,7 +131,7 @@ export default function QuizScreen({ route, navigation }) {
         {/* Header compacto */}
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{mundo.emoji} {mundo.titulo}</Text>
+            <Text style={s.headerBadge}>{modoPractica ? '🎯 Práctica libre' : `${mundo.emoji} ${mundo.titulo}`}</Text>
             <Text style={s.aciertosTxt}>✓ {aciertos}</Text>
           </View>
           <View style={s.progBar}>

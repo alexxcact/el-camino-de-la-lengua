@@ -15,10 +15,16 @@ import { vibrar } from '../utils/feedback';
 // PAREJAS — Uma acompaña
 // ══════════════════════════════════════════════════════════
 export function ParejasScreen({ route, navigation }) {
-  const { mundoId } = route.params || {};
-  const mundo = mundos.find(m => m.id === mundoId);
-  const { estado, ganarPuntos, completarMision, sumarParejas, verificarLogros } = useJuego();
+  const { mundoId, palabrasPractica, modoPractica = false } = route.params || {};
+  const mundo = mundoId ? mundos.find(m => m.id === mundoId) : null;
+  const { estado, ganarPuntos, completarMision, sumarParejas, verificarLogros, completarPractica } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
+
+  const premiar = (n) => ganarPuntos(modoPractica ? Math.max(1, Math.round(n / 2)) : n);
+  const fuente = modoPractica
+    ? (palabrasPractica || [])
+    : palabras.filter(p => mundo.palabrasIds.includes(p.id));
+  const totalPares = Math.min(6, fuente.length);
 
   const [tarjetas, setTarjetas] = useState([]);
   const [selec1, setSelec1] = useState(null);
@@ -29,7 +35,7 @@ export function ParejasScreen({ route, navigation }) {
   const [aciertoFlash, setAciertoFlash] = useState([]);
 
   useEffect(() => {
-    const pals = palabras.filter(p => mundo.palabrasIds.includes(p.id)).slice(0, 6);
+    const pals = fuente.slice(0, totalPares);
     const cartas = [];
     pals.forEach((p, i) => {
       cartas.push({ id: `past-${i}`, grupo: i, texto: p.p, tipo: 'pastoker', emoji: p.emoji });
@@ -51,11 +57,15 @@ export function ParejasScreen({ route, navigation }) {
           setSelec1(null);
           setSelec2(null);
           setAciertoFlash([]);
-          ganarPuntos(5);
-          if (nuevas.size === 6) {
-            completarMision(`parejas-${mundoId}`);
-            sumarParejas();
-            ganarPuntos(15);
+          premiar(5);
+          if (nuevas.size === totalPares) {
+            if (!modoPractica) {
+              completarMision(`parejas-${mundoId}`);
+              sumarParejas();
+              ganarPuntos(15);
+            } else {
+              completarPractica();
+            }
             verificarLogros();
             sonar.mision(); vibrar.exito();
           }
@@ -80,7 +90,7 @@ export function ParejasScreen({ route, navigation }) {
     else setSelec2(idx);
   };
 
-  const terminado = resueltas.size === 6;
+  const terminado = totalPares > 0 && resueltas.size === totalPares;
 
   if (terminado) {
     return (
@@ -97,7 +107,7 @@ export function ParejasScreen({ route, navigation }) {
             personaje="uma"
             mensaje={`Pas wawa ${nombre}... has unido las palabras como se unen los hilos en el chumbe. El tejido de la lengua vive en ti.`}
           />
-          <BotonGlow texto="← Volver al mundo" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
+          <BotonGlow texto={modoPractica ? '← Volver a practicar' : '← Volver al mundo'} onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
         <Confeti activo cantidad={28} />
       </View>
@@ -110,8 +120,8 @@ export function ParejasScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{mundo.emoji} {mundo.titulo}</Text>
-            <Text style={s.headerInfo}>✓ {resueltas.size}/6 · {intentos}</Text>
+            <Text style={s.headerBadge}>{modoPractica ? '🎯 Práctica libre' : `${mundo.emoji} ${mundo.titulo}`}</Text>
+            <Text style={s.headerInfo}>✓ {resueltas.size}/{totalPares} · {intentos}</Text>
           </View>
           <Text style={s.headerSub}>🃏 Une las parejas: pastoker ↔ español</Text>
         </View>
@@ -161,13 +171,16 @@ export function ParejasScreen({ route, navigation }) {
 // DICTADO — Taita Rimay acompaña
 // ══════════════════════════════════════════════════════════
 export function DictadoScreen({ route, navigation }) {
-  const { mundoId } = route.params || {};
-  const mundo = mundos.find(m => m.id === mundoId);
-  const { estado, ganarPuntos, completarMision, verificarLogros } = useJuego();
+  const { mundoId, palabrasPractica, modoPractica = false, nPreguntas } = route.params || {};
+  const mundo = mundoId ? mundos.find(m => m.id === mundoId) : null;
+  const { estado, ganarPuntos, completarMision, verificarLogros, completarPractica } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
 
-  const palabrasMundo = palabras.filter(p => mundo.palabrasIds.includes(p.id));
-  const [listaDict] = useState(() => shuffle(palabrasMundo).slice(0, 5));
+  const premiar = (n) => ganarPuntos(modoPractica ? Math.max(1, Math.round(n / 2)) : n);
+  const palabrasMundo = modoPractica
+    ? (palabrasPractica || [])
+    : palabras.filter(p => mundo.palabrasIds.includes(p.id));
+  const [listaDict] = useState(() => shuffle(palabrasMundo).slice(0, nPreguntas || 5));
   const [idx, setIdx] = useState(0);
   const [texto, setTexto] = useState('');
   const [verif, setVerif] = useState(null);
@@ -182,7 +195,7 @@ export function DictadoScreen({ route, navigation }) {
     setVerif(correcto ? 'ok' : 'err');
     if (correcto) {
       setAciertos(a => a + 1);
-      ganarPuntos(8);
+      premiar(8);
       sonar.acierto(); vibrar.suave();
     } else {
       sonar.error(); vibrar.error();
@@ -195,10 +208,15 @@ export function DictadoScreen({ route, navigation }) {
       } else {
         setFin(true);
         const total = aciertos + (correcto ? 1 : 0);
-        if (total >= 3) {
-          completarMision(`dictado-${mundoId}`);
-          ganarPuntos(20);
-          sonar.mision(); vibrar.exito();
+        if (!modoPractica) {
+          if (total >= 3) {
+            completarMision(`dictado-${mundoId}`);
+            ganarPuntos(20);
+            sonar.mision(); vibrar.exito();
+          }
+        } else {
+          completarPractica();
+          if (total >= 3) { sonar.mision(); vibrar.exito(); }
         }
         verificarLogros();
       }
@@ -226,7 +244,7 @@ export function DictadoScreen({ route, navigation }) {
               ? `Las palabras que escribes son piedras del camino, ${nombre}. Cada letra trae de regreso una memoria.`
               : 'No te desanimes, wawa. Cada intento es un paso más en el camino de la lengua.'}
           />
-          <BotonGlow texto="← Volver al mundo" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
+          <BotonGlow texto={modoPractica ? '← Volver a practicar' : '← Volver al mundo'} onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
         {exito && <Confeti activo cantidad={28} />}
       </View>
@@ -242,7 +260,7 @@ export function DictadoScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{mundo.emoji} {mundo.titulo}</Text>
+            <Text style={s.headerBadge}>{modoPractica ? '🎯 Práctica libre' : `${mundo.emoji} ${mundo.titulo}`}</Text>
             <Text style={s.headerInfo}>{idx + 1}/{listaDict.length} · ✓ {aciertos}</Text>
           </View>
           <Text style={s.headerSub}>✍️ Escribe la palabra en pastoker</Text>

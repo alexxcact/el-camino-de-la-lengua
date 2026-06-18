@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
@@ -59,11 +59,17 @@ export default function MapaScreen({ navigation }) {
         nombre={nombre}
         onSelect={(mundoId) => navigation.navigate('Mundo', { mundoId })}
         cabecera={
-          <TarjetaPalabraDia
-            palabra={palabraDia}
-            retoCompletado={!retoDiarioDisponible()}
-            onReto={() => navigation.navigate('RetoDiario')}
-          />
+          <View>
+            <TarjetaPalabraDia
+              palabra={palabraDia}
+              retoCompletado={!retoDiarioDisponible()}
+              onReto={() => navigation.navigate('RetoDiario')}
+            />
+            <TouchableOpacity style={s.practicaBtn} onPress={() => navigation.navigate('Practica')} activeOpacity={0.85}>
+              <Text style={s.practicaTxt}>🔁 Práctica libre</Text>
+              <Text style={s.practicaSub}>Repasa lo aprendido sin avanzar la historia</Text>
+            </TouchableOpacity>
+          </View>
         }
       />
 
@@ -89,4 +95,13 @@ const s = StyleSheet.create({
   },
   toastTxt: { color: colors.doradoNeon, fontSize: 14, fontFamily: fonts.extra },
   toastSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2 },
+
+  practicaBtn: {
+    marginHorizontal: 16, marginTop: 4, marginBottom: 10,
+    paddingVertical: 12, paddingHorizontal: 16, borderRadius: 16,
+    backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: colors.turquesa,
+    alignItems: 'center',
+  },
+  practicaTxt: { color: colors.turquesaClaro, fontSize: 15, fontFamily: fonts.extra },
+  practicaSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2 },
 });
