@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
-import { mundos } from '../data/datos';
+import { mundos, CINEMATICAS } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import HudJugador from '../components/HudJugador';
 import SenderoMapa from '../components/SenderoMapa';
@@ -38,6 +38,17 @@ export default function MapaScreen({ navigation }) {
     setPalabraDia(getPalabraDelDia());
   }, [estado.palabraDiaFecha, estado.palabrasVistas]);
 
+  // Entra a un mundo: la PRIMERA vez muestra su cinemática de entrada; luego, directo.
+  // (El auto-completar y el paso de mundoId quedan igual: solo se interpone la cinemática.)
+  const irAlMundo = (mundoId) => {
+    const clave = `mundo${mundoId}`;
+    if (CINEMATICAS[clave] && !(estado.cinematicasVistas || []).includes(clave)) {
+      navigation.navigate('Cinematica', { clave, mundoId });
+    } else {
+      navigation.navigate('Mundo', { mundoId });
+    }
+  };
+
   // Cinemática final al completar los 5 mundos (una sola vez)
   useEffect(() => {
     if (estado.mundosCompletados.size === 5 && !estado.finalVisto) {
@@ -57,7 +68,7 @@ export default function MapaScreen({ navigation }) {
         estado={estado}
         saludo={saludo}
         nombre={nombre}
-        onSelect={(mundoId) => navigation.navigate('Mundo', { mundoId })}
+        onSelect={irAlMundo}
         cabecera={
           <View>
             <TarjetaPalabraDia

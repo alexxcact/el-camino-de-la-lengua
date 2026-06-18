@@ -37,6 +37,7 @@ const estadoInicial = {
   mejorRacha: 0,           // mejor racha histórica de días seguidos
   diasActivos: [],         // ['YYYY-MM-DD'] con actividad, recortado a MAX_DIAS (calendario)
   duelosJugados: 0,        // partidas de Duelo de 2 jugadas (solo para el logro; el duelo es efímero)
+  cinematicasVistas: [],   // ['mundo1', ...] cinemáticas ya vistas (array, merge a default [])
   // Avatar personalizable (objetos planos: se serializan con JSON.stringify igual
   // que el resto del estado no-Set; se mergean con default para usuarios viejos)
   avatar: { piel: 0, ropa: 0, sombrero: 0, accesorio: 0 },
@@ -112,6 +113,7 @@ export function JuegoProvider({ children }) {
           misionesCompletadas: new Set(parsed.misionesCompletadas || []),
           logrosDesbloqueados: new Set(parsed.logrosDesbloqueados || []),
           diasActivos: Array.isArray(parsed.diasActivos) ? parsed.diasActivos : [],
+          cinematicasVistas: Array.isArray(parsed.cinematicasVistas) ? parsed.cinematicasVistas : [],
           // merge profundo del avatar (objetos planos) para usuarios sin estos campos
           avatar: { ...estadoInicial.avatar, ...(parsed.avatar || {}) },
           avatarDesbloqueados: {
@@ -247,6 +249,15 @@ export function JuegoProvider({ children }) {
     actualizarEstado(prev => ({ ...prev, duelosJugados: (prev.duelosJugados || 0) + 1 }));
   }, [actualizarEstado]);
 
+  // Marca una cinemática como vista (idempotente). No toca progreso ni Sets.
+  const marcarCinematicaVista = useCallback((clave) => {
+    actualizarEstado(prev => {
+      const vistas = prev.cinematicasVistas || [];
+      if (vistas.includes(clave)) return prev;
+      return { ...prev, cinematicasVistas: [...vistas, clave] };
+    });
+  }, [actualizarEstado]);
+
   // ── Avatar ──
 
   // Guarda la selección de avatar (objeto { piel, ropa, sombrero, accesorio }).
@@ -356,7 +367,7 @@ export function JuegoProvider({ children }) {
       getPalabraDelDia, retoDiarioDisponible, completarRetoDiario,
       cambiarNotificaciones, guardarHoraNotificacion, marcarMemoriaPerfecta,
       guardarAvatar, verificarDesbloqueoAvatar, registrarAperturaDiccionario,
-      completarPractica, registrarDuelo,
+      completarPractica, registrarDuelo, marcarCinematicaVista,
     }}>
       {children}
     </JuegoContext.Provider>

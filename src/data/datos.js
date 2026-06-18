@@ -261,3 +261,77 @@ export function atuendosDesbloqueados(estado, cat) {
 export const TOTAL_ATUENDOS = CATS_AVATAR.reduce((n, c) => n + AVATAR_OPCIONES[c].length, 0);
 
 export const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
+
+// ─────────────────────────────────────────────────────────────
+// CINEMATICAS NARRATIVAS entre mundos
+// Se muestran la PRIMERA vez que se entra a cada mundo (luego, directo).
+// Cada escena: { personaje, fondo, texto, resaltar }.
+//  · personaje: clave de assets/images/personajes/ (taita_rimay | uma | pishku | kinti | chutun)
+//  · fondo: número de mundo (usa su escenario en color) o 'aurora' (gradiente)
+//  · texto: narrativo en español. Las palabras de `resaltar` se pintan en dorado.
+//  · resaltar: palabras pastoker reales (ya presentes en este archivo) a destacar.
+//
+// CONTENIDO NARRATIVO — pendiente de revisión cultural por la comunidad.
+// Los textos son un borrador respetuoso (NO contenido lingüístico nuevo): solo
+// narran el viaje de Kinti usando palabras pastoker que YA existen en `palabras`.
+// La comunidad del Pueblo Pasto valida y ajusta este guion.
+// ─────────────────────────────────────────────────────────────
+export const CINEMATICAS = {
+  mundo1: {
+    titulo: 'Warmi Urku · La Montaña Madre',
+    escenas: [
+      { personaje: 'taita_rimay', fondo: 1, resaltar: ['Warmi Urku'],
+        texto: 'Kinti, has llegado al Warmi Urku, la montaña madre. Aquí nace el agua y duerme el viento... pero el páramo ha perdido su voz.' },
+      { personaje: 'uma', fondo: 1, resaltar: ['Yal', 'Izhi'],
+        texto: 'Cada nombre que recuerdes devolverá un color a estos cerros. Empieza por lo que te rodea: el Yal que calienta y el Izhi que da vida.' },
+      { personaje: 'pishku', fondo: 1, resaltar: [],
+        texto: '¡Pío! Yo cantaré contigo cada palabra. Escucha el viento, Kinti... el páramo quiere recordar su lengua.' },
+    ],
+  },
+  mundo2: {
+    titulo: 'Chakra · Jardín de la Vida',
+    escenas: [
+      { personaje: 'taita_rimay', fondo: 2, resaltar: ['Chakra'],
+        texto: 'Esta es la Chakra, el jardín de la vida. Aquí la familia siembra y la tierra responde con alimento.' },
+      { personaje: 'uma', fondo: 2, resaltar: ['Minka', 'Piar'],
+        texto: 'En la Minka nadie trabaja solo. Aprende el nombre del Piar, el maíz sagrado, y verás reverdecer la chagra.' },
+      { personaje: 'pishku', fondo: 2, resaltar: [],
+        texto: '¡Cada semilla es una palabra; cada palabra, una cosecha! ¡Sigamos, Kinti!' },
+    ],
+  },
+  mundo3: {
+    titulo: 'Tiyanaku · Lugar del Encuentro',
+    escenas: [
+      { personaje: 'taita_rimay', fondo: 3, resaltar: ['Tiyanaku'],
+        texto: 'Llegas a Tiyanaku, el lugar del encuentro, donde los pueblos se saludan e intercambian.' },
+      { personaje: 'uma', fondo: 3, resaltar: ['Allinllu', 'Yupaychay'],
+        texto: 'Para entenderte con la gente, saluda con Allinllu y agradece con Yupaychay.' },
+      { personaje: 'pishku', fondo: 3, resaltar: [],
+        texto: '¡Aquí todo suena: números, colores, saludos! Escucha bien y el mercado tendrá voz otra vez.' },
+    ],
+  },
+  mundo4: {
+    titulo: 'Tulpa · Fuego Sagrado',
+    escenas: [
+      { personaje: 'taita_rimay', fondo: 4, resaltar: ['Tulpa'],
+        texto: 'Has llegado a la Tulpa, el fogón sagrado. Alrededor de su fuego, la familia se vuelve una sola.' },
+      { personaje: 'uma', fondo: 4, resaltar: ['Hawi', 'Uma'],
+        texto: 'Aquí se canta el Hawi y se cuentan historias. Aprende las palabras del corazón: la Uma, el Taita, la Wawa.' },
+      { personaje: 'kinti', fondo: 4, resaltar: [],
+        texto: 'Siento el calor del fuego... y entiendo: la lengua también se aprende escuchando a los mayores.' },
+    ],
+  },
+  mundo5: {
+    titulo: 'Fuentes de Vida · El Espejo del Tiempo',
+    escenas: [
+      { personaje: 'taita_rimay', fondo: 5, resaltar: ['Tuta', 'Pued'],
+        texto: 'Este es el último camino: las Fuentes de Vida, el espejo del tiempo. Aquí descansan el Tuta y el Pued.' },
+      { personaje: 'uma', fondo: 5, resaltar: [],
+        texto: 'Solo quien ha recuperado las palabras puede restaurarlos. La espiral y el círculo esperan tu voz.' },
+      { personaje: 'pishku', fondo: 5, resaltar: [],
+        texto: '¡Has volado lejos, Kinti! Una palabra más y el territorio entero volverá a cantar.' },
+      { personaje: 'taita_rimay', fondo: 'aurora', resaltar: [],
+        texto: 'Pronuncia lo aprendido y devuelve la vida. El Pueblo Pasto te lo agradecerá por siempre.' },
+    ],
+  },
+};

@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Animated } from '
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
-import { palabras, mundos } from '../data/datos';
+import { palabras, mundos, CINEMATICAS } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import { imgMundoColor, imgMundoGris } from '../data/imagenes';
 import BotonGlow from '../components/BotonGlow';
@@ -154,6 +154,16 @@ export default function MundoScreen({ route, navigation }) {
             </View>
           </View>
         </View>
+
+        {CINEMATICAS[`mundo${mundoId}`] && (
+          <TouchableOpacity
+            style={est.historiaBtn}
+            onPress={() => navigation.navigate('Cinematica', { clave: `mundo${mundoId}`, mundoId, rever: true })}
+            activeOpacity={0.85}
+          >
+            <Text style={est.historiaTxt}>▶️ Ver historia de nuevo</Text>
+          </TouchableOpacity>
+        )}
 
         <Text style={est.seccion}>📚 LECCIÓN</Text>
         <TouchableOpacity style={est.card} onPress={() => setVistaActiva('leccion')} activeOpacity={0.85}>
@@ -309,6 +319,9 @@ const est = StyleSheet.create({
   miniDotOn:    { backgroundColor: colors.doradoNeon },
 
   seccion: { fontSize: 12, fontFamily: fonts.bold, color: colors.turquesaSuave, letterSpacing: 2, marginTop: 6, marginBottom: 10, marginLeft: 4 },
+
+  historiaBtn: { alignSelf: 'flex-start', backgroundColor: 'rgba(250,199,117,0.12)', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 10, marginBottom: 14, borderWidth: 1.5, borderColor: colors.doradoNeon },
+  historiaTxt: { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold },
 
   card: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
