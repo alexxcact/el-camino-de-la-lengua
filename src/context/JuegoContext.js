@@ -32,6 +32,7 @@ const estadoInicial = {
   notificacionesActivadas: false, // recordatorio diario de Pishku
   horaNotificacion: 16,    // hora local (0-23) del recordatorio, default 4:00 PM
   memoriaPerfecta: false,  // ganó alguna vez Memoria sin errores (primitivo)
+  diccionarioAbierto: 0,   // veces que abrió el diccionario (para logro Consultor)
   // Avatar personalizable (objetos planos: se serializan con JSON.stringify igual
   // que el resto del estado no-Set; se mergean con default para usuarios viejos)
   avatar: { piel: 0, ropa: 0, sombrero: 0, accesorio: 0 },
@@ -211,6 +212,10 @@ export function JuegoProvider({ children }) {
     actualizarEstado(prev => prev.memoriaPerfecta ? prev : { ...prev, memoriaPerfecta: true });
   }, [actualizarEstado]);
 
+  const registrarAperturaDiccionario = useCallback(() => {
+    actualizarEstado(prev => ({ ...prev, diccionarioAbierto: (prev.diccionarioAbierto || 0) + 1 }));
+  }, [actualizarEstado]);
+
   // ── Avatar ──
 
   // Guarda la selección de avatar (objeto { piel, ropa, sombrero, accesorio }).
@@ -316,7 +321,7 @@ export function JuegoProvider({ children }) {
       verificarLogros, getNivel, guardarNombre, cambiarSonido, marcarFinalVisto,
       getPalabraDelDia, retoDiarioDisponible, completarRetoDiario,
       cambiarNotificaciones, guardarHoraNotificacion, marcarMemoriaPerfecta,
-      guardarAvatar, verificarDesbloqueoAvatar,
+      guardarAvatar, verificarDesbloqueoAvatar, registrarAperturaDiccionario,
     }}>
       {children}
     </JuegoContext.Provider>

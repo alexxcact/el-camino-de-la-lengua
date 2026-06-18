@@ -110,7 +110,12 @@ export function MochilaScreen({ navigation }) {
         ))}
       </ScrollView>
 
-      <Text style={ss.count}>{filtradas.length} palabras · {aprendidas.length}/{palabras.length} encendidas</Text>
+      <View style={ss.countRow}>
+        <Text style={ss.count}>{filtradas.length} palabras · {aprendidas.length}/{palabras.length} encendidas</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('DiccionarioTab')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <Text style={ss.dicLink}>📚 Diccionario →</Text>
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         data={filtradas}
@@ -384,7 +389,9 @@ const ss = StyleSheet.create({
   catOn:  { backgroundColor: colors.turquesa, borderColor: colors.turquesa },
   catTxt: { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.semibold },
 
-  count: { fontSize: 11, color: colors.turquesaSuave, paddingHorizontal: 16, marginVertical: 8, fontFamily: fonts.medium },
+  countRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, marginVertical: 8 },
+  count: { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.medium },
+  dicLink: { fontSize: 12, color: colors.doradoNeon, fontFamily: fonts.bold },
 
   wordRow: {
     backgroundColor: colors.nocheCard,

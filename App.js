@@ -31,6 +31,7 @@ import QuizScreen       from './src/screens/QuizScreen';
 import EscuchaScreen    from './src/screens/EscuchaScreen';
 import MemoriaScreen    from './src/screens/MemoriaScreen';
 import PersonajesScreen from './src/screens/PersonajesScreen';
+import DiccionarioScreen from './src/screens/DiccionarioScreen';
 import AvatarScreen     from './src/screens/AvatarScreen';
 import { ParejasScreen, DictadoScreen } from './src/screens/MisionesScreen';
 import { MochilaScreen, PerfilScreen }  from './src/screens/MochilaPerfilScreen';
@@ -78,6 +79,15 @@ function MochilaStackScreen() {
   );
 }
 
+function DiccionarioStackScreen() {
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator screenOptions={hdrOpts}>
+      <Stack.Screen name="DiccionarioMain" component={DiccionarioScreen} options={{ title: '📚 Diccionario Pastoker' }} />
+    </Stack.Navigator>
+  );
+}
+
 function PerfilStackScreen() {
   const Stack = createStackNavigator();
   return (
@@ -111,6 +121,8 @@ function MainTabs() {
         options={{ title: 'Héroes',     tabBarIcon: ({ focused }) => <TabIcon emoji="🌿" focused={focused} /> }} />
       <Tab.Screen name="MochilaTab"    component={MochilaStackScreen}
         options={{ title: 'Mochila',    tabBarIcon: ({ focused }) => <TabIcon emoji="📖" focused={focused} /> }} />
+      <Tab.Screen name="DiccionarioTab" component={DiccionarioStackScreen}
+        options={{ title: 'Diccionario', tabBarIcon: ({ focused }) => <TabIcon emoji="📚" focused={focused} /> }} />
       <Tab.Screen name="PerfilTab"     component={PerfilStackScreen}
         options={{ title: 'Progreso',   tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} /> }} />
     </Tab.Navigator>

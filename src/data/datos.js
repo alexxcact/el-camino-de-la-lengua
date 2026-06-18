@@ -198,6 +198,7 @@ export const logros = [
   { id: "buena-memoria", nom: "Buena memoria", desc: "Gana Memoria sin errores", emoji: "🧩", cond: (e) => e.memoriaPerfecta === true },
   { id: "estilo-propio", nom: "Estilo propio", desc: "Personaliza tu avatar", emoji: "🎨", cond: (e) => e.avatarPersonalizado === true },
   { id: "guardian-elegante", nom: "Guardián elegante", desc: "Desbloquea todos los atuendos", emoji: "👑", cond: (e) => CATS_AVATAR.reduce((n, c) => n + atuendosDesbloqueados(e, c).length, 0) >= TOTAL_ATUENDOS },
+  { id: "consultor", nom: "Consultor", desc: "Abre el diccionario 10 veces", emoji: "📚", cond: (e) => (e.diccionarioAbierto || 0) >= 10 },
   { id: "50-palabras", nom: "Vocabulario Rico", desc: "50 palabras aprendidas", emoji: "🌟", cond: (e) => e.palabrasVistas.size >= 50 },
   { id: "75-palabras", nom: "Conocedor del Pastoker", desc: "75 palabras aprendidas", emoji: "📚", cond: (e) => e.palabrasVistas.size >= 75 },
   { id: "camino-completo", nom: "El Camino Completo", desc: "Completa los 5 mundos", emoji: "🏆", cond: (e) => e.mundosCompletados.size >= 5 },
