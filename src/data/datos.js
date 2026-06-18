@@ -196,6 +196,8 @@ export const logros = [
   { id: "constante", nom: "Constante", desc: "Completa 7 retos diarios", emoji: "📅", cond: (e) => (e.retosDiariosTotal || 0) >= 7 },
   { id: "oido-fino", nom: "Oído fino", desc: "Completa 5 retos de Escucha", emoji: "👂", cond: (e) => [...e.misionesCompletadas].filter(id => String(id).startsWith('escucha-')).length >= 5 },
   { id: "buena-memoria", nom: "Buena memoria", desc: "Gana Memoria sin errores", emoji: "🧩", cond: (e) => e.memoriaPerfecta === true },
+  { id: "estilo-propio", nom: "Estilo propio", desc: "Personaliza tu avatar", emoji: "🎨", cond: (e) => e.avatarPersonalizado === true },
+  { id: "guardian-elegante", nom: "Guardián elegante", desc: "Desbloquea todos los atuendos", emoji: "👑", cond: (e) => CATS_AVATAR.reduce((n, c) => n + atuendosDesbloqueados(e, c).length, 0) >= TOTAL_ATUENDOS },
   { id: "50-palabras", nom: "Vocabulario Rico", desc: "50 palabras aprendidas", emoji: "🌟", cond: (e) => e.palabrasVistas.size >= 50 },
   { id: "75-palabras", nom: "Conocedor del Pastoker", desc: "75 palabras aprendidas", emoji: "📚", cond: (e) => e.palabrasVistas.size >= 75 },
   { id: "camino-completo", nom: "El Camino Completo", desc: "Completa los 5 mundos", emoji: "🏆", cond: (e) => e.mundosCompletados.size >= 5 },
@@ -207,5 +209,51 @@ export const categorias = ["Todas", ...new Set(palabras.map(p => p.cat))];
 // Tipos de misión por mundo (orden de aparición). Cada mundo se completa al
 // terminar las 5. Derivar SIEMPRE de aquí: no escribir el número fijo en otro lado.
 export const TIPOS_MISION = ['quiz', 'parejas', 'dictado', 'escucha', 'memoria'];
+
+// ─────────────────────────────────────────────────────────────
+// AVATAR PERSONALIZABLE (cosmético, no afecta el juego)
+// Construido por capas SVG planas. La piel siempre está disponible;
+// ropa/sombrero/accesorio se desbloquean con el progreso (idx 0 = inicial).
+// `cond(estado)` decide si una opción ya se ganó. Sin cond ⇒ siempre disponible.
+// ─────────────────────────────────────────────────────────────
+export const AVATAR_OPCIONES = {
+  piel: [
+    { nombre: 'Tono claro',  color: '#E8B894' },
+    { nombre: 'Tono medio',  color: '#C68642' },
+    { nombre: 'Tono cálido', color: '#8D5524' },
+  ],
+  ropa: [
+    { nombre: 'Ruana sencilla',    color: '#B86B2E', patron: 'franjas', pista: 'Atuendo inicial' },
+    { nombre: 'Ruana del páramo',  color: '#2D5A16', patron: 'rombos',  pista: 'Completa el Mundo 1', cond: (e) => e.mundosCompletados.has(1) },
+    { nombre: 'Ruana del mercado', color: '#1A3A5C', patron: 'franjas', pista: 'Completa el Mundo 3', cond: (e) => e.mundosCompletados.has(3) },
+    { nombre: 'Ruana del fogón',   color: '#7A1515', patron: 'rombos',  pista: 'Completa el Mundo 4', cond: (e) => e.mundosCompletados.has(4) },
+    { nombre: 'Ruana dorada',      color: '#C49010', patron: 'rombos',  pista: 'Completa los 5 mundos', cond: (e) => e.mundosCompletados.size >= 5 },
+  ],
+  sombrero: [
+    { nombre: 'Sin sombrero',     pista: 'Atuendo inicial' },
+    { nombre: 'Sombrero de lana', pista: 'Aprende 10 palabras', cond: (e) => e.palabrasVistas.size >= 10 },
+    { nombre: 'Con pluma',        pista: 'Completa el Mundo 2',  cond: (e) => e.mundosCompletados.has(2) },
+    { nombre: 'Capucha de ruana', pista: 'Aprende 40 palabras',  cond: (e) => e.palabrasVistas.size >= 40 },
+  ],
+  accesorio: [
+    { nombre: 'Ninguno',          pista: 'Atuendo inicial' },
+    { nombre: 'Pishku al hombro', pista: 'Racha de 7 días',     cond: (e) => (e.racha || 0) >= 7 },
+    { nombre: 'Chumbe tejido',    pista: 'Completa el Mundo 4', cond: (e) => e.mundosCompletados.has(4) },
+    { nombre: 'Mochila de coca',  pista: 'Aprende 30 palabras', cond: (e) => e.palabrasVistas.size >= 30 },
+  ],
+};
+
+// Categorías con desbloqueo (la piel queda fuera: siempre disponible)
+export const CATS_AVATAR = ['ropa', 'sombrero', 'accesorio'];
+
+// Índices desbloqueados de una categoría según el estado (idx 0 siempre incluido)
+export function atuendosDesbloqueados(estado, cat) {
+  return AVATAR_OPCIONES[cat]
+    .map((o, i) => (i === 0 || (o.cond ? o.cond(estado) : true)) ? i : -1)
+    .filter(i => i >= 0);
+}
+
+// Total de atuendos desbloqueables (para el logro "Guardián elegante")
+export const TOTAL_ATUENDOS = CATS_AVATAR.reduce((n, c) => n + AVATAR_OPCIONES[c].length, 0);
 
 export const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { logros, palabras } from '../data/datos';
+import { logros, palabras, CATS_AVATAR, atuendosDesbloqueados } from '../data/datos';
 import { setSonido } from '../utils/ajustes';
 
 const JuegoContext = createContext(null);
@@ -32,6 +32,11 @@ const estadoInicial = {
   notificacionesActivadas: false, // recordatorio diario de Pishku
   horaNotificacion: 16,    // hora local (0-23) del recordatorio, default 4:00 PM
   memoriaPerfecta: false,  // ganó alguna vez Memoria sin errores (primitivo)
+  // Avatar personalizable (objetos planos: se serializan con JSON.stringify igual
+  // que el resto del estado no-Set; se mergean con default para usuarios viejos)
+  avatar: { piel: 0, ropa: 0, sombrero: 0, accesorio: 0 },
+  avatarDesbloqueados: { ropa: [0], sombrero: [0], accesorio: [0] },
+  avatarPersonalizado: false, // si ya guardó el avatar al menos una vez
 };
 
 const niveles = [
@@ -76,6 +81,7 @@ export function JuegoProvider({ children }) {
   const [estado, setEstado] = useState(estadoInicial);
   const [cargado, setCargado] = useState(false);
   const [toastLogro, setToastLogro] = useState(null);
+  const [toastAtuendo, setToastAtuendo] = useState(null); // { nombre } del atuendo recién desbloqueado
 
   useEffect(() => { cargarEstado(); }, []);
 
@@ -92,6 +98,13 @@ export function JuegoProvider({ children }) {
           mundosCompletados: new Set(parsed.mundosCompletados || []),
           misionesCompletadas: new Set(parsed.misionesCompletadas || []),
           logrosDesbloqueados: new Set(parsed.logrosDesbloqueados || []),
+          // merge profundo del avatar (objetos planos) para usuarios sin estos campos
+          avatar: { ...estadoInicial.avatar, ...(parsed.avatar || {}) },
+          avatarDesbloqueados: {
+            ropa:      parsed.avatarDesbloqueados?.ropa      || estadoInicial.avatarDesbloqueados.ropa,
+            sombrero:  parsed.avatarDesbloqueados?.sombrero  || estadoInicial.avatarDesbloqueados.sombrero,
+            accesorio: parsed.avatarDesbloqueados?.accesorio || estadoInicial.avatarDesbloqueados.accesorio,
+          },
         };
       }
     } catch (e) { console.log('Error cargando estado:', e); }
@@ -101,6 +114,8 @@ export function JuegoProvider({ children }) {
     setEstado(conSesion);
     guardarEstado(conSesion);
     setCargado(true);
+    // Backfill silencioso de atuendos ya ganados por el progreso previo (sin toast)
+    verificarDesbloqueoAvatar(true);
   };
 
   const guardarEstado = useCallback(async (nuevoEstado) => {
@@ -172,14 +187,16 @@ export function JuegoProvider({ children }) {
   const completarRetoDiario = useCallback(() => {
     actualizarEstado(prev => {
       if (prev.retoDiarioFecha === fechaHoy()) return prev;
+      const puntos = prev.puntos + 25;
+      const nivel = niveles.filter(nv => puntos >= nv.min).length;
       return {
         ...prev,
         retoDiarioFecha: fechaHoy(),
         retosDiariosTotal: (prev.retosDiariosTotal || 0) + 1,
+        puntos, nivel,
       };
     });
-    ganarPuntos(25);
-  }, [actualizarEstado, ganarPuntos]);
+  }, [actualizarEstado]);
 
   const cambiarNotificaciones = useCallback((v) => {
     actualizarEstado(prev => ({ ...prev, notificacionesActivadas: !!v }));
@@ -192,6 +209,39 @@ export function JuegoProvider({ children }) {
 
   const marcarMemoriaPerfecta = useCallback(() => {
     actualizarEstado(prev => prev.memoriaPerfecta ? prev : { ...prev, memoriaPerfecta: true });
+  }, [actualizarEstado]);
+
+  // ── Avatar ──
+
+  // Guarda la selección de avatar (objeto { piel, ropa, sombrero, accesorio }).
+  // Marca avatarPersonalizado la primera vez y revisa logros (Estilo propio).
+  const guardarAvatar = useCallback((nuevo) => {
+    actualizarEstado(prev => ({
+      ...prev,
+      avatar: { ...prev.avatar, ...nuevo },
+      avatarPersonalizado: true,
+    }));
+    // La revisión de logros (Estilo propio) la dispara la pantalla tras guardar.
+  }, [actualizarEstado]);
+
+  // Sincroniza avatarDesbloqueados con el progreso actual. Si hay atuendos nuevos,
+  // los marca y (si no es silencioso) muestra un toast con el primero.
+  const verificarDesbloqueoAvatar = useCallback((silent = false) => {
+    actualizarEstado(prev => {
+      let cambio = false;
+      let primerNuevo = null;
+      const desbloq = { ...prev.avatarDesbloqueados };
+      CATS_AVATAR.forEach(cat => {
+        const actuales = new Set(prev.avatarDesbloqueados[cat] || [0]);
+        atuendosDesbloqueados(prev, cat).forEach(idx => {
+          if (!actuales.has(idx)) { actuales.add(idx); cambio = true; if (primerNuevo === null) primerNuevo = cat; }
+        });
+        desbloq[cat] = [...actuales].sort((a, b) => a - b);
+      });
+      if (!cambio) return prev;
+      if (!silent && primerNuevo) setToastAtuendo({ cat: primerNuevo });
+      return { ...prev, avatarDesbloqueados: desbloq };
+    });
   }, [actualizarEstado]);
 
   const ganarPuntos = useCallback((n) => {
@@ -260,12 +310,13 @@ export function JuegoProvider({ children }) {
 
   return (
     <JuegoContext.Provider value={{
-      estado, cargado, toastLogro, setToastLogro,
+      estado, cargado, toastLogro, setToastLogro, toastAtuendo, setToastAtuendo,
       ganarPuntos, marcarPalabraVista, completarMundo,
       completarMision, sumarQuiz, sumarParejas,
       verificarLogros, getNivel, guardarNombre, cambiarSonido, marcarFinalVisto,
       getPalabraDelDia, retoDiarioDisponible, completarRetoDiario,
       cambiarNotificaciones, guardarHoraNotificacion, marcarMemoriaPerfecta,
+      guardarAvatar, verificarDesbloqueoAvatar,
     }}>
       {children}
     </JuegoContext.Provider>

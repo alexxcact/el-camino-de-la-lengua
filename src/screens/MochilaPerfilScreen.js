@@ -8,6 +8,7 @@ import { useJuego } from '../context/JuegoContext';
 import HudJugador from '../components/HudJugador';
 import ContadorAnimado from '../components/ContadorAnimado';
 import MedallaPasto, { MEDALLAS_INFO } from '../components/MedallaPasto';
+import AvatarSVG from '../components/AvatarSVG';
 import { programarNotificacionDiaria, cancelarNotificaciones } from '../utils/notificaciones';
 
 // Formatea una hora 0-23 a "4:00 PM"
@@ -181,6 +182,14 @@ export function PerfilScreen({ navigation }) {
       <HudJugador expandido />
 
       <ScrollView contentContainerStyle={ps.content} showsVerticalScrollIndicator={false}>
+
+        {/* Avatar grande + acceso a personalizar */}
+        <View style={ps.avatarHeader}>
+          <AvatarSVG avatar={estado.avatar} tamano={110} conFondo />
+          <TouchableOpacity style={ps.personalizarBtn} onPress={() => navigation.navigate('Avatar')} activeOpacity={0.85}>
+            <Text style={ps.personalizarTxt}>🎨 Personalizar avatar</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={ps.nameRow}>
           <Text style={ps.nombreGrande}>{nombre}</Text>
@@ -413,6 +422,10 @@ const ss = StyleSheet.create({
 const ps = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.noche },
   content:   { padding: 16, paddingBottom: 30 },
+
+  avatarHeader:    { alignItems: 'center', marginTop: 8, marginBottom: 6 },
+  personalizarBtn: { marginTop: 10, backgroundColor: 'rgba(250,199,117,0.14)', borderRadius: 14, paddingHorizontal: 18, paddingVertical: 10, borderWidth: 1.5, borderColor: colors.doradoNeon },
+  personalizarTxt: { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold },
 
   nameRow:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 10 },
   nombreGrande:{ fontSize: 26, fontFamily: fonts.extra, color: colors.cielo },

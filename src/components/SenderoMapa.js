@@ -1,11 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Animated, Dimensions, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, ScrollView } from 'react-native';
 import Svg, { Path, Circle, G } from 'react-native-svg';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { TIPOS_MISION } from '../data/datos';
 import Confeti from './Confeti';
 import MedallaPasto from './MedallaPasto';
+import AvatarSVG from './AvatarSVG';
 import { sonar } from '../utils/sonidos';
 
 const { width: W, height: H } = Dimensions.get('window');
@@ -28,7 +29,7 @@ const curva = (a, b) => {
 const lerp = (a, b, t) => ({ x: a.cx + (b.cx - a.cx) * t, y: a.cy + (b.cy - a.cy) * t });
 
 // ── Nodo individual ──
-function NodoMundo({ data, pop, onPress, onBloqueado }) {
+function NodoMundo({ data, pop, onPress, onBloqueado, avatar }) {
   const { mundo, estado, misionesDone } = data;
   const glow  = useRef(new Animated.Value(0)).current;
   const shake = useRef(new Animated.Value(0)).current;
@@ -73,9 +74,11 @@ function NodoMundo({ data, pop, onPress, onBloqueado }) {
 
   return (
     <View style={[s.nodoWrap, { left: data.cx - NODE / 2, top: data.cy - NODE / 2 }]}>
-      {/* Kinti parado sobre el nodo activo */}
+      {/* El jugador (su avatar) parado sobre el nodo activo */}
       {activo && (
-        <Image source={require('../../assets/images/personajes/kinti.jpg')} style={s.kintiParado} />
+        <View style={s.jugadorParado}>
+          <AvatarSVG avatar={avatar} tamano={36} conFondo />
+        </View>
       )}
 
       <TouchableOpacity activeOpacity={bloqueado ? 1 : 0.85} onPress={handlePress} style={s.nodoTouch}>
@@ -249,6 +252,7 @@ export default function SenderoMapa({ mundos, estado, saludo, nombre, onSelect, 
               pop={celeb && celeb.node === m.id ? popScale : undefined}
               onPress={() => onSelect(m.id)}
               onBloqueado={mostrarAviso}
+              avatar={estado.avatar}
             />
           ))}
         </View>
@@ -295,9 +299,9 @@ const s = StyleSheet.create({
   emoji:    { fontSize: 38 },
   emojiOff: { fontSize: 30, opacity: 0.7 },
 
-  kintiParado: {
+  jugadorParado: {
     position: 'absolute', top: -22, alignSelf: 'center', zIndex: 5,
-    width: 36, height: 36, borderRadius: 18,
+    width: 36, height: 36, borderRadius: 18, overflow: 'hidden',
     borderWidth: 2, borderColor: colors.doradoNeon,
   },
   medallaBadge: { position: 'absolute', top: -8, right: -8 },

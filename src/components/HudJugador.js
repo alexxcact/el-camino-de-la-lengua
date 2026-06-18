@@ -5,6 +5,7 @@ import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { useJuego } from '../context/JuegoContext';
 import ContadorAnimado from './ContadorAnimado';
+import AvatarSVG from './AvatarSVG';
 
 // Mismos umbrales de nivel que el JuegoContext (para la barra de XP del HUD)
 const NIVELES = [0, 10, 20, 30, 50];
@@ -74,10 +75,12 @@ export default function HudJugador({ expandido = false }) {
 
   return (
     <View style={[s.wrap, expandido && s.wrapExp]}>
-      {/* Avatar con inicial + insignia de Kinti */}
+      {/* Avatar del jugador + insignia de Kinti (inicial como fallback) */}
       <View style={s.avatarBox}>
-        <View style={s.avatarInicial}>
-          <Text style={s.inicialTxt}>{inicial}</Text>
+        <View style={s.avatarMarco}>
+          {estado.avatar
+            ? <AvatarSVG avatar={estado.avatar} tamano={50} conFondo />
+            : <View style={s.avatarInicial}><Text style={s.inicialTxt}>{inicial}</Text></View>}
         </View>
         <Image source={require('../../assets/images/personajes/kinti.jpg')} style={s.kintiBadge} />
       </View>
@@ -128,11 +131,14 @@ const s = StyleSheet.create({
   wrapExp: { paddingVertical: 16 },
 
   avatarBox: { position: 'relative', width: 50, height: 50 },
+  avatarMarco: {
+    width: 50, height: 50, borderRadius: 25, overflow: 'hidden',
+    borderWidth: 2, borderColor: colors.turquesaClaro,
+  },
   avatarInicial: {
     width: 50, height: 50, borderRadius: 25,
     backgroundColor: colors.turquesa,
     alignItems: 'center', justifyContent: 'center',
-    borderWidth: 2, borderColor: colors.turquesaClaro,
   },
   inicialTxt: { fontSize: 24, color: colors.cielo, fontFamily: fonts.extra, marginTop: -1 },
   kintiBadge: {

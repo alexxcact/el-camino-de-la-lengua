@@ -31,6 +31,7 @@ import QuizScreen       from './src/screens/QuizScreen';
 import EscuchaScreen    from './src/screens/EscuchaScreen';
 import MemoriaScreen    from './src/screens/MemoriaScreen';
 import PersonajesScreen from './src/screens/PersonajesScreen';
+import AvatarScreen     from './src/screens/AvatarScreen';
 import { ParejasScreen, DictadoScreen } from './src/screens/MisionesScreen';
 import { MochilaScreen, PerfilScreen }  from './src/screens/MochilaPerfilScreen';
 
@@ -82,6 +83,7 @@ function PerfilStackScreen() {
   return (
     <Stack.Navigator screenOptions={hdrOpts}>
       <Stack.Screen name="PerfilMain" component={PerfilScreen} options={{ title: '👤 Mi progreso' }} />
+      <Stack.Screen name="Avatar"     component={AvatarScreen} options={{ title: '🎨 Mi avatar' }} />
     </Stack.Navigator>
   );
 }
