@@ -36,6 +36,7 @@ const estadoInicial = {
   practicasTotal: 0,       // sesiones de práctica libre completadas (logro Repaso constante)
   mejorRacha: 0,           // mejor racha histórica de días seguidos
   diasActivos: [],         // ['YYYY-MM-DD'] con actividad, recortado a MAX_DIAS (calendario)
+  duelosJugados: 0,        // partidas de Duelo de 2 jugadas (solo para el logro; el duelo es efímero)
   // Avatar personalizable (objetos planos: se serializan con JSON.stringify igual
   // que el resto del estado no-Set; se mergean con default para usuarios viejos)
   avatar: { piel: 0, ropa: 0, sombrero: 0, accesorio: 0 },
@@ -239,6 +240,13 @@ export function JuegoProvider({ children }) {
     });
   }, [actualizarEstado]);
 
+  // Registra que se jugó una partida de Duelo (solo bump del contador, para el logro
+  // "Espíritu competitivo"). NO toca puntos, racha, misiones ni medallas: el duelo es
+  // 100% efímero. La pantalla llama a verificarLogros() después.
+  const registrarDuelo = useCallback(() => {
+    actualizarEstado(prev => ({ ...prev, duelosJugados: (prev.duelosJugados || 0) + 1 }));
+  }, [actualizarEstado]);
+
   // ── Avatar ──
 
   // Guarda la selección de avatar (objeto { piel, ropa, sombrero, accesorio }).
@@ -348,7 +356,7 @@ export function JuegoProvider({ children }) {
       getPalabraDelDia, retoDiarioDisponible, completarRetoDiario,
       cambiarNotificaciones, guardarHoraNotificacion, marcarMemoriaPerfecta,
       guardarAvatar, verificarDesbloqueoAvatar, registrarAperturaDiccionario,
-      completarPractica,
+      completarPractica, registrarDuelo,
     }}>
       {children}
     </JuegoContext.Provider>

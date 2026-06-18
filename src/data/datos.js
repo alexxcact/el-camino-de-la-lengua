@@ -201,6 +201,7 @@ export const logros = [
   { id: "consultor", nom: "Consultor", desc: "Abre el diccionario 10 veces", emoji: "📚", cond: (e) => (e.diccionarioAbierto || 0) >= 10 },
   { id: "repaso-constante", nom: "Repaso constante", desc: "Completa 10 prácticas libres", emoji: "🔁", cond: (e) => (e.practicasTotal || 0) >= 10 },
   { id: "mes-vivo", nom: "Mes vivo", desc: "30 días activos registrados", emoji: "📆", cond: (e) => (e.diasActivos || []).length >= 30 },
+  { id: "duelo-competitivo", nom: "Espíritu competitivo", desc: "Juega 5 duelos de 2", emoji: "⚔️", cond: (e) => (e.duelosJugados || 0) >= 5 },
   { id: "50-palabras", nom: "Vocabulario Rico", desc: "50 palabras aprendidas", emoji: "🌟", cond: (e) => e.palabrasVistas.size >= 50 },
   { id: "75-palabras", nom: "Conocedor del Pastoker", desc: "75 palabras aprendidas", emoji: "📚", cond: (e) => e.palabrasVistas.size >= 75 },
   { id: "camino-completo", nom: "El Camino Completo", desc: "Completa los 5 mundos", emoji: "🏆", cond: (e) => e.mundosCompletados.size >= 5 },

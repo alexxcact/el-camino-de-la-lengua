@@ -69,6 +69,10 @@ export default function MapaScreen({ navigation }) {
               <Text style={s.practicaTxt}>🔁 Práctica libre</Text>
               <Text style={s.practicaSub}>Repasa lo aprendido sin avanzar la historia</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={s.dueloBtn} onPress={() => navigation.navigate('Duelo')} activeOpacity={0.85}>
+              <Text style={s.dueloTxt}>⚔️ Duelo de 2</Text>
+              <Text style={s.dueloSub}>Reta a otra persona en este mismo dispositivo</Text>
+            </TouchableOpacity>
           </View>
         }
       />
@@ -104,4 +108,13 @@ const s = StyleSheet.create({
   },
   practicaTxt: { color: colors.turquesaClaro, fontSize: 15, fontFamily: fonts.extra },
   practicaSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2 },
+
+  dueloBtn: {
+    marginHorizontal: 16, marginTop: 0, marginBottom: 12,
+    paddingVertical: 12, paddingHorizontal: 16, borderRadius: 16,
+    backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: colors.doradoNeon,
+    alignItems: 'center',
+  },
+  dueloTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.extra },
+  dueloSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2 },
 });
