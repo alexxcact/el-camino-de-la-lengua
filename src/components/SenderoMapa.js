@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Animated, Dimensions, 
 import Svg, { Path, Circle, G } from 'react-native-svg';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { TIPOS_MISION } from '../data/datos';
 import Confeti from './Confeti';
 import MedallaPasto from './MedallaPasto';
 import { sonar } from '../utils/sonidos';
@@ -66,8 +67,9 @@ function NodoMundo({ data, pop, onPress, onBloqueado }) {
     else { sonar.pop(); onPress(); }
   };
 
-  const sublabel = completado ? 'Completado' : bloqueado ? 'Bloqueado' : `${misionesDone} de 3 misiones`;
-  const frac = misionesDone / 3;
+  const total = TIPOS_MISION.length;
+  const sublabel = completado ? 'Completado' : bloqueado ? 'Bloqueado' : `${misionesDone} de ${total} misiones`;
+  const frac = misionesDone / total;
 
   return (
     <View style={[s.nodoWrap, { left: data.cx - NODE / 2, top: data.cy - NODE / 2 }]}>
@@ -138,7 +140,7 @@ export default function SenderoMapa({ mundos, estado, saludo, nombre, onSelect, 
     const completado = estado.mundosCompletados.has(mundo.id);
     const abierto    = mundo.id === 1 || estado.mundosCompletados.has(mundo.id - 1);
     const est        = completado ? 'completado' : abierto ? 'activo' : 'bloqueado';
-    const misionesDone = ['quiz', 'parejas', 'dictado']
+    const misionesDone = TIPOS_MISION
       .filter(t => estado.misionesCompletadas.has(`${t}-${mundo.id}`)).length;
     nodos[mundo.id] = {
       mundo, estado: est, misionesDone,

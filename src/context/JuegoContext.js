@@ -31,6 +31,7 @@ const estadoInicial = {
   retosDiariosTotal: 0,    // contador histórico de retos (para logros)
   notificacionesActivadas: false, // recordatorio diario de Pishku
   horaNotificacion: 16,    // hora local (0-23) del recordatorio, default 4:00 PM
+  memoriaPerfecta: false,  // ganó alguna vez Memoria sin errores (primitivo)
 };
 
 const niveles = [
@@ -189,6 +190,10 @@ export function JuegoProvider({ children }) {
     actualizarEstado(prev => ({ ...prev, horaNotificacion: hora }));
   }, [actualizarEstado]);
 
+  const marcarMemoriaPerfecta = useCallback(() => {
+    actualizarEstado(prev => prev.memoriaPerfecta ? prev : { ...prev, memoriaPerfecta: true });
+  }, [actualizarEstado]);
+
   const ganarPuntos = useCallback((n) => {
     actualizarEstado(prev => {
       const puntos = prev.puntos + n;
@@ -260,7 +265,7 @@ export function JuegoProvider({ children }) {
       completarMision, sumarQuiz, sumarParejas,
       verificarLogros, getNivel, guardarNombre, cambiarSonido, marcarFinalVisto,
       getPalabraDelDia, retoDiarioDisponible, completarRetoDiario,
-      cambiarNotificaciones, guardarHoraNotificacion,
+      cambiarNotificaciones, guardarHoraNotificacion, marcarMemoriaPerfecta,
     }}>
       {children}
     </JuegoContext.Provider>

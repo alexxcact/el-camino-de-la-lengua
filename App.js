@@ -28,6 +28,8 @@ import MapaScreen       from './src/screens/MapaScreen';
 import MundoScreen      from './src/screens/MundoScreen';
 import RetoDiarioScreen from './src/screens/RetoDiarioScreen';
 import QuizScreen       from './src/screens/QuizScreen';
+import EscuchaScreen    from './src/screens/EscuchaScreen';
+import MemoriaScreen    from './src/screens/MemoriaScreen';
 import PersonajesScreen from './src/screens/PersonajesScreen';
 import { ParejasScreen, DictadoScreen } from './src/screens/MisionesScreen';
 import { MochilaScreen, PerfilScreen }  from './src/screens/MochilaPerfilScreen';
@@ -51,6 +53,8 @@ function MapaStackScreen() {
       <MapaStack.Screen name="Quiz"    component={QuizScreen}    options={{ title: '🧠 Quiz de palabras' }} />
       <MapaStack.Screen name="Parejas" component={ParejasScreen} options={{ title: '🃏 Une las parejas' }} />
       <MapaStack.Screen name="Dictado" component={DictadoScreen} options={{ title: '✍️ Dictado cultural' }} />
+      <MapaStack.Screen name="Escucha" component={EscuchaScreen} options={{ title: '🎧 Escucha y elige' }} />
+      <MapaStack.Screen name="Memoria" component={MemoriaScreen} options={{ title: '🧩 Memoria andina' }} />
     </MapaStack.Navigator>
   );
 }

@@ -194,6 +194,8 @@ export const logros = [
   { id: "la-bolsa", nom: "Guardián de La Bolsa", desc: "Completa Laguna La Bolsa", emoji: "💧", cond: (e) => e.mundosCompletados.has(5) },
   { id: "quiz-master", nom: "Quiz Master", desc: "Juega 3 partidas de quiz", emoji: "🧠", cond: (e) => e.quizJugados >= 3 },
   { id: "constante", nom: "Constante", desc: "Completa 7 retos diarios", emoji: "📅", cond: (e) => (e.retosDiariosTotal || 0) >= 7 },
+  { id: "oido-fino", nom: "Oído fino", desc: "Completa 5 retos de Escucha", emoji: "👂", cond: (e) => [...e.misionesCompletadas].filter(id => String(id).startsWith('escucha-')).length >= 5 },
+  { id: "buena-memoria", nom: "Buena memoria", desc: "Gana Memoria sin errores", emoji: "🧩", cond: (e) => e.memoriaPerfecta === true },
   { id: "50-palabras", nom: "Vocabulario Rico", desc: "50 palabras aprendidas", emoji: "🌟", cond: (e) => e.palabrasVistas.size >= 50 },
   { id: "75-palabras", nom: "Conocedor del Pastoker", desc: "75 palabras aprendidas", emoji: "📚", cond: (e) => e.palabrasVistas.size >= 75 },
   { id: "camino-completo", nom: "El Camino Completo", desc: "Completa los 5 mundos", emoji: "🏆", cond: (e) => e.mundosCompletados.size >= 5 },
@@ -201,5 +203,9 @@ export const logros = [
 ];
 
 export const categorias = ["Todas", ...new Set(palabras.map(p => p.cat))];
+
+// Tipos de misión por mundo (orden de aparición). Cada mundo se completa al
+// terminar las 5. Derivar SIEMPRE de aquí: no escribir el número fijo en otro lado.
+export const TIPOS_MISION = ['quiz', 'parejas', 'dictado', 'escucha', 'memoria'];
 
 export const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);

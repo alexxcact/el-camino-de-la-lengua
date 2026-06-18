@@ -91,6 +91,8 @@ export default function MundoScreen({ route, navigation }) {
     { id: `quiz-${mundoId}`,    titulo: 'Quiz de palabras', emoji: '🧠', desc: 'Adivina la traducción correcta',  pantalla: 'Quiz',    params: { mundoId } },
     { id: `parejas-${mundoId}`, titulo: 'Une las parejas',  emoji: '🃏', desc: 'Conecta palabra y significado',    pantalla: 'Parejas', params: { mundoId } },
     { id: `dictado-${mundoId}`, titulo: 'Dictado cultural', emoji: '✍️', desc: 'Escribe la palabra en Pastoquer', pantalla: 'Dictado', params: { mundoId } },
+    { id: `escucha-${mundoId}`, titulo: 'Escucha y elige',  emoji: '🎧', desc: 'Reconoce la palabra que suena',   pantalla: 'Escucha', params: { mundoId } },
+    { id: `memoria-${mundoId}`, titulo: 'Memoria andina',   emoji: '🧩', desc: 'Encuentra las parejas de cartas', pantalla: 'Memoria', params: { mundoId } },
   ];
 
   const todasCompletadas  = misiones.every(m => estado.misionesCompletadas.has(m.id));
