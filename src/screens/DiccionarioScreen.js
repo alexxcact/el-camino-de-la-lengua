@@ -35,6 +35,7 @@ export default function DiccionarioScreen() {
   const [catsSel, setCatsSel] = useState(() => new Set());
   const [orden, setOrden] = useState('past');
   const [expandido, setExpandido] = useState(null);
+  const [filtrosAbiertos, setFiltrosAbiertos] = useState(false);
 
   // Cuenta una "apertura" cada vez que se enfoca el diccionario (logro Consultor)
   useFocusEffect(
@@ -53,6 +54,16 @@ export default function DiccionarioScreen() {
   };
   const toggleMundo = toggleSet(setMundosSel);
   const toggleCat = toggleSet(setCatsSel);
+
+  const toggleFiltros = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setFiltrosAbiertos(v => !v);
+  };
+  const limpiarFiltros = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setMundosSel(new Set());
+    setCatsSel(new Set());
+  };
 
   const lista = useMemo(() => {
     const q = norm(busqueda);
@@ -130,42 +141,82 @@ export default function DiccionarioScreen() {
         )}
       </View>
 
-      <Text style={s.contador}>{lista.length} palabras en el diccionario</Text>
+      {/* Etiquetas de filtros activos (toca para quitar) */}
+      {(mundosSel.size > 0 || catsSel.size > 0) && (
+        <View style={s.activosWrap}>
+          {[...mundosSel].map(id => {
+            const m = mundos.find(x => x.id === id);
+            return (
+              <TouchableOpacity key={'m' + id} style={s.activoTag} onPress={() => toggleMundo(id)} activeOpacity={0.8}>
+                <Text style={s.activoTxt}>{m?.emoji} {m?.titulo}  ✕</Text>
+              </TouchableOpacity>
+            );
+          })}
+          {[...catsSel].map(c => (
+            <TouchableOpacity key={'c' + c} style={s.activoTag} onPress={() => toggleCat(c)} activeOpacity={0.8}>
+              <Text style={s.activoTxt}>{c}  ✕</Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity style={s.limpiarTag} onPress={limpiarFiltros} activeOpacity={0.8}>
+            <Text style={s.limpiarTxt}>Limpiar todo</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
-      {/* Orden */}
+      {/* Contador + botón Filtros */}
+      <View style={s.toolRow}>
+        <Text style={s.contador}>{lista.length} palabras</Text>
+        <TouchableOpacity
+          style={[s.filtBtn, (filtrosAbiertos || mundosSel.size + catsSel.size > 0) && s.filtBtnOn]}
+          onPress={toggleFiltros}
+          activeOpacity={0.85}
+        >
+          <Text style={[s.filtBtnTxt, (filtrosAbiertos || mundosSel.size + catsSel.size > 0) && { color: colors.noche }]}>
+            🎚️ Filtros{mundosSel.size + catsSel.size > 0 ? ` (${mundosSel.size + catsSel.size})` : ''} {filtrosAbiertos ? '▲' : '▼'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Orden (siempre visible) */}
       <View style={s.ordenRow}>
         {ORDENES.map(o => (
-          <TouchableOpacity key={o.key} style={[s.ordenChip, orden === o.key && s.ordenOn]} onPress={() => setOrden(o.key)}>
+          <TouchableOpacity key={o.key} style={[s.ordenChip, orden === o.key && s.ordenOn]} onPress={() => setOrden(o.key)} activeOpacity={0.85}>
             <Text style={[s.ordenTxt, orden === o.key && { color: colors.noche }]}>{o.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* Filtros por mundo */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.chipScroll} contentContainerStyle={s.chipRow}>
-        {mundos.map(m => {
-          const on = mundosSel.has(m.id);
-          return (
-            <TouchableOpacity key={m.id} style={[s.chip, on && s.chipOn]} onPress={() => toggleMundo(m.id)}>
-              <Text style={[s.chipTxt, on && { color: colors.noche }]}>{m.emoji} {m.titulo}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
+      {/* Panel colapsable de filtros (mundos + categorías) con wrap cómodo */}
+      {filtrosAbiertos && (
+        <ScrollView style={s.panel} contentContainerStyle={s.panelContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+          <Text style={s.panelLbl}>MUNDOS</Text>
+          <View style={s.wrap}>
+            {mundos.map(m => {
+              const on = mundosSel.has(m.id);
+              return (
+                <TouchableOpacity key={m.id} style={[s.chip, on && s.chipOn]} onPress={() => toggleMundo(m.id)} activeOpacity={0.85}>
+                  <Text style={[s.chipTxt, on && { color: colors.noche }]}>{m.emoji} {m.titulo}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
 
-      {/* Filtros por categoría */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.chipScroll} contentContainerStyle={s.chipRow}>
-        {CATS.map(c => {
-          const on = catsSel.has(c);
-          return (
-            <TouchableOpacity key={c} style={[s.chip, on && s.chipOn]} onPress={() => toggleCat(c)}>
-              <Text style={[s.chipTxt, on && { color: colors.noche }]}>{c}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
+          <Text style={[s.panelLbl, { marginTop: 14 }]}>CATEGORÍAS</Text>
+          <View style={s.wrap}>
+            {CATS.map(c => {
+              const on = catsSel.has(c);
+              return (
+                <TouchableOpacity key={c} style={[s.chip, on && s.chipOn]} onPress={() => toggleCat(c)} activeOpacity={0.85}>
+                  <Text style={[s.chipTxt, on && { color: colors.noche }]}>{c}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </ScrollView>
+      )}
 
       <FlatList
+        style={s.lista}
         data={lista}
         keyExtractor={i => String(i.id)}
         renderItem={renderItem}
@@ -194,18 +245,35 @@ const s = StyleSheet.create({
   srchIn:  { flex: 1, paddingVertical: 12, fontSize: 14, color: colors.cielo, fontFamily: fonts.medium },
   clear:   { fontSize: 16, color: colors.turquesaSuave, paddingLeft: 8 },
 
-  contador: { fontSize: 11, color: colors.turquesaSuave, paddingHorizontal: 16, marginBottom: 6, fontFamily: fonts.medium },
+  // Etiquetas de filtros activos (removibles)
+  activosWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: 14, marginBottom: 8 },
+  activoTag:   { flexDirection: 'row', alignItems: 'center', minHeight: 34, paddingHorizontal: 12, borderRadius: 16, backgroundColor: colors.doradoNeon },
+  activoTxt:   { fontSize: 12, color: colors.noche, fontFamily: fonts.bold },
+  limpiarTag:  { minHeight: 34, justifyContent: 'center', paddingHorizontal: 12, borderRadius: 16, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.4)' },
+  limpiarTxt:  { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.semibold },
 
-  ordenRow:  { flexDirection: 'row', gap: 8, paddingHorizontal: 14, marginBottom: 8 },
-  ordenChip: { flex: 1, alignItems: 'center', paddingVertical: 8, borderRadius: 12, backgroundColor: colors.nocheCard, borderWidth: 1, borderColor: 'rgba(93,202,165,0.25)' },
+  // Fila contador + botón Filtros
+  toolRow:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 10 },
+  contador:    { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.medium },
+  filtBtn:     { minHeight: 40, justifyContent: 'center', paddingHorizontal: 14, borderRadius: 20, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.4)' },
+  filtBtnOn:   { backgroundColor: colors.doradoNeon, borderColor: colors.doradoNeon },
+  filtBtnTxt:  { fontSize: 13, color: colors.doradoNeon, fontFamily: fonts.bold },
+
+  ordenRow:  { flexDirection: 'row', gap: 8, paddingHorizontal: 14, marginBottom: 10 },
+  ordenChip: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 48, paddingVertical: 8, borderRadius: 14, backgroundColor: colors.nocheCard, borderWidth: 1, borderColor: 'rgba(93,202,165,0.25)' },
   ordenOn:   { backgroundColor: colors.doradoNeon, borderColor: colors.doradoNeon },
-  ordenTxt:  { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.semibold },
+  ordenTxt:  { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.semibold, textAlign: 'center' },
 
-  chipScroll: { maxHeight: 42, flexGrow: 0 },
-  chipRow:    { paddingHorizontal: 14, gap: 8, alignItems: 'center', paddingBottom: 6 },
-  chip:    { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 18, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.3)' },
+  // Panel colapsable de filtros
+  panel:        { maxHeight: 260, marginHorizontal: 14, marginBottom: 10, borderRadius: 16, backgroundColor: colors.nocheProfundo, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  panelContent: { padding: 12 },
+  panelLbl:     { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 2, marginBottom: 8 },
+  wrap:    { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  chip:    { minHeight: 44, justifyContent: 'center', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 22, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.3)' },
   chipOn:  { backgroundColor: colors.doradoNeon, borderColor: colors.doradoNeon },
-  chipTxt: { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.semibold },
+  chipTxt: { fontSize: 13, color: colors.turquesaSuave, fontFamily: fonts.semibold },
+
+  lista: { flex: 1 },
 
   row: {
     backgroundColor: colors.nocheCard, borderRadius: 14, padding: 14, marginBottom: 9,
