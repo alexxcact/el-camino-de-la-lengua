@@ -215,6 +215,12 @@ export function PerfilScreen({ navigation }) {
           ))}
         </View>
 
+        {/* Acceso a estadísticas */}
+        <TouchableOpacity style={ps.statsBtn} onPress={() => navigation.navigate('Estadisticas')} activeOpacity={0.85}>
+          <Text style={ps.statsBtnTxt}>📊 Ver mis estadísticas</Text>
+          <Text style={ps.statsBtnSub}>Progreso por mundo, categorías y calendario de racha</Text>
+        </TouchableOpacity>
+
         {/* Progreso */}
         <View style={ps.card}>
           <Text style={ps.cardTit}>📈 Tu avance</Text>
@@ -458,6 +464,10 @@ const ps = StyleSheet.create({
   statCard:  { width: '48%', backgroundColor: colors.nocheCard, borderRadius: 16, padding: 16, alignItems: 'center', marginBottom: 12, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
   statN:     { fontSize: 28, fontFamily: fonts.extra, color: colors.doradoNeon },
   statL:     { fontSize: 11, color: colors.turquesaSuave, marginTop: 2, fontFamily: fonts.medium },
+
+  statsBtn:    { backgroundColor: 'rgba(250,199,117,0.12)', borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1.5, borderColor: colors.doradoNeon, alignItems: 'center' },
+  statsBtnTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.extra },
+  statsBtnSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 3, textAlign: 'center' },
 
   card:    { backgroundColor: colors.nocheCard, padding: 16, borderRadius: 18, marginBottom: 18, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
   cardTit: { fontSize: 15, fontFamily: fonts.bold, color: colors.cielo },

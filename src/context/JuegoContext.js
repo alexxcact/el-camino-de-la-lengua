@@ -34,6 +34,8 @@ const estadoInicial = {
   memoriaPerfecta: false,  // ganó alguna vez Memoria sin errores (primitivo)
   diccionarioAbierto: 0,   // veces que abrió el diccionario (para logro Consultor)
   practicasTotal: 0,       // sesiones de práctica libre completadas (logro Repaso constante)
+  mejorRacha: 0,           // mejor racha histórica de días seguidos
+  diasActivos: [],         // ['YYYY-MM-DD'] con actividad, recortado a MAX_DIAS (calendario)
   // Avatar personalizable (objetos planos: se serializan con JSON.stringify igual
   // que el resto del estado no-Set; se mergean con default para usuarios viejos)
   avatar: { piel: 0, ropa: 0, sombrero: 0, accesorio: 0 },
@@ -68,15 +70,23 @@ const seedFecha = (f) => {
   return h;
 };
 
-// Calcula racha/palabrasHoy según cuándo fue la última sesión
+const MAX_DIAS_ACTIVOS = 90; // tope del historial de días activos (no crece sin límite)
+
+// Agrega la fecha de hoy a diasActivos (sin duplicar) y recorta a los más recientes.
+function agregarDiaActivo(base) {
+  const hoy = fechaHoy();
+  const dias = base.diasActivos || [];
+  if (dias.includes(hoy)) return base;
+  return { ...base, diasActivos: [...dias, hoy].slice(-MAX_DIAS_ACTIVOS) };
+}
+
+// Calcula racha/palabrasHoy según cuándo fue la última sesión (y actualiza mejorRacha)
 function aplicarSesion(base) {
   const hoy = fechaHoy();
   if (base.ultimaSesion === hoy) return base;            // misma sesión del día: sin cambios
-  if (base.ultimaSesion === fechaAyer()) {
-    return { ...base, racha: (base.racha || 0) + 1, palabrasHoy: 0, ultimaSesion: hoy };
-  }
-  // primera vez o se rompió la racha
-  return { ...base, racha: 1, palabrasHoy: 0, ultimaSesion: hoy };
+  const racha = base.ultimaSesion === fechaAyer() ? (base.racha || 0) + 1 : 1;
+  const mejorRacha = Math.max(base.mejorRacha || 0, racha);
+  return { ...base, racha, mejorRacha, palabrasHoy: 0, ultimaSesion: hoy };
 }
 
 export function JuegoProvider({ children }) {
@@ -100,6 +110,7 @@ export function JuegoProvider({ children }) {
           mundosCompletados: new Set(parsed.mundosCompletados || []),
           misionesCompletadas: new Set(parsed.misionesCompletadas || []),
           logrosDesbloqueados: new Set(parsed.logrosDesbloqueados || []),
+          diasActivos: Array.isArray(parsed.diasActivos) ? parsed.diasActivos : [],
           // merge profundo del avatar (objetos planos) para usuarios sin estos campos
           avatar: { ...estadoInicial.avatar, ...(parsed.avatar || {}) },
           avatarDesbloqueados: {
@@ -191,12 +202,12 @@ export function JuegoProvider({ children }) {
       if (prev.retoDiarioFecha === fechaHoy()) return prev;
       const puntos = prev.puntos + 25;
       const nivel = niveles.filter(nv => puntos >= nv.min).length;
-      return {
+      return agregarDiaActivo({
         ...prev,
         retoDiarioFecha: fechaHoy(),
         retosDiariosTotal: (prev.retosDiariosTotal || 0) + 1,
         puntos, nivel,
-      };
+      });
     });
   }, [actualizarEstado]);
 
@@ -224,7 +235,7 @@ export function JuegoProvider({ children }) {
     actualizarEstado(prev => {
       const puntos = prev.puntos + 5;
       const nivel = niveles.filter(nv => puntos >= nv.min).length;
-      return { ...prev, practicasTotal: (prev.practicasTotal || 0) + 1, puntos, nivel };
+      return agregarDiaActivo({ ...prev, practicasTotal: (prev.practicasTotal || 0) + 1, puntos, nivel });
     });
   }, [actualizarEstado]);
 
@@ -293,10 +304,13 @@ export function JuegoProvider({ children }) {
 
   const completarMision = useCallback((id) => {
     actualizarEstado(prev => {
-      if (prev.misionesCompletadas.has(id)) return prev;
-      const misionesCompletadas = new Set(prev.misionesCompletadas);
-      misionesCompletadas.add(id);
-      return { ...prev, misionesCompletadas };
+      let next = agregarDiaActivo(prev); // cuenta como actividad del día aunque se repita la misión
+      if (!next.misionesCompletadas.has(id)) {
+        const misionesCompletadas = new Set(next.misionesCompletadas);
+        misionesCompletadas.add(id);
+        next = { ...next, misionesCompletadas };
+      }
+      return next;
     });
   }, [actualizarEstado]);
 
