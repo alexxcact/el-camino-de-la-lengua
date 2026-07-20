@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, FlatList, KeyboardAvoidingView, Platform, Switch } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { palabras, logros as todosLogros } from '../data/datos';
@@ -59,7 +60,7 @@ export function MochilaScreen({ navigation }) {
       </View>
 
       <View style={ss.infoCard}>
-        <Text style={ss.infoTit}>📚 Contexto cultural</Text>
+        <Text style={ss.infoTit}>Contexto cultural</Text>
         <Text style={ss.infoTxt}>
           El pastoker es la lengua ancestral del pueblo Pasto de Nariño, Colombia.
           Cada palabra es un puente entre generaciones y una forma de nombrar el territorio.
@@ -71,7 +72,6 @@ export function MochilaScreen({ navigation }) {
   // ─── Vista vacía ───
   if (aprendidas.length === 0) return (
     <View style={[ss.container, { justifyContent: 'center', alignItems: 'center', padding: 30 }]}>
-      <Text style={{ fontSize: 48 }}>🌱</Text>
       <Text style={ss.vacioTit}>Tu mochila está dormida</Text>
       <Text style={ss.vacioSub}>Aprende palabras en las lecciones y aparecerán aquí, brillando</Text>
       <TouchableOpacity style={ss.vacioBtn} onPress={() => navigation.navigate('Mapa')}>
@@ -86,7 +86,7 @@ export function MochilaScreen({ navigation }) {
 
       {/* Buscador */}
       <View style={ss.srchWrap}>
-        <Text style={ss.srchIco}>🔍</Text>
+        <Ionicons name="search" size={16} color={colors.turquesaSuave} style={ss.srchIco} />
         <TextInput
           style={ss.srchIn}
           placeholder="Buscar en Pastoker o Español…"
@@ -113,7 +113,7 @@ export function MochilaScreen({ navigation }) {
       <View style={ss.countRow}>
         <Text style={ss.count}>{filtradas.length} palabras · {aprendidas.length}/{palabras.length} encendidas</Text>
         <TouchableOpacity onPress={() => navigation.navigate('DiccionarioTab')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Text style={ss.dicLink}>📚 Diccionario →</Text>
+          <Text style={ss.dicLink}>Diccionario →</Text>
         </TouchableOpacity>
       </View>
 
@@ -169,10 +169,10 @@ export function PerfilScreen({ navigation }) {
   const [medallaSel, setMedallaSel] = useState(null);
 
   const stats = [
-    { n: estado.puntos,                  l: 'Puntos ⭐' },
-    { n: estado.palabrasVistas.size,     l: 'Palabras 📖' },
-    { n: estado.mundosCompletados.size,  l: 'Mundos 🏔️' },
-    { n: estado.logrosDesbloqueados.size, l: 'Logros 🏆' },
+    { n: estado.puntos,                  l: 'Puntos' },
+    { n: estado.palabrasVistas.size,     l: 'Palabras' },
+    { n: estado.mundosCompletados.size,  l: 'Mundos' },
+    { n: estado.logrosDesbloqueados.size, l: 'Logros' },
   ];
 
   const barras = [
@@ -192,14 +192,14 @@ export function PerfilScreen({ navigation }) {
         <View style={ps.avatarHeader}>
           <AvatarSVG avatar={estado.avatar} tamano={110} conFondo />
           <TouchableOpacity style={ps.personalizarBtn} onPress={() => navigation.navigate('Avatar')} activeOpacity={0.85}>
-            <Text style={ps.personalizarTxt}>🎨 Personalizar avatar</Text>
+            <Text style={ps.personalizarTxt}>Personalizar avatar</Text>
           </TouchableOpacity>
         </View>
 
         <View style={ps.nameRow}>
           <Text style={ps.nombreGrande}>{nombre}</Text>
           <TouchableOpacity style={ps.editBtn} onPress={abrirEditor} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-            <Text style={ps.editIco}>✏️</Text>
+            <Ionicons name="pencil" size={14} color={colors.turquesaSuave} />
           </TouchableOpacity>
         </View>
         <Text style={ps.rango}>{getNivel()}</Text>
@@ -217,13 +217,13 @@ export function PerfilScreen({ navigation }) {
 
         {/* Acceso a estadísticas */}
         <TouchableOpacity style={ps.statsBtn} onPress={() => navigation.navigate('Estadisticas')} activeOpacity={0.85}>
-          <Text style={ps.statsBtnTxt}>📊 Ver mis estadísticas</Text>
+          <Text style={ps.statsBtnTxt}>Ver mis estadísticas</Text>
           <Text style={ps.statsBtnSub}>Progreso por mundo, categorías y calendario de racha</Text>
         </TouchableOpacity>
 
         {/* Progreso */}
         <View style={ps.card}>
-          <Text style={ps.cardTit}>📈 Tu avance</Text>
+          <Text style={ps.cardTit}>Tu avance</Text>
           {barras.map(b => (
             <View key={b.lbl} style={{ marginTop: 12 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
@@ -243,7 +243,7 @@ export function PerfilScreen({ navigation }) {
         </View>
 
         {/* Vitrina de medallas Pasto */}
-        <Text style={ps.seccion}>🏅 VITRINA</Text>
+        <Text style={ps.seccion}>VITRINA</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={ps.vitrina}>
           {[1, 2, 3, 4, 5].map(id => {
             const ganada = estado.mundosCompletados.has(id);
@@ -264,13 +264,15 @@ export function PerfilScreen({ navigation }) {
         </ScrollView>
 
         {/* Logros */}
-        <Text style={ps.seccion}>🏆 LOGROS</Text>
+        <Text style={ps.seccion}>LOGROS</Text>
         <View style={ps.logrosGrid}>
           {todosLogros.map(l => {
             const on = estado.logrosDesbloqueados.has(l.id);
             return (
               <View key={l.id} style={[ps.logroCard, on ? ps.logroOn : ps.logroOff]}>
-                <Text style={[ps.logroEmoji, on && ps.logroEmojiOn]}>{on ? l.emoji : '🔒'}</Text>
+                {on
+                  ? <Text style={[ps.logroEmoji, ps.logroEmojiOn]}>{l.emoji}</Text>
+                  : <Ionicons name="lock-closed" size={28} color={colors.turquesaSuave} style={ps.logroEmoji} />}
                 <Text style={[ps.logroNom, on && { color: colors.doradoNeon }]}>{l.nom}</Text>
                 <Text style={ps.logroDesc}>{l.desc}</Text>
               </View>
@@ -281,13 +283,13 @@ export function PerfilScreen({ navigation }) {
         {/* Ver final otra vez (solo si ya lo vio) */}
         {estado.finalVisto && (
           <TouchableOpacity style={ps.finalBtn} onPress={() => navigation.navigate('Final')} activeOpacity={0.85}>
-            <Text style={ps.finalBtnTxt}>🌄 Ver final otra vez</Text>
+            <Text style={ps.finalBtnTxt}>Ver final otra vez</Text>
           </TouchableOpacity>
         )}
 
         {/* Ajustes */}
         <View style={ps.ajusteRow}>
-          <Text style={ps.ajusteLbl}>🔊 Sonidos y vibración</Text>
+          <Text style={ps.ajusteLbl}>Sonidos y vibración</Text>
           <Switch
             value={estado.sonidoActivado !== false}
             onValueChange={cambiarSonido}
@@ -298,7 +300,7 @@ export function PerfilScreen({ navigation }) {
 
         {/* Recordatorio diario de Pishku */}
         <View style={ps.ajusteRow}>
-          <Text style={ps.ajusteLbl}>🐦 Recordatorio diario</Text>
+          <Text style={ps.ajusteLbl}>Recordatorio diario</Text>
           <Switch
             value={notifOn}
             onValueChange={toggleNotif}
@@ -321,7 +323,7 @@ export function PerfilScreen({ navigation }) {
           </View>
         )}
 
-        <Text style={ps.footer}>🌄 Asociación PUMA-MAKI · El Camino de la Lengua</Text>
+        <Text style={ps.footer}>Asociación PUMA-MAKI · El Camino de la Lengua</Text>
       </ScrollView>
 
       {/* Modal significado de medalla */}

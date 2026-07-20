@@ -155,7 +155,6 @@ export default function IntroScreen({ navigation }) {
             texto="Comenzar el camino"
             onPress={siguiente}
             variante="primario"
-            icono="🌿"
             tamano="lg"
           />
         ) : (

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, ScrollView } from 'react-native';
 import Svg, { Path, Circle, G } from 'react-native-svg';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { TIPOS_MISION } from '../data/datos';
@@ -105,7 +106,9 @@ function NodoMundo({ data, pop, onPress, onBloqueado, avatar }) {
               </Svg>
             )}
 
-            <Text style={[s.emoji, bloqueado && s.emojiOff]}>{bloqueado ? '🔒' : mundo.emoji}</Text>
+            {bloqueado
+              ? <Ionicons name="lock-closed" size={30} color={colors.turquesaSuave} style={s.emojiOff} />
+              : <Text style={s.emoji}>{mundo.emoji}</Text>}
 
             {completado && (
               <View style={s.medallaBadge}>
@@ -266,7 +269,7 @@ export default function SenderoMapa({ mundos, estado, saludo, nombre, onSelect, 
       {/* Aviso de bloqueado */}
       {aviso && (
         <View style={s.avisoWrap} pointerEvents="none">
-          <Text style={s.avisoTxt}>🔒 Completa el mundo anterior</Text>
+          <Text style={s.avisoTxt}>Completa el mundo anterior</Text>
         </View>
       )}
 

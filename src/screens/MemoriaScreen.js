@@ -159,7 +159,7 @@ export default function MemoriaScreen({ route, navigation }) {
           <View style={s.scoreCard}>
             <Text style={s.scoreNum}>{intentos}</Text>
             <Text style={s.scoreLbl}>intentos</Text>
-            {perfecto && <Text style={s.perfectoTxt}>🧩 ¡Sin errores!</Text>}
+            {perfecto && <Text style={s.perfectoTxt}>¡Sin errores!</Text>}
           </View>
           <Acompanante
             personaje="uma"
@@ -178,10 +178,10 @@ export default function MemoriaScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{modoPractica ? '🎯 Práctica libre' : `${mundo.emoji} ${mundo.titulo}`}</Text>
+            <Text style={s.headerBadge}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
             <Text style={s.headerInfo}>✓ {resueltas.size}/{pares} · {intentos} intentos</Text>
           </View>
-          <Text style={s.headerSub}>🧠 Encuentra las parejas: palabra ↔ dibujo</Text>
+          <Text style={s.headerSub}>Encuentra las parejas: palabra ↔ dibujo</Text>
         </View>
 
         <View style={s.tablero}>

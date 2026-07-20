@@ -77,11 +77,11 @@ export default function MapaScreen({ navigation }) {
               onReto={() => navigation.navigate('RetoDiario')}
             />
             <TouchableOpacity style={s.practicaBtn} onPress={() => navigation.navigate('Practica')} activeOpacity={0.85}>
-              <Text style={s.practicaTxt}>🔁 Práctica libre</Text>
+              <Text style={s.practicaTxt}>Práctica libre</Text>
               <Text style={s.practicaSub}>Repasa lo aprendido sin avanzar la historia</Text>
             </TouchableOpacity>
             <TouchableOpacity style={s.dueloBtn} onPress={() => navigation.navigate('Duelo')} activeOpacity={0.85}>
-              <Text style={s.dueloTxt}>⚔️ Duelo de 2</Text>
+              <Text style={s.dueloTxt}>Duelo de 2</Text>
               <Text style={s.dueloSub}>Reta a otra persona en este mismo dispositivo</Text>
             </TouchableOpacity>
           </View>
@@ -91,8 +91,8 @@ export default function MapaScreen({ navigation }) {
       {/* Toast de atuendo nuevo */}
       {toastAtuendo && (
         <View style={s.toast} pointerEvents="none">
-          <Text style={s.toastTxt}>🎁 ¡Nuevo atuendo desbloqueado!</Text>
-          <Text style={s.toastSub}>Míralo en 🎨 Mi avatar (Progreso)</Text>
+          <Text style={s.toastTxt}>¡Nuevo atuendo desbloqueado!</Text>
+          <Text style={s.toastSub}>Míralo en Mi avatar (Progreso)</Text>
         </View>
       )}
     </View>

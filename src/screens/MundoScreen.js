@@ -54,7 +54,7 @@ function LeccionView({ mundo, onTerminar }) {
         <Text style={ls.catBadge}>{pal.cat}</Text>
       </View>
       <BotonGlow
-        texto={idx + 1 < pals.length ? 'Siguiente →' : '✓ Terminar lección'}
+        texto={idx + 1 < pals.length ? 'Siguiente →' : 'Terminar lección'}
         onPress={siguiente}
         variante="primario"
         tamano="lg"
@@ -144,7 +144,6 @@ export default function MundoScreen({ route, navigation }) {
             style={StyleSheet.absoluteFill}
           />
           <View style={est.bannerTxt}>
-            <Text style={est.bannerEmoji}>{mundo.emoji}</Text>
             <Text style={est.bannerTit}>{mundo.titulo}</Text>
             <Text style={est.bannerSub}>{mundo.desc}</Text>
             <View style={est.miniProgRow}>
@@ -161,15 +160,12 @@ export default function MundoScreen({ route, navigation }) {
             onPress={() => navigation.navigate('Cinematica', { clave: `mundo${mundoId}`, mundoId, rever: true })}
             activeOpacity={0.85}
           >
-            <Text style={est.historiaTxt}>▶️ Ver historia de nuevo</Text>
+            <Text style={est.historiaTxt}>Ver historia de nuevo</Text>
           </TouchableOpacity>
         )}
 
-        <Text style={est.seccion}>📚 LECCIÓN</Text>
+        <Text style={est.seccion}>LECCIÓN</Text>
         <TouchableOpacity style={est.card} onPress={() => setVistaActiva('leccion')} activeOpacity={0.85}>
-          <View style={[est.iconBox, { backgroundColor: 'rgba(250,199,117,0.18)' }]}>
-            <Text style={est.iconEmoji}>📖</Text>
-          </View>
           <View style={{ flex: 1 }}>
             <Text style={est.cardTit}>Aprender las palabras</Text>
             <Text style={est.cardSub}>{mundo.palabrasIds.length} palabras de este mundo</Text>
@@ -177,7 +173,7 @@ export default function MundoScreen({ route, navigation }) {
           <Text style={est.chevron}>›</Text>
         </TouchableOpacity>
 
-        <Text style={est.seccion}>🎮 MISIONES</Text>
+        <Text style={est.seccion}>MISIONES</Text>
         {misiones.map(m => {
           const comp = estado.misionesCompletadas.has(m.id);
           return (
@@ -187,9 +183,6 @@ export default function MundoScreen({ route, navigation }) {
               activeOpacity={0.85}
               style={[est.card, comp && est.cardDone]}
             >
-              <View style={[est.iconBox, comp && est.iconBoxDone]}>
-                <Text style={est.iconEmoji}>{m.emoji}</Text>
-              </View>
               <View style={{ flex: 1 }}>
                 <Text style={est.cardTit}>{m.titulo}</Text>
                 <Text style={est.cardSub}>{m.desc}</Text>
@@ -222,9 +215,9 @@ export default function MundoScreen({ route, navigation }) {
             end={{ x: 1, y: 1 }}
             style={est.compBanner}
           >
-            <Text style={est.compTit}>🏆 ¡Mundo completado!</Text>
+            <Text style={est.compTit}>¡Mundo completado!</Text>
             <Text style={est.compSub}>+20 puntos · Siguiente mundo desbloqueado</Text>
-            <BotonGlow texto="🗺️ Ir al mapa" onPress={() => navigation.navigate('Mapa')} variante="secundario" tamano="sm" />
+            <BotonGlow texto="Ir al mapa" onPress={() => navigation.navigate('Mapa')} variante="secundario" tamano="sm" />
           </LinearGradient>
         )}
       </ScrollView>
@@ -264,7 +257,7 @@ export default function MundoScreen({ route, navigation }) {
             </Animated.Text>
             <View style={{ gap: 10, marginTop: 6, alignSelf: 'stretch' }}>
               <BotonGlow
-                texto="🗺️ Ir al mapa"
+                texto="Ir al mapa"
                 onPress={() => { cerrarModal(); navigation.navigate('Mapa'); }}
                 variante="primario"
                 tamano="lg"

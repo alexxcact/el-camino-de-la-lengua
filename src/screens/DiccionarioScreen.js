@@ -4,6 +4,7 @@ import {
   ScrollView, LayoutAnimation, Platform, UIManager,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { palabras, mundos, categorias } from '../data/datos';
@@ -103,13 +104,15 @@ export default function DiccionarioScreen() {
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 activeOpacity={0.7}
               >
-                <Text style={s.audioIco}>🔊</Text>
+                <Ionicons name="volume-high" size={16} color={colors.doradoNeon} />
               </TouchableOpacity>
             </View>
             <Text style={s.esp}>{item.e}</Text>
             <Text style={s.meta}>{item.cat} · {mundo?.emoji} Mundo {item.mundo}</Text>
           </View>
-          <Text style={vista ? s.check : s.lock}>{vista ? '✓' : '🔒'}</Text>
+          {vista
+            ? <Text style={s.check}>✓</Text>
+            : <Ionicons name="lock-closed" size={14} color={colors.turquesaSuave} style={s.lock} />}
         </View>
         {abierto && (
           <View style={s.expand}>
@@ -125,7 +128,7 @@ export default function DiccionarioScreen() {
     <View style={s.bg}>
       {/* Buscador */}
       <View style={s.srchWrap}>
-        <Text style={s.srchIco}>🔍</Text>
+        <Ionicons name="search" size={16} color={colors.turquesaSuave} style={s.srchIco} />
         <TextInput
           style={s.srchIn}
           placeholder="Busca en pastoker o español…"
@@ -136,7 +139,7 @@ export default function DiccionarioScreen() {
         />
         {busqueda.length > 0 && (
           <TouchableOpacity onPress={() => setBusqueda('')} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-            <Text style={s.clear}>✕</Text>
+            <Ionicons name="close" size={16} color={colors.turquesaSuave} style={s.clear} />
           </TouchableOpacity>
         )}
       </View>
@@ -148,13 +151,13 @@ export default function DiccionarioScreen() {
             const m = mundos.find(x => x.id === id);
             return (
               <TouchableOpacity key={'m' + id} style={s.activoTag} onPress={() => toggleMundo(id)} activeOpacity={0.8}>
-                <Text style={s.activoTxt}>{m?.emoji} {m?.titulo}  ✕</Text>
+                <Text style={s.activoTxt}>{m?.emoji} {m?.titulo}  <Ionicons name="close" size={13} color={colors.noche} /></Text>
               </TouchableOpacity>
             );
           })}
           {[...catsSel].map(c => (
             <TouchableOpacity key={'c' + c} style={s.activoTag} onPress={() => toggleCat(c)} activeOpacity={0.8}>
-              <Text style={s.activoTxt}>{c}  ✕</Text>
+              <Text style={s.activoTxt}>{c}  <Ionicons name="close" size={13} color={colors.noche} /></Text>
             </TouchableOpacity>
           ))}
           <TouchableOpacity style={s.limpiarTag} onPress={limpiarFiltros} activeOpacity={0.8}>
@@ -172,7 +175,7 @@ export default function DiccionarioScreen() {
           activeOpacity={0.85}
         >
           <Text style={[s.filtBtnTxt, (filtrosAbiertos || mundosSel.size + catsSel.size > 0) && { color: colors.noche }]}>
-            🎚️ Filtros{mundosSel.size + catsSel.size > 0 ? ` (${mundosSel.size + catsSel.size})` : ''} {filtrosAbiertos ? '▲' : '▼'}
+            Filtros{mundosSel.size + catsSel.size > 0 ? ` (${mundosSel.size + catsSel.size})` : ''} {filtrosAbiertos ? '▲' : '▼'}
           </Text>
         </TouchableOpacity>
       </View>

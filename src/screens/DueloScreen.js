@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { palabras, mundos, shuffle } from '../data/datos';
@@ -188,7 +189,7 @@ export default function DueloScreen({ navigation }) {
     return (
       <KeyboardAvoidingView style={s.bg} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={s.configContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <Text style={s.tituloGrande}>⚔️ Duelo de la Lengua</Text>
+          <Text style={s.tituloGrande}>Duelo de la Lengua</Text>
           <Text style={s.subtitulo}>Dos jugadores, un mismo dispositivo. ¡Por turnos!</Text>
 
           {/* Nombres */}
@@ -255,7 +256,7 @@ export default function DueloScreen({ navigation }) {
           </View>
 
           <View style={{ marginTop: 22 }}>
-            <BotonGlow texto="¡Comenzar duelo!" icono="⚔️" onPress={comenzar} variante="primario" tamano="lg" desactivado={!puedeEmpezar} />
+            <BotonGlow texto="¡Comenzar duelo!" onPress={comenzar} variante="primario" tamano="lg" desactivado={!puedeEmpezar} />
           </View>
           <TouchableOpacity style={s.salirLink} onPress={salir} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
             <Text style={s.salirTxt}>← Volver al mapa</Text>
@@ -276,7 +277,6 @@ export default function DueloScreen({ navigation }) {
         <View style={[s.paseAvatar, { borderColor: eq.color, shadowColor: eq.color }]}>
           <AvatarSVG avatar={eq.avatar} tamano={120} conFondo />
         </View>
-        <Text style={s.paseEmoji}>📱➡️</Text>
         <Text style={s.paseTit}>Pasa el teléfono a</Text>
         <Text style={[s.paseNombre, { color: eq.color }]}>{nom}</Text>
         <View style={s.paseMarcadorRow}>
@@ -335,9 +335,9 @@ export default function DueloScreen({ navigation }) {
       <View>
         {esEscucha ? (
           <View style={s.audioWrap}>
-            <Text style={s.instruccion}>🎧 Escucha y elige el significado</Text>
+            <Text style={s.instruccion}>Escucha y elige el significado</Text>
             <TouchableOpacity onPress={() => decirPalabra(pregunta.target.p)} activeOpacity={0.85} style={s.audioBtn}>
-              <Text style={s.audioIco}>🔊</Text>
+              <Ionicons name="volume-high" size={52} color={colors.cielo} />
             </TouchableOpacity>
             <Text style={s.audioHint}>Toca para oír otra vez</Text>
           </View>
@@ -370,7 +370,7 @@ export default function DueloScreen({ navigation }) {
                 <Text style={s.opEmoji}>{op.emoji}</Text>
                 <Text style={s.opTxt}>{op.e}</Text>
                 {feedback && esCorr && <Text style={s.opCheck}>✓</Text>}
-                {feedback && elegida && !esCorr && <Text style={s.opX}>✗</Text>}
+                {feedback && elegida && !esCorr && <Ionicons name="close" size={22} color={colors.coral} />}
               </TouchableOpacity>
             );
           })}
@@ -384,7 +384,7 @@ export default function DueloScreen({ navigation }) {
     const primera = parPrimera ? pregunta.tiles.find(t => t.key === parPrimera) : null;
     return (
       <View>
-        <Text style={s.instruccion}>⚡ Toca una palabra y su significado</Text>
+        <Text style={s.instruccion}>Toca una palabra y su significado</Text>
         <View style={s.tilesGrid}>
           {pregunta.tiles.map(tile => {
             const sel = parPrimera === tile.key || parSegunda === tile.key;
@@ -443,11 +443,11 @@ export default function DueloScreen({ navigation }) {
           {empate ? (
             <>
               <Text style={s.finalTit}>¡Empate!</Text>
-              <Text style={s.finalSub}>Ambos son guardianes de la lengua 🌿</Text>
+              <Text style={s.finalSub}>Ambos son guardianes de la lengua</Text>
             </>
           ) : (
             <>
-              <Text style={s.finalGanaLbl}>🏆 ¡GANADOR!</Text>
+              <Text style={s.finalGanaLbl}>¡GANADOR!</Text>
               <Text style={[s.finalNombre, { color: eq.color }]}>{nom}</Text>
             </>
           )}
@@ -465,7 +465,7 @@ export default function DueloScreen({ navigation }) {
           </View>
 
           <View style={{ gap: 10, alignSelf: 'stretch', marginTop: 8 }}>
-            <BotonGlow texto="🔁 Revancha" onPress={revancha} variante="primario" tamano="lg" />
+            <BotonGlow texto="Revancha" onPress={revancha} variante="primario" tamano="lg" />
             <BotonGlow texto="Volver al mapa" onPress={salir} variante="fantasma" tamano="md" />
           </View>
         </ScrollView>

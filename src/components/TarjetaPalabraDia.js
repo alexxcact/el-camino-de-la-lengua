@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { sonar } from '../utils/sonidos';
@@ -41,7 +42,7 @@ export default function TarjetaPalabraDia({ palabra, retoCompletado, onReto }) {
           activeOpacity={0.8}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Text style={s.audioIco}>🔊</Text>
+          <Ionicons name="volume-high" size={22} color={colors.doradoNeon} />
         </TouchableOpacity>
       </View>
 

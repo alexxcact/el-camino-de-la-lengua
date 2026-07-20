@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { palabras, mundos, shuffle } from '../data/datos';
@@ -131,7 +132,7 @@ export default function QuizScreen({ route, navigation }) {
         {/* Header compacto */}
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{modoPractica ? '🎯 Práctica libre' : `${mundo.emoji} ${mundo.titulo}`}</Text>
+            <Text style={s.headerBadge}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
             <Text style={s.aciertosTxt}>✓ {aciertos}</Text>
           </View>
           <View style={s.progBar}>
@@ -170,7 +171,7 @@ export default function QuizScreen({ route, navigation }) {
                 <Text style={s.opEmoji}>{op.emoji}</Text>
                 <Text style={s.opTxt}>{op.e}</Text>
                 {seleccion !== null && esCorr             && <Text style={s.opCheck}>✓</Text>}
-                {seleccion !== null && elegida && !esCorr  && <Text style={s.opX}>✗</Text>}
+                {seleccion !== null && elegida && !esCorr  && <Ionicons name="close" size={22} color={colors.coral} />}
               </TouchableOpacity>
             );
           })}

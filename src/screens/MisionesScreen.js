@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { palabras, mundos, shuffle } from '../data/datos';
@@ -97,7 +98,6 @@ export function ParejasScreen({ route, navigation }) {
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
         <ScrollView contentContainerStyle={s.resContent}>
-          <Text style={s.resEmoji}>🎉</Text>
           <Text style={s.resTit}>¡Muy bien, {nombre}!</Text>
           <View style={s.resScoreCard}>
             <Text style={s.resSub}>{intentos} intentos</Text>
@@ -120,10 +120,10 @@ export function ParejasScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{modoPractica ? '🎯 Práctica libre' : `${mundo.emoji} ${mundo.titulo}`}</Text>
+            <Text style={s.headerBadge}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
             <Text style={s.headerInfo}>✓ {resueltas.size}/{totalPares} · {intentos}</Text>
           </View>
-          <Text style={s.headerSub}>🃏 Une las parejas: pastoker ↔ español</Text>
+          <Text style={s.headerSub}>Une las parejas: pastoker ↔ español</Text>
         </View>
 
         <View style={s.grid}>
@@ -232,7 +232,6 @@ export function DictadoScreen({ route, navigation }) {
           style={StyleSheet.absoluteFill}
         />
         <ScrollView contentContainerStyle={s.resContent}>
-          <Text style={s.resEmoji}>{exito ? '📜' : '💪'}</Text>
           <Text style={s.resTit}>{exito ? `¡Muy bien, ${nombre}!` : `Sigue intentando, ${nombre}`}</Text>
           <View style={s.resScoreCard}>
             <Text style={s.resSub}>{aciertos} / {listaDict.length}</Text>
@@ -260,10 +259,10 @@ export function DictadoScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{modoPractica ? '🎯 Práctica libre' : `${mundo.emoji} ${mundo.titulo}`}</Text>
+            <Text style={s.headerBadge}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
             <Text style={s.headerInfo}>{idx + 1}/{listaDict.length} · ✓ {aciertos}</Text>
           </View>
-          <Text style={s.headerSub}>✍️ Escribe la palabra en pastoker</Text>
+          <Text style={s.headerSub}>Escribe la palabra en pastoker</Text>
         </View>
 
         <View style={s.qCard}>
@@ -294,7 +293,7 @@ export function DictadoScreen({ route, navigation }) {
         </View>
 
         {verif === 'ok'  && <Text style={s.msgOk}>✓ ¡Correcto! "{pal.p}"</Text>}
-        {verif === 'err' && <Text style={s.msgErr}>✗ La correcta era: "{pal.p}"</Text>}
+        {verif === 'err' && <Text style={s.msgErr}><Ionicons name="close" size={14} color={colors.coral} /> La correcta era: "{pal.p}"</Text>}
 
         <BotonGlow
           texto="Verificar"

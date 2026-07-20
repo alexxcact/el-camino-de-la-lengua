@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { palabras, mundos, shuffle } from '../data/datos';
@@ -127,7 +128,7 @@ export default function EscuchaScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{modoPractica ? '🎯 Práctica libre' : `${mundo.emoji} ${mundo.titulo}`}</Text>
+            <Text style={s.headerBadge}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
             <Text style={s.aciertosTxt}>{idx + 1}/{rondas.length} · ✓ {aciertos}</Text>
           </View>
           <View style={s.progBar}>
@@ -139,10 +140,10 @@ export default function EscuchaScreen({ route, navigation }) {
 
         {/* Botón de audio grande */}
         <View style={s.audioWrap}>
-          <Text style={s.instruccion}>🎧 Escucha y elige el dibujo</Text>
+          <Text style={s.instruccion}>Escucha y elige el dibujo</Text>
           <TouchableOpacity onPress={() => decirPalabra(ronda.palabra.p)} activeOpacity={0.85}>
             <Animated.View style={[s.audioBtn, { transform: [{ scale: pulsoScale }] }]}>
-              <Text style={s.audioIco}>🔊</Text>
+              <Ionicons name="volume-high" size={56} color={colors.cielo} />
             </Animated.View>
           </TouchableOpacity>
           <Text style={s.audioHint}>Toca para oír otra vez</Text>

@@ -4,6 +4,7 @@ import {
   TextInput, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { palabras, shuffle } from '../data/datos';
@@ -115,7 +116,7 @@ export default function RetoDiarioScreen({ navigation }) {
           <View style={s.scoreCard}>
             <Text style={s.scoreNum}>{aciertos} / {pasos.length}</Text>
             <Text style={s.bonus}>+25 puntos de bonus diario</Text>
-            <Text style={s.rachaTxt}>🔥 Racha: {estado.racha || 0} {(estado.racha || 0) === 1 ? 'día' : 'días'}</Text>
+            <Text style={s.rachaTxt}>Racha: {estado.racha || 0} {(estado.racha || 0) === 1 ? 'día' : 'días'}</Text>
           </View>
           <BotonGlow texto="← Volver al mapa" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
@@ -126,12 +127,11 @@ export default function RetoDiarioScreen({ navigation }) {
           <View style={s.modalOverlay}>
             <LinearGradient colors={['rgba(11,31,42,0.94)', 'rgba(15,110,86,0.88)']} style={StyleSheet.absoluteFill} />
             <View style={s.modalCard}>
-              <Text style={s.modalEmoji}>🐦</Text>
               <Text style={s.modalTit}>¿Quieres que Pishku te recuerde tu palabra del día?</Text>
               <Text style={s.modalSub}>Te avisará una vez al día. Puedes cambiarlo en tu perfil.</Text>
               <View style={{ gap: 10, alignSelf: 'stretch', marginTop: 14 }}>
                 <BotonGlow
-                  texto="🔔 Sí, recuérdame"
+                  texto="Sí, recuérdame"
                   variante="primario"
                   tamano="lg"
                   onPress={async () => {
@@ -193,7 +193,7 @@ export default function RetoDiarioScreen({ navigation }) {
         {/* Header con progreso */}
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>🎯 Reto del día</Text>
+            <Text style={s.headerBadge}>Reto del día</Text>
             <Text style={s.aciertosTxt}>✓ {aciertos}</Text>
           </View>
           <View style={s.progBar}>
@@ -232,7 +232,7 @@ export default function RetoDiarioScreen({ navigation }) {
                     <Text style={s.opEmoji}>{op.emoji}</Text>
                     <Text style={s.opTxt}>{op.e}</Text>
                     {seleccion !== null && esCorr && <Text style={s.opCheck}>✓</Text>}
-                    {seleccion !== null && elegida && !esCorr && <Text style={s.opX}>✗</Text>}
+                    {seleccion !== null && elegida && !esCorr && <Ionicons name="close" size={22} color={colors.coral} />}
                   </TouchableOpacity>
                 );
               })}
@@ -298,7 +298,7 @@ export default function RetoDiarioScreen({ navigation }) {
               />
             </View>
             {verif === 'ok' && <Text style={s.msgOk}>✓ ¡Correcto! "{paso.target.p}"</Text>}
-            {verif === 'err' && <Text style={s.msgErr}>✗ La correcta era: "{paso.target.p}"</Text>}
+            {verif === 'err' && <Text style={s.msgErr}><Ionicons name="close" size={14} color={colors.coral} /> La correcta era: "{paso.target.p}"</Text>}
             <BotonGlow
               texto="Verificar"
               onPress={verificarDictado}

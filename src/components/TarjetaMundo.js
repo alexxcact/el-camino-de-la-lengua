@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 
@@ -59,7 +60,7 @@ export default function TarjetaMundo({ mundo, estado, pct = 0, palVistas = 0, to
       {/* Icono / imagen */}
       <View style={[s.iconBox, bloqueado && s.iconBoxLock]}>
         {bloqueado ? (
-          <Text style={s.lockEmoji}>🔒</Text>
+          <Ionicons name="lock-closed" size={26} color={colors.turquesaSuave} style={s.lockEmoji} />
         ) : (
           <Image source={img} style={s.iconImg} />
         )}
@@ -98,7 +99,7 @@ export default function TarjetaMundo({ mundo, estado, pct = 0, palVistas = 0, to
             <Text style={s.playTxt}>▶</Text>
           </View>
         )}
-        {bloqueado && <Text style={s.lockSmall}>🔒</Text>}
+        {bloqueado && <Ionicons name="lock-closed" size={20} color={colors.turquesaSuave} style={s.lockSmall} />}
       </View>
     </TouchableOpacity>
   );

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { AVATAR_OPCIONES, CATS_AVATAR, atuendosDesbloqueados } from '../data/datos';
@@ -100,7 +101,7 @@ export default function AvatarScreen({ navigation }) {
                   <AvatarSVG avatar={mini} tamano={64} />
                   {!libre && (
                     <View style={s.lockOverlay}>
-                      <Text style={s.lockIco}>🔒</Text>
+                      <Ionicons name="lock-closed" size={24} color={colors.cielo} />
                     </View>
                   )}
                 </View>

@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Text, View, StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
+import { Ionicons } from '@expo/vector-icons';
 import {
   useFonts,
   Baloo2_400Regular,
@@ -54,16 +55,16 @@ function MapaStackScreen() {
   return (
     <MapaStack.Navigator screenOptions={hdrOpts}>
       <MapaStack.Screen name="Mapa"    component={MapaScreen}    options={{ headerShown: false }} />
-      <MapaStack.Screen name="Mundo"   component={MundoScreen}   options={{ title: '📚 Mundo' }} />
-      <MapaStack.Screen name="RetoDiario" component={RetoDiarioScreen} options={{ title: '🎯 Reto del día' }} />
-      <MapaStack.Screen name="Practica" component={PracticaScreen} options={{ title: '🔁 Práctica libre' }} />
+      <MapaStack.Screen name="Mundo"   component={MundoScreen}   options={{ title: 'Mundo' }} />
+      <MapaStack.Screen name="RetoDiario" component={RetoDiarioScreen} options={{ title: 'Reto del día' }} />
+      <MapaStack.Screen name="Practica" component={PracticaScreen} options={{ title: 'Práctica libre' }} />
       <MapaStack.Screen name="Duelo"    component={DueloScreen}    options={{ headerShown: false }} />
       <MapaStack.Screen name="Cinematica" component={CinematicaScreen} options={{ headerShown: false }} />
-      <MapaStack.Screen name="Quiz"    component={QuizScreen}    options={{ title: '🧠 Quiz de palabras' }} />
-      <MapaStack.Screen name="Parejas" component={ParejasScreen} options={{ title: '🃏 Une las parejas' }} />
-      <MapaStack.Screen name="Dictado" component={DictadoScreen} options={{ title: '✍️ Dictado cultural' }} />
-      <MapaStack.Screen name="Escucha" component={EscuchaScreen} options={{ title: '🎧 Escucha y elige' }} />
-      <MapaStack.Screen name="Memoria" component={MemoriaScreen} options={{ title: '🧩 Memoria andina' }} />
+      <MapaStack.Screen name="Quiz"    component={QuizScreen}    options={{ title: 'Quiz de palabras' }} />
+      <MapaStack.Screen name="Parejas" component={ParejasScreen} options={{ title: 'Une las parejas' }} />
+      <MapaStack.Screen name="Dictado" component={DictadoScreen} options={{ title: 'Dictado cultural' }} />
+      <MapaStack.Screen name="Escucha" component={EscuchaScreen} options={{ title: 'Escucha y elige' }} />
+      <MapaStack.Screen name="Memoria" component={MemoriaScreen} options={{ title: 'Memoria andina' }} />
     </MapaStack.Navigator>
   );
 }
@@ -72,7 +73,7 @@ function PersonajesStackScreen() {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator screenOptions={hdrOpts}>
-      <Stack.Screen name="PersonajesMain" component={PersonajesScreen} options={{ title: '🌿 Personajes del Camino' }} />
+      <Stack.Screen name="PersonajesMain" component={PersonajesScreen} options={{ title: 'Personajes del Camino' }} />
     </Stack.Navigator>
   );
 }
@@ -81,7 +82,7 @@ function MochilaStackScreen() {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator screenOptions={hdrOpts}>
-      <Stack.Screen name="MochilaMain" component={MochilaScreen} options={{ title: '📖 Mochila de palabras' }} />
+      <Stack.Screen name="MochilaMain" component={MochilaScreen} options={{ title: 'Mochila de palabras' }} />
     </Stack.Navigator>
   );
 }
@@ -90,7 +91,7 @@ function DiccionarioStackScreen() {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator screenOptions={hdrOpts}>
-      <Stack.Screen name="DiccionarioMain" component={DiccionarioScreen} options={{ title: '📚 Diccionario Pastoker' }} />
+      <Stack.Screen name="DiccionarioMain" component={DiccionarioScreen} options={{ title: 'Diccionario Pastoker' }} />
     </Stack.Navigator>
   );
 }
@@ -99,17 +100,15 @@ function PerfilStackScreen() {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator screenOptions={hdrOpts}>
-      <Stack.Screen name="PerfilMain" component={PerfilScreen} options={{ title: '👤 Mi progreso' }} />
-      <Stack.Screen name="Avatar"     component={AvatarScreen} options={{ title: '🎨 Mi avatar' }} />
-      <Stack.Screen name="Estadisticas" component={EstadisticasScreen} options={{ title: '📊 Mis estadísticas' }} />
+      <Stack.Screen name="PerfilMain" component={PerfilScreen} options={{ title: 'Mi progreso' }} />
+      <Stack.Screen name="Avatar"     component={AvatarScreen} options={{ title: 'Mi avatar' }} />
+      <Stack.Screen name="Estadisticas" component={EstadisticasScreen} options={{ title: 'Mis estadísticas' }} />
     </Stack.Navigator>
   );
 }
 
-function TabIcon({ emoji, focused }) {
-  return (
-    <Text style={{ fontSize: focused ? 24 : 19, opacity: focused ? 1 : 0.6 }}>{emoji}</Text>
-  );
+function TabIcon({ name, focused, color }) {
+  return <Ionicons name={focused ? name : `${name}-outline`} size={24} color={color} />;
 }
 
 function MainTabs() {
@@ -124,15 +123,15 @@ function MainTabs() {
       }}
     >
       <Tab.Screen name="MapaTab"       component={MapaStackScreen}
-        options={{ title: 'Mapa',       tabBarIcon: ({ focused }) => <TabIcon emoji="🗺️" focused={focused} /> }} />
+        options={{ title: 'Mapa',       tabBarIcon: ({ focused, color }) => <TabIcon name="map" focused={focused} color={color} /> }} />
       <Tab.Screen name="PersonajesTab" component={PersonajesStackScreen}
-        options={{ title: 'Héroes',     tabBarIcon: ({ focused }) => <TabIcon emoji="🌿" focused={focused} /> }} />
+        options={{ title: 'Héroes',     tabBarIcon: ({ focused, color }) => <TabIcon name="leaf" focused={focused} color={color} /> }} />
       <Tab.Screen name="MochilaTab"    component={MochilaStackScreen}
-        options={{ title: 'Mochila',    tabBarIcon: ({ focused }) => <TabIcon emoji="📖" focused={focused} /> }} />
+        options={{ title: 'Mochila',    tabBarIcon: ({ focused, color }) => <TabIcon name="book" focused={focused} color={color} /> }} />
       <Tab.Screen name="DiccionarioTab" component={DiccionarioStackScreen}
-        options={{ title: 'Diccionario', tabBarIcon: ({ focused }) => <TabIcon emoji="📚" focused={focused} /> }} />
+        options={{ title: 'Diccionario', tabBarIcon: ({ focused, color }) => <TabIcon name="library" focused={focused} color={color} /> }} />
       <Tab.Screen name="PerfilTab"     component={PerfilStackScreen}
-        options={{ title: 'Progreso',   tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} /> }} />
+        options={{ title: 'Progreso',   tabBarIcon: ({ focused, color }) => <TabIcon name="person" focused={focused} color={color} /> }} />
     </Tab.Navigator>
   );
 }
