@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, StyleSheet, Animated, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
@@ -8,6 +9,9 @@ import { useJuego } from '../context/JuegoContext';
 import BotonGlow from '../components/BotonGlow';
 
 const { width, height } = Dimensions.get('window');
+
+// Diámetro del medallón (emblema circular). Acotado para tablets/pantallas grandes.
+const EMBLEMA = Math.min(width * 0.6, 250);
 
 // Estrella decorativa con opacidad pulsante (posición fija)
 function Estrella({ style, size = 8, dur = 1600, delay = 0 }) {
@@ -22,25 +26,22 @@ function Estrella({ style, size = 8, dur = 1600, delay = 0 }) {
     loop.start();
     return () => loop.stop();
   }, []);
-  const opacity = pulso.interpolate({ inputRange: [0, 1], outputRange: [0.2, 1] });
+  const opacity = pulso.interpolate({ inputRange: [0, 1], outputRange: [0.15, 0.9] });
   return (
     <Animated.View
       pointerEvents="none"
-      style={[
-        { position: 'absolute', width: size, height: size, borderRadius: size / 2, backgroundColor: colors.doradoNeon, opacity },
-        { shadowColor: colors.doradoNeon, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.9, shadowRadius: 6, elevation: 4 },
-        style,
-      ]}
+      style={[{ position: 'absolute', width: size, height: size, borderRadius: size / 2, backgroundColor: colors.doradoNeon, opacity }, style]}
     />
   );
 }
 
 export default function BienvenidaScreen({ navigation }) {
   const { estado, cargado } = useJuego();
-  const fadeTitle = useRef(new Animated.Value(0)).current;
-  const fadeCard  = useRef(new Animated.Value(0)).current;
-  const fadeBtn   = useRef(new Animated.Value(0)).current;
-  const levita    = useRef(new Animated.Value(0)).current;
+  const fadeHero = useRef(new Animated.Value(0)).current;
+  const fadeCard = useRef(new Animated.Value(0)).current;
+  const fadeBtn  = useRef(new Animated.Value(0)).current;
+  const levita   = useRef(new Animated.Value(0)).current;
+  const entrada  = useRef(new Animated.Value(0.85)).current; // escala de entrada del emblema
   const [introVista, setIntroVista] = useState(null);
 
   useEffect(() => {
@@ -53,23 +54,26 @@ export default function BienvenidaScreen({ navigation }) {
       }
     })();
 
-    const entrada = Animated.sequence([
-      Animated.delay(300),
-      Animated.timing(fadeTitle, { toValue: 1, duration: 900, useNativeDriver: true }),
-      Animated.timing(fadeCard,  { toValue: 1, duration: 800, useNativeDriver: true }),
-      Animated.timing(fadeBtn,   { toValue: 1, duration: 600, useNativeDriver: true }),
+    const anim = Animated.sequence([
+      Animated.delay(200),
+      Animated.parallel([
+        Animated.timing(fadeHero, { toValue: 1, duration: 800, useNativeDriver: true }),
+        Animated.spring(entrada,  { toValue: 1, friction: 6, tension: 40, useNativeDriver: true }),
+      ]),
+      Animated.timing(fadeCard, { toValue: 1, duration: 700, useNativeDriver: true }),
+      Animated.timing(fadeBtn,  { toValue: 1, duration: 500, useNativeDriver: true }),
     ]);
-    entrada.start();
+    anim.start();
 
     const flotar = Animated.loop(
       Animated.sequence([
-        Animated.timing(levita, { toValue: 1, duration: 2000, useNativeDriver: true }),
-        Animated.timing(levita, { toValue: 0, duration: 2000, useNativeDriver: true }),
+        Animated.timing(levita, { toValue: 1, duration: 2400, useNativeDriver: true }),
+        Animated.timing(levita, { toValue: 0, duration: 2400, useNativeDriver: true }),
       ])
     );
     flotar.start();
 
-    return () => { entrada.stop(); flotar.stop(); };
+    return () => { anim.stop(); flotar.stop(); };
   }, []);
 
   const comenzar = async () => {
@@ -86,86 +90,122 @@ export default function BienvenidaScreen({ navigation }) {
     }
   };
 
-  const translateY = levita.interpolate({ inputRange: [0, 1], outputRange: [-6, 6] });
+  const translateY = levita.interpolate({ inputRange: [0, 1], outputRange: [-7, 7] });
 
   return (
     <View style={s.bg}>
-      <LinearGradient colors={colors.gradAurora} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={colors.gradAurora} start={{ x: 0.1, y: 0 }} end={{ x: 0.9, y: 1 }} style={StyleSheet.absoluteFill} />
 
-      {/* Estrellas decorativas */}
-      <Estrella style={{ top: height * 0.12, left: width * 0.14 }} size={9} dur={1500} />
-      <Estrella style={{ top: height * 0.20, right: width * 0.16 }} size={6} dur={1900} delay={400} />
-      <Estrella style={{ top: height * 0.55, left: width * 0.18 }} size={7} dur={1700} delay={800} />
-      <Estrella style={{ top: height * 0.50, right: width * 0.12 }} size={5} dur={2100} delay={200} />
+      {/* Estrellas decorativas de fondo */}
+      <Estrella style={{ top: height * 0.10, left: width * 0.14 }} size={8} dur={1500} />
+      <Estrella style={{ top: height * 0.16, right: width * 0.18 }} size={5} dur={1900} delay={400} />
+      <Estrella style={{ top: height * 0.30, right: width * 0.10 }} size={6} dur={1700} delay={800} />
+      <Estrella style={{ top: height * 0.62, left: width * 0.12 }} size={5} dur={2100} delay={200} />
+      <Estrella style={{ top: height * 0.70, right: width * 0.16 }} size={7} dur={1600} delay={600} />
 
-      {/* Logo flotante */}
-      <Animated.View style={[s.logoWrap, { transform: [{ translateY }] }]}>
-        <Image source={require('../../assets/images/icon.png')} style={s.logo} resizeMode="contain" />
-      </Animated.View>
+      <SafeAreaView style={s.safe}>
+        {/* HERO: medallón + tagline */}
+        <Animated.View style={[s.hero, { opacity: fadeHero }]}>
+          <Animated.View style={{ transform: [{ translateY }, { scale: entrada }] }}>
+            <View style={s.emblemaWrap}>
+              {/* Halo (círculos concéntricos translúcidos: glow real en Android) */}
+              <View style={[s.halo, s.haloLg]} />
+              <View style={[s.halo, s.haloMd]} />
+              <View style={s.ring}>
+                <Image source={require('../../assets/images/icon.png')} style={s.logo} resizeMode="cover" />
+              </View>
+            </View>
+          </Animated.View>
 
-      {/* Títulos */}
-      <Animated.View style={{ opacity: fadeTitle, alignItems: 'center' }}>
-        <Text style={s.tituloApp}>El Camino</Text>
-        <Text style={s.tituloApp2}>de la Lengua</Text>
-        <Text style={s.subtitulo}>Pueblo Pasto · Nariño · Colombia</Text>
-      </Animated.View>
+          <Text style={s.tagline}>Pueblo Pasto · Nariño · Colombia</Text>
+        </Animated.View>
 
-      {/* Story card */}
-      <Animated.View style={{ opacity: fadeCard, marginHorizontal: 24 }}>
-        <View style={s.storyCard}>
-          <Text style={s.storyBadge}>✨ KINTI ✨</Text>
-          <Text style={s.storyTxt}>
-            Las palabras del <Text style={s.dorado}>pastoker</Text> están desapareciendo del territorio.
-          </Text>
-          <View style={s.storyDivider} />
-          <Text style={s.storyTxt2}>
-            Ayuda a recuperarlas y enciende otra vez el <Text style={s.dorado}>Tuta</Text> y el <Text style={s.dorado}>Pued</Text> sagrados.
-          </Text>
-        </View>
-      </Animated.View>
+        {/* Story card */}
+        <Animated.View style={{ opacity: fadeCard }}>
+          <View style={s.storyCard}>
+            <View style={s.kintiPill}>
+              <Text style={s.kintiPillTxt}>KINTI · TU GUÍA</Text>
+            </View>
+            <Text style={s.storyTxt}>
+              Las palabras del <Text style={s.dorado}>pastoker</Text> están desapareciendo del territorio.
+            </Text>
+            <View style={s.storyDivider} />
+            <Text style={s.storyTxt2}>
+              Ayúdanos a recuperarlas y a encender otra vez el <Text style={s.dorado}>Tuta</Text> y el <Text style={s.dorado}>Pued</Text> sagrados.
+            </Text>
+          </View>
+        </Animated.View>
 
-      {/* CTA */}
-      <Animated.View style={[s.btnWrap, { opacity: fadeBtn }]}>
-        <BotonGlow
-          texto={introVista ? 'Continuar el camino' : 'Comenzar el camino'}
-          onPress={comenzar}
-          variante="primario"
-          icono="🌿"
-          tamano="lg"
-          desactivado={!cargado}
-        />
-        <Text style={s.creditos}>Asociación PUMA-MAKI · Crea Digital 2026</Text>
-      </Animated.View>
+        {/* CTA */}
+        <Animated.View style={[s.btnWrap, { opacity: fadeBtn }]}>
+          <BotonGlow
+            texto={introVista ? 'Continuar el camino' : 'Comenzar el camino'}
+            onPress={comenzar}
+            variante="primario"
+            tamano="lg"
+            desactivado={!cargado}
+          />
+          <Text style={s.creditos}>Asociación PUMA-MAKI · Muellamués</Text>
+        </Animated.View>
+      </SafeAreaView>
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  bg: { flex: 1, width, height, justifyContent: 'space-around', paddingVertical: 40 },
-
-  logoWrap: { alignItems: 'center' },
-  logo: { width: width * 0.34, height: width * 0.34 },
-
-  tituloApp: {
-    fontSize: 44, fontFamily: fonts.extra, color: colors.cielo, letterSpacing: 0.5,
-    textShadowColor: 'rgba(250,199,117,0.4)', textShadowRadius: 16,
+  bg: { flex: 1 },
+  safe: {
+    flex: 1,
+    paddingHorizontal: 26,
+    paddingVertical: 28,
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  tituloApp2: {
-    fontSize: 34, fontFamily: fonts.bold, color: colors.turquesaSuave, marginTop: -4,
-  },
-  subtitulo: { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 10, letterSpacing: 3, opacity: 0.85 },
 
+  // ── Hero ──
+  hero: { alignItems: 'center', marginTop: height * 0.02 },
+  emblemaWrap: { alignItems: 'center', justifyContent: 'center' },
+  halo: { position: 'absolute', borderRadius: 999 },
+  haloLg: { width: EMBLEMA * 1.42, height: EMBLEMA * 1.42, backgroundColor: 'rgba(29,158,117,0.16)' },
+  haloMd: { width: EMBLEMA * 1.16, height: EMBLEMA * 1.16, backgroundColor: 'rgba(250,199,117,0.12)' },
+  ring: {
+    width: EMBLEMA, height: EMBLEMA, borderRadius: EMBLEMA / 2,
+    overflow: 'hidden',
+    borderWidth: 3, borderColor: 'rgba(250,199,117,0.55)',
+    backgroundColor: colors.noche,
+    // Sombra (iOS) + elevación (Android) para despegar el medallón del fondo
+    shadowColor: colors.doradoNeon, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.5, shadowRadius: 18,
+    elevation: 12,
+  },
+  logo: { width: '100%', height: '100%' },
+
+  tagline: {
+    fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.medium,
+    letterSpacing: 2.5, marginTop: 22, opacity: 0.9, textAlign: 'center',
+  },
+
+  // ── Story card ──
   storyCard: {
-    padding: 22, borderRadius: 22,
-    backgroundColor: 'rgba(11,31,42,0.55)',
+    width: '100%',
+    padding: 22, borderRadius: 24,
+    backgroundColor: 'rgba(8,26,34,0.62)',
     borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.35)',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.25, shadowRadius: 16,
+    elevation: 6,
   },
-  storyBadge:   { color: colors.doradoNeon, fontSize: 11, fontFamily: fonts.extra, letterSpacing: 4, textAlign: 'center', marginBottom: 14 },
-  storyTxt:     { color: colors.cielo, fontSize: 14, textAlign: 'center', lineHeight: 22, fontStyle: 'italic' },
-  storyDivider: { height: 1, backgroundColor: 'rgba(93,202,165,0.3)', marginVertical: 12 },
-  storyTxt2:    { color: colors.cielo, fontSize: 13, textAlign: 'center', lineHeight: 21 },
+  kintiPill: {
+    alignSelf: 'center', marginBottom: 16,
+    paddingHorizontal: 14, paddingVertical: 5, borderRadius: 999,
+    backgroundColor: 'rgba(250,199,117,0.14)',
+    borderWidth: 1, borderColor: 'rgba(250,199,117,0.5)',
+  },
+  kintiPillTxt: { color: colors.doradoNeon, fontSize: 11, fontFamily: fonts.extra, letterSpacing: 3 },
+  storyTxt:     { color: colors.cielo, fontSize: 15, textAlign: 'center', lineHeight: 23, fontFamily: fonts.medium },
+  storyDivider: { height: 1, backgroundColor: 'rgba(93,202,165,0.3)', marginVertical: 14, alignSelf: 'center', width: '60%' },
+  storyTxt2:    { color: colors.cielo, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: fonts.regular, opacity: 0.95 },
   dorado:       { color: colors.doradoNeon, fontFamily: fonts.bold },
 
-  btnWrap:  { alignItems: 'center', gap: 16 },
-  creditos: { fontSize: 10, color: colors.turquesaSuave, letterSpacing: 2, opacity: 0.7 },
+  // ── CTA ──
+  btnWrap:  { width: '100%', alignItems: 'center', gap: 16 },
+  creditos: { fontSize: 10, color: colors.turquesaSuave, letterSpacing: 2, opacity: 0.65, fontFamily: fonts.regular },
 });

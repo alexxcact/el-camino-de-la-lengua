@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, Animated, Dimensions, TouchableOpacity, 
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { mundos } from '../data/datos';
 import { imgMundoColor, imgMundoGris } from '../data/imagenes';
 import { useJuego } from '../context/JuegoContext';
@@ -10,6 +11,7 @@ import ReveladoColor from '../components/ReveladoColor';
 import Confeti from '../components/Confeti';
 import ContadorAnimado from '../components/ContadorAnimado';
 import MedallaPasto from '../components/MedallaPasto';
+import Medallon from '../components/Medallon';
 import { sonar } from '../utils/sonidos';
 
 const { width: W } = Dimensions.get('window');
@@ -122,7 +124,7 @@ export default function FinalScreen({ navigation }) {
           <View style={s.retratos}>
             {RETRATOS.map((p, i) => (
               <Animated.View key={i} style={{ transform: [{ scale: persAnim[i] }] }}>
-                <Image source={p.img} style={[s.retrato, { width: p.size, height: p.size, borderRadius: p.size / 2, borderColor: p.color }]} />
+                <Medallon source={p.img} size={p.size} ring={p.color} halo={false} />
               </Animated.View>
             ))}
           </View>
@@ -133,7 +135,9 @@ export default function FinalScreen({ navigation }) {
       {fase === 3 && (
         <View style={s.centro}>
           <Animated.View style={[s.msgCard, { opacity: msgFade }]}>
-            <Text style={s.msgLabel}>✦ TAITA RIMAY ✦</Text>
+            <View style={s.msgPill}>
+              <Text style={s.msgPillTxt}>TAITA RIMAY</Text>
+            </View>
             <Text style={s.msgTxt}>
               {nombre}, las palabras viven porque tú las caminaste.{'\n\n'}
               El territorio tiene de nuevo su voz.{'\n\n'}
@@ -146,7 +150,7 @@ export default function FinalScreen({ navigation }) {
       {/* Fase 4 — cierre con estadísticas */}
       {fase === 4 && (
         <View style={s.centro}>
-          <Text style={s.cierreEmoji}>🌄</Text>
+          <Medallon source={require('../../assets/images/personajes/kinti.jpg')} size={110} style={s.cierreFoco} />
           <Text style={s.cierreTit}>¡Camino completo, {nombre}!</Text>
 
           <View style={s.statsRow}>
@@ -166,7 +170,7 @@ export default function FinalScreen({ navigation }) {
 
           <View style={s.botones}>
             <TouchableOpacity style={s.btnPrim} onPress={salir} activeOpacity={0.85}>
-              <Text style={s.btnPrimTxt}>🌿 Volver al territorio</Text>
+              <Text style={s.btnPrimTxt}>Volver al territorio</Text>
             </TouchableOpacity>
             <TouchableOpacity style={s.btnFant} onPress={compartir} activeOpacity={0.7}>
               <Text style={s.btnFantTxt}>Compartir mi logro</Text>
@@ -196,21 +200,21 @@ const s = StyleSheet.create({
 
   escTxt: { position: 'absolute', bottom: 70, left: 24, right: 24, alignItems: 'center', gap: 8 },
   escNom: { color: colors.cielo, fontSize: 28, fontFamily: fonts.extra, textShadowColor: 'rgba(0,0,0,0.6)', textShadowRadius: 8 },
-  escSub: { color: colors.turquesaSuave, fontSize: 14, fontStyle: 'italic' },
+  escSub: { ...ui.sub, fontSize: 14, textAlign: 'center' },
 
   centro:  { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   faseTit: { color: colors.doradoNeon, fontSize: 18, fontFamily: fonts.extra, marginBottom: 28, letterSpacing: 1 },
-  retratos:{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, flexWrap: 'wrap' },
-  retrato: { borderWidth: 3 },
+  retratos:{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, flexWrap: 'wrap' },
 
-  msgCard: { backgroundColor: 'rgba(11,31,42,0.7)', borderRadius: 24, padding: 28, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.4)' },
-  msgLabel:{ color: colors.doradoNeon, fontSize: 12, fontFamily: fonts.extra, letterSpacing: 3, textAlign: 'center', marginBottom: 16 },
-  msgTxt:  { color: colors.cielo, fontSize: 18, fontFamily: fonts.semibold, textAlign: 'center', lineHeight: 27, fontStyle: 'italic' },
+  msgCard: { ...ui.cardDestacada, padding: 28 },
+  msgPill: { ...ui.pill, alignSelf: 'center', marginBottom: 16 },
+  msgPillTxt: { ...ui.pillTxt },
+  msgTxt:  { color: colors.cielo, fontSize: 18, fontFamily: fonts.semibold, textAlign: 'center', lineHeight: 27 },
 
-  cierreEmoji: { fontSize: 56 },
+  cierreFoco:  { marginBottom: 6 },
   cierreTit:   { color: colors.cielo, fontSize: 24, fontFamily: fonts.extra, textAlign: 'center', marginTop: 10, marginBottom: 28 },
   statsRow:    { flexDirection: 'row', gap: 14, marginBottom: 34 },
-  statBox:     { alignItems: 'center', backgroundColor: 'rgba(11,31,42,0.5)', borderRadius: 16, paddingVertical: 16, paddingHorizontal: 18, borderWidth: 1, borderColor: 'rgba(93,202,165,0.25)', minWidth: 92 },
+  statBox:     { ...ui.card, borderRadius: radii.md, alignItems: 'center', paddingVertical: 16, paddingHorizontal: 18, minWidth: 92 },
   statN:       { color: colors.doradoNeon, fontSize: 30, fontFamily: fonts.extra },
   statL:       { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2 },
 

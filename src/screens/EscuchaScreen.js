@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { palabras, mundos, shuffle } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import Acompanante from '../components/Acompanante';
@@ -128,7 +129,9 @@ export default function EscuchaScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
+            <View style={s.headerPill}>
+              <Text style={s.headerPillTxt}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
+            </View>
             <Text style={s.aciertosTxt}>{idx + 1}/{rondas.length} · ✓ {aciertos}</Text>
           </View>
           <View style={s.progBar}>
@@ -142,9 +145,14 @@ export default function EscuchaScreen({ route, navigation }) {
         <View style={s.audioWrap}>
           <Text style={s.instruccion}>Escucha y elige el dibujo</Text>
           <TouchableOpacity onPress={() => decirPalabra(ronda.palabra.p)} activeOpacity={0.85}>
-            <Animated.View style={[s.audioBtn, { transform: [{ scale: pulsoScale }] }]}>
-              <Ionicons name="volume-high" size={56} color={colors.cielo} />
-            </Animated.View>
+            <View style={s.audioGlowWrap}>
+              {/* Halo (círculos concéntricos translúcidos: glow real en Android) */}
+              <View style={[s.audioHalo, s.audioHaloLg]} />
+              <View style={[s.audioHalo, s.audioHaloMd]} />
+              <Animated.View style={[s.audioBtn, { transform: [{ scale: pulsoScale }] }]}>
+                <Ionicons name="volume-high" size={56} color={colors.cielo} />
+              </Animated.View>
+            </View>
           </TouchableOpacity>
           <Text style={s.audioHint}>Toca para oír otra vez</Text>
         </View>
@@ -193,31 +201,36 @@ export default function EscuchaScreen({ route, navigation }) {
 const s = StyleSheet.create({
   bg: { flex: 1, backgroundColor: colors.noche },
 
-  header:      { marginBottom: 16, padding: 14, borderRadius: 16, backgroundColor: colors.nocheCard, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
-  headerTop:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
-  headerBadge: { color: colors.cielo, fontSize: 13, fontFamily: fonts.bold },
-  aciertosTxt: { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold },
+  header:        { ...ui.card, padding: 14, marginBottom: 16 },
+  headerTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
+  headerPill:    { ...ui.pill, flexShrink: 1 },
+  headerPillTxt: { ...ui.pillTxt },
+  aciertosTxt:   { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold },
   progBar:     { flexDirection: 'row', gap: 7, alignItems: 'center' },
   progDot:     { width: 18, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.18)' },
   progDone:    { backgroundColor: colors.doradoNeon },
   progActive:  { backgroundColor: colors.doradoNeon, width: 30, height: 8, borderRadius: 4 },
 
-  audioWrap:   { alignItems: 'center', marginBottom: 22 },
-  instruccion: { fontSize: 15, color: colors.turquesaSuave, fontFamily: fonts.semibold, marginBottom: 16 },
+  audioWrap:    { alignItems: 'center', marginBottom: 22 },
+  instruccion:  { ...ui.sub, fontSize: 15, fontFamily: fonts.semibold, marginBottom: 16 },
+  audioGlowWrap:{ alignItems: 'center', justifyContent: 'center', paddingVertical: 20 },
+  audioHalo:    { position: 'absolute', borderRadius: radii.pill },
+  audioHaloLg:  { width: 168, height: 168, backgroundColor: ui.haloTurquesa },
+  audioHaloMd:  { width: 140, height: 140, backgroundColor: ui.haloDorado },
   audioBtn: {
     width: 120, height: 120, borderRadius: 60,
     backgroundColor: colors.turquesa, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 3, borderColor: colors.turquesaClaro,
-    shadowColor: colors.turquesaClaro, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.7, shadowRadius: 16, elevation: 12,
+    borderWidth: 3, borderColor: ui.ringTurquesa,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 8,
   },
-  audioIco:  { fontSize: 56 },
-  audioHint: { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 12 },
+  audioHint: { ...ui.caption, fontSize: 12, letterSpacing: 0.5, marginTop: 4 },
 
   grid:   { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 12 },
   opBtn:  {
+    ...ui.card,
+    borderRadius: radii.md, padding: 0,
     width: '47%', aspectRatio: 1.3, alignItems: 'center', justifyContent: 'center',
-    backgroundColor: colors.nocheCard, borderRadius: 18, marginBottom: 12,
-    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.2)',
+    marginBottom: 12,
   },
   opCorrecta:   { borderColor: colors.turquesa, borderWidth: 2.5, backgroundColor: 'rgba(29,158,117,0.18)' },
   opIncorrecta: { borderColor: colors.coral, borderWidth: 2.5, backgroundColor: 'rgba(242,120,92,0.14)' },
@@ -228,7 +241,7 @@ const s = StyleSheet.create({
   resBg:      { flex: 1 },
   resContent: { flexGrow: 1, padding: 22, justifyContent: 'center', alignItems: 'center' },
   resTit:     { fontSize: 24, fontFamily: fonts.extra, color: colors.doradoNeon, textAlign: 'center', marginTop: 18, textShadowColor: 'rgba(250,199,117,0.4)', textShadowRadius: 10 },
-  scoreCard:  { alignItems: 'center', padding: 22, marginVertical: 22, borderRadius: 22, alignSelf: 'stretch', backgroundColor: colors.nocheCard, borderWidth: 2, borderColor: colors.doradoNeon },
+  scoreCard:  { ...ui.cardDestacada, alignItems: 'center', marginVertical: 22, alignSelf: 'stretch' },
   scoreNum:   { fontSize: 52, fontFamily: fonts.extra, color: colors.cielo },
   scoreLbl:   { fontSize: 13, color: colors.turquesaSuave, fontFamily: fonts.medium, marginTop: 2 },
 });

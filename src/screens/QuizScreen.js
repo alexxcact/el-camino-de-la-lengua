@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { palabras, mundos, shuffle } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import Acompanante from '../components/Acompanante';
@@ -132,7 +133,9 @@ export default function QuizScreen({ route, navigation }) {
         {/* Header compacto */}
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
+            <View style={s.headerPill}>
+              <Text style={s.headerPillTxt}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
+            </View>
             <Text style={s.aciertosTxt}>✓ {aciertos}</Text>
           </View>
           <View style={s.progBar}>
@@ -189,29 +192,27 @@ export default function QuizScreen({ route, navigation }) {
 const s = StyleSheet.create({
   bg: { flex: 1, backgroundColor: colors.noche },
 
-  header:       { marginBottom: 16, padding: 14, borderRadius: 16, backgroundColor: colors.nocheCard, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
-  headerTop:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
-  headerBadge:  { color: colors.cielo, fontSize: 13, fontFamily: fonts.bold },
-  aciertosTxt:  { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold },
+  header:        { ...ui.card, padding: 14, marginBottom: 16 },
+  headerTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
+  headerPill:    { ...ui.pill, flexShrink: 1 },
+  headerPillTxt: { ...ui.pillTxt },
+  aciertosTxt:   { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold },
   progBar:      { flexDirection: 'row', gap: 7, alignItems: 'center' },
   progDot:      { width: 18, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.18)' },
   progDone:     { backgroundColor: colors.doradoNeon },
-  progActive:   {
-    backgroundColor: colors.doradoNeon, width: 30, height: 8, borderRadius: 4,
-    shadowColor: colors.doradoNeon, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.9, shadowRadius: 7, elevation: 6,
-  },
+  progActive:   { backgroundColor: colors.doradoNeon, width: 30, height: 8, borderRadius: 4 },
 
-  qCard:  { padding: 24, alignItems: 'center', marginBottom: 16, borderRadius: 22, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: colors.turquesa },
-  qLabel: { fontSize: 10, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 10 },
+  qCard:  { ...ui.cardDestacada, alignItems: 'center', marginBottom: 16 },
+  qLabel: { ...ui.caption, fontSize: 10, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 10, opacity: 1 },
   qEmoji: { fontSize: 60, marginBottom: 8 },
-  qPast:  { fontSize: 36, fontWeight: '900', color: colors.doradoNeon, fontFamily: 'serif', letterSpacing: 1, textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 12 },
-  qFon:   { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 4 },
+  qPast:  { ...ui.pastoker, fontSize: 36, fontFamily: fonts.extra, letterSpacing: 1, textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 12 },
+  qFon:   { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.medium, marginTop: 4, opacity: 0.9 },
 
   opciones: { gap: 10, marginBottom: 12 },
   op: {
+    ...ui.card,
+    borderRadius: radii.md, padding: 0, paddingHorizontal: 14, minHeight: 56,
     flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: colors.nocheCard, paddingHorizontal: 14, minHeight: 56, borderRadius: 16,
-    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.2)',
   },
   opCorrecta:      { borderColor: colors.turquesa, borderWidth: 2, backgroundColor: 'rgba(29,158,117,0.15)' },
   opIncorrecta:    { borderColor: colors.coral, borderWidth: 2, backgroundColor: 'rgba(242,120,92,0.12)' },
@@ -219,14 +220,13 @@ const s = StyleSheet.create({
   opEmoji: { fontSize: 26 },
   opTxt:   { flex: 1, fontSize: 15, fontFamily: fonts.bold, color: colors.cielo },
   opCheck: { fontSize: 22, color: colors.turquesa, fontFamily: fonts.extra },
-  opX:     { fontSize: 22, color: colors.coral, fontFamily: fonts.extra },
 
   resultBg:      { flex: 1 },
   resultContent: { flexGrow: 1, padding: 22, justifyContent: 'center', alignItems: 'center' },
   resultTit:     { fontSize: 24, fontFamily: fonts.extra, color: colors.doradoNeon, textAlign: 'center', marginTop: 18, textShadowColor: 'rgba(250,199,117,0.4)', textShadowRadius: 10 },
-  scoreCard:     { alignItems: 'center', padding: 22, marginVertical: 22, borderRadius: 22, alignSelf: 'stretch', backgroundColor: colors.nocheCard, borderWidth: 2, borderColor: colors.doradoNeon },
+  scoreCard:     { ...ui.cardDestacada, alignItems: 'center', marginVertical: 22, alignSelf: 'stretch' },
   resultScore:   { fontSize: 52, fontFamily: fonts.extra, color: colors.cielo },
   resultPct:     { fontSize: 14, color: colors.turquesaSuave, marginTop: 2, fontFamily: fonts.medium },
-  scoreBar:      { height: 8, width: '100%', backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 4, overflow: 'hidden', marginTop: 14 },
-  scoreFill:     { height: '100%', borderRadius: 4 },
+  scoreBar:      { height: 8, width: '100%', backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: radii.pill, overflow: 'hidden', marginTop: 14 },
+  scoreFill:     { height: '100%', borderRadius: radii.pill },
 });

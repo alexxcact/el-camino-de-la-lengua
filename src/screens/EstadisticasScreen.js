@@ -1,8 +1,10 @@
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Share } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { palabras, mundos, categorias, TIPOS_MISION } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import ContadorAnimado from '../components/ContadorAnimado';
@@ -81,7 +83,7 @@ export default function EstadisticasScreen() {
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
 
         {/* Resumen general */}
-        <Text style={s.seccion}>📊 RESUMEN</Text>
+        <Text style={s.seccion}>RESUMEN</Text>
         <View style={s.grid}>
           {cards.map((c, i) => (
             <View key={c.l} style={s.card}>
@@ -104,7 +106,7 @@ export default function EstadisticasScreen() {
         </View>
 
         {/* Progreso por mundo */}
-        <Text style={s.seccion}>🗺️ POR MUNDO</Text>
+        <Text style={s.seccion}>POR MUNDO</Text>
         {porMundo.map(m => (
           <View key={m.id} style={s.barRow}>
             <View style={s.barRowTop}>
@@ -118,7 +120,7 @@ export default function EstadisticasScreen() {
         ))}
 
         {/* Progreso por categoría */}
-        <Text style={s.seccion}>🏷️ POR CATEGORÍA</Text>
+        <Text style={s.seccion}>POR CATEGORÍA</Text>
         {porCategoria.map(c => (
           <View key={c.cat} style={s.catRow}>
             <Text style={s.catLbl} numberOfLines={1}>{c.cat}</Text>
@@ -149,7 +151,8 @@ export default function EstadisticasScreen() {
 
         {/* Compartir */}
         <TouchableOpacity style={s.shareBtn} onPress={compartir} activeOpacity={0.85}>
-          <Text style={s.shareTxt}>📤 Compartir mi avance</Text>
+          <Ionicons name="share-social" size={18} color={colors.doradoNeon} />
+          <Text style={s.shareTxt}>Compartir mi avance</Text>
         </TouchableOpacity>
 
       </ScrollView>
@@ -160,14 +163,14 @@ export default function EstadisticasScreen() {
 const s = StyleSheet.create({
   bg: { flex: 1, backgroundColor: colors.noche },
 
-  seccion: { fontSize: 12, fontFamily: fonts.bold, color: colors.turquesaSuave, letterSpacing: 2, marginTop: 18, marginBottom: 10 },
+  seccion: { ...ui.pill, ...ui.pillTxt, overflow: 'hidden', marginTop: 20, marginBottom: 10 },
 
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  card: { width: '48%', backgroundColor: colors.nocheCard, borderRadius: 16, padding: 14, alignItems: 'center', marginBottom: 12, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  card: { ...ui.card, width: '48%', borderRadius: radii.md, padding: 14, alignItems: 'center', marginBottom: 12 },
   cardNum: { fontSize: 28, fontFamily: fonts.extra, color: colors.doradoNeon },
   cardLbl: { fontSize: 11, color: colors.turquesaSuave, marginTop: 2, fontFamily: fonts.medium, textAlign: 'center' },
 
-  bigBarCard: { backgroundColor: colors.nocheCard, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: 'rgba(250,199,117,0.3)', marginTop: 4 },
+  bigBarCard: { ...ui.cardDestacada, padding: 16, marginTop: 4 },
   bigBarTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   bigBarLbl: { fontSize: 14, color: colors.cielo, fontFamily: fonts.bold },
   bigBarPct: { fontSize: 18, color: colors.doradoNeon, fontFamily: fonts.extra },
@@ -185,15 +188,15 @@ const s = StyleSheet.create({
   catLbl: { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.medium, width: 92 },
   catVal: { fontSize: 11, color: colors.turquesaClaro, fontFamily: fonts.semibold, width: 38, textAlign: 'right' },
 
-  calCard: { backgroundColor: colors.nocheCard, borderRadius: 16, padding: 14, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  calCard: { ...ui.card, padding: 14 },
   calFila: { flexDirection: 'row', gap: 6, marginBottom: 6 },
   calDia: { flex: 1, aspectRatio: 1, borderRadius: 5 },
   calOn:  { backgroundColor: colors.doradoNeon },
-  calOff: { backgroundColor: colors.nocheProfundo, borderWidth: 1, borderColor: 'rgba(93,202,165,0.12)' },
+  calOff: { backgroundColor: colors.nocheProfundo, borderWidth: 1, borderColor: 'rgba(93,202,165,0.15)' },
   calLeyenda: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8 },
   calDot: { width: 12, height: 12, borderRadius: 4 },
   calLeyTxt: { fontSize: 10, color: colors.turquesaSuave, fontFamily: fonts.medium, marginRight: 8 },
 
-  shareBtn: { marginTop: 22, backgroundColor: 'rgba(250,199,117,0.15)', borderRadius: 16, paddingVertical: 14, alignItems: 'center', borderWidth: 1.5, borderColor: colors.doradoNeon },
+  shareBtn: { marginTop: 22, flexDirection: 'row', justifyContent: 'center', gap: 8, backgroundColor: 'rgba(250,199,117,0.14)', borderRadius: radii.md, paddingVertical: 14, alignItems: 'center', borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.5)' },
   shareTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.bold },
 });

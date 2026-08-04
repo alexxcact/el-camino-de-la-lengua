@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated } from '
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui } from '../theme/ui';
 import { palabras, mundos, shuffle } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import Acompanante from '../components/Acompanante';
@@ -178,7 +179,9 @@ export default function MemoriaScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
+            <View style={s.headerPill}>
+              <Text style={s.headerPillTxt}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
+            </View>
             <Text style={s.headerInfo}>✓ {resueltas.size}/{pares} · {intentos} intentos</Text>
           </View>
           <Text style={s.headerSub}>Encuentra las parejas: palabra ↔ dibujo</Text>
@@ -210,18 +213,19 @@ export default function MemoriaScreen({ route, navigation }) {
 const s = StyleSheet.create({
   bg: { flex: 1, backgroundColor: colors.noche },
 
-  header:      { marginBottom: 14, padding: 14, borderRadius: 16, backgroundColor: colors.nocheCard, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
-  headerTop:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  headerBadge: { color: colors.cielo, fontSize: 13, fontFamily: fonts.bold },
-  headerInfo:  { color: colors.doradoNeon, fontSize: 12, fontFamily: fonts.bold },
-  headerSub:   { color: colors.turquesaSuave, fontSize: 13, fontFamily: fonts.semibold },
+  header:        { ...ui.card, padding: 14, marginBottom: 14 },
+  headerTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+  headerPill:    { ...ui.pill, flexShrink: 1 },
+  headerPillTxt: { ...ui.pillTxt },
+  headerInfo:    { color: colors.doradoNeon, fontSize: 12, fontFamily: fonts.bold },
+  headerSub:     { ...ui.sub, fontFamily: fonts.semibold },
 
   tablero: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
 
   resBg:      { flex: 1 },
   resContent: { flexGrow: 1, padding: 22, justifyContent: 'center', alignItems: 'center' },
   resTit:     { fontSize: 23, fontFamily: fonts.extra, color: colors.doradoNeon, textAlign: 'center', marginTop: 18, textShadowColor: 'rgba(250,199,117,0.4)', textShadowRadius: 10 },
-  scoreCard:  { alignItems: 'center', padding: 22, marginVertical: 20, borderRadius: 22, alignSelf: 'stretch', backgroundColor: colors.nocheCard, borderWidth: 2, borderColor: colors.doradoNeon },
+  scoreCard:  { ...ui.cardDestacada, alignItems: 'center', marginVertical: 20, alignSelf: 'stretch' },
   scoreNum:   { fontSize: 52, fontFamily: fonts.extra, color: colors.cielo },
   scoreLbl:   { fontSize: 13, color: colors.turquesaSuave, fontFamily: fonts.medium, marginTop: 2 },
   perfectoTxt:{ fontSize: 15, color: colors.doradoNeon, fontFamily: fonts.bold, marginTop: 10 },
@@ -236,7 +240,7 @@ const cs = StyleSheet.create({
     backfaceVisibility: 'hidden',
   },
   dorso: {
-    backgroundColor: colors.nocheCard,
+    backgroundColor: 'rgba(8,26,34,0.62)',
     borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.4)',
   },
   rombo: {
@@ -255,5 +259,5 @@ const cs = StyleSheet.create({
   },
   frenteResuelta: { borderColor: colors.doradoNeon, backgroundColor: 'rgba(29,158,117,0.18)' },
   emoji: { fontSize: 40 },
-  past:  { fontSize: 18, fontWeight: '900', color: colors.doradoNeon, fontFamily: 'serif', textAlign: 'center' },
+  past:  { ...ui.pastoker, fontSize: 18, fontFamily: fonts.extra, textAlign: 'center' },
 });

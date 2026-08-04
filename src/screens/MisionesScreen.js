@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { palabras, mundos, shuffle } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import Acompanante from '../components/Acompanante';
@@ -120,7 +121,9 @@ export function ParejasScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
+            <View style={s.headerPill}>
+              <Text style={s.headerPillTxt}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
+            </View>
             <Text style={s.headerInfo}>✓ {resueltas.size}/{totalPares} · {intentos}</Text>
           </View>
           <Text style={s.headerSub}>Une las parejas: pastoker ↔ español</Text>
@@ -259,7 +262,9 @@ export function DictadoScreen({ route, navigation }) {
 
         <View style={s.header}>
           <View style={s.headerTop}>
-            <Text style={s.headerBadge}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
+            <View style={s.headerPill}>
+              <Text style={s.headerPillTxt}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
+            </View>
             <Text style={s.headerInfo}>{idx + 1}/{listaDict.length} · ✓ {aciertos}</Text>
           </View>
           <Text style={s.headerSub}>Escribe la palabra en pastoker</Text>
@@ -321,37 +326,38 @@ const s = StyleSheet.create({
   bg: { flex: 1, backgroundColor: colors.noche },
 
   // ─── Header compartido ───
-  header:      { marginBottom: 14, padding: 14, borderRadius: 16, backgroundColor: colors.nocheCard, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
-  headerTop:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  headerBadge: { color: colors.cielo, fontSize: 13, fontFamily: fonts.bold },
-  headerInfo:  { color: colors.doradoNeon, fontSize: 12, fontFamily: fonts.bold },
-  headerSub:   { color: colors.turquesaSuave, fontSize: 13, fontFamily: fonts.semibold },
+  header:        { ...ui.card, padding: 14, marginBottom: 14 },
+  headerTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+  headerPill:    { ...ui.pill, flexShrink: 1 },
+  headerPillTxt: { ...ui.pillTxt },
+  headerInfo:    { color: colors.doradoNeon, fontSize: 12, fontFamily: fonts.bold },
+  headerSub:     { ...ui.sub, fontFamily: fonts.semibold },
 
   // ─── Parejas ───
   grid:    { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   tarjeta: {
     width: '48%', minHeight: 84,
-    borderRadius: 16, alignItems: 'center', justifyContent: 'center',
+    borderRadius: radii.md, alignItems: 'center', justifyContent: 'center',
     padding: 10, borderWidth: 1.5, marginBottom: 10,
   },
-  tarjetaPast:     { backgroundColor: 'rgba(250,199,117,0.20)', borderColor: colors.doradoNeon, borderWidth: 2 },
-  tarjetaEsp:      { backgroundColor: colors.nocheCard, borderColor: 'rgba(93,202,165,0.25)' },
+  tarjetaPast:     { backgroundColor: 'rgba(250,199,117,0.20)', borderColor: ui.ringDorado, borderWidth: 2 },
+  tarjetaEsp:      { backgroundColor: 'rgba(8,26,34,0.62)', borderColor: 'rgba(93,202,165,0.35)' },
   tarjetaSel:      { borderColor: colors.turquesaClaro, borderWidth: 3, transform: [{ scale: 0.96 }] },
   tarjetaAcierto:  { borderColor: colors.turquesa, borderWidth: 3, backgroundColor: 'rgba(29,158,117,0.30)' },
   tarjetaError:    { borderColor: colors.coral, borderWidth: 3, backgroundColor: 'rgba(242,120,92,0.18)' },
   tarjetaResuelta: { opacity: 0.3, borderColor: colors.turquesa },
   tarjEmoji:       { fontSize: 24, marginBottom: 4 },
   tarjTxt:         { fontSize: 13, fontFamily: fonts.semibold, color: colors.cielo, textAlign: 'center' },
-  tarjTxtPast:     { color: colors.doradoNeon, fontSize: 15, fontWeight: '900', fontFamily: 'serif' },
+  tarjTxtPast:     { ...ui.pastoker, fontSize: 15, fontFamily: fonts.extra },
 
   // ─── Dictado ───
-  qCard:  { padding: 22, alignItems: 'center', marginBottom: 14, borderRadius: 22, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: colors.turquesa },
-  qLabel: { fontSize: 10, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 4 },
+  qCard:  { ...ui.cardDestacada, alignItems: 'center', marginBottom: 14 },
+  qLabel: { ...ui.caption, fontSize: 10, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 4, opacity: 1 },
   qEmoji: { fontSize: 56, marginVertical: 8 },
   qEsp:   { fontSize: 28, fontFamily: fonts.extra, color: colors.cielo },
-  qCat:   { fontSize: 11, color: colors.doradoNeon, fontStyle: 'italic', marginTop: 4, letterSpacing: 2 },
+  qCat:   { fontSize: 11, color: colors.doradoNeon, fontFamily: fonts.medium, marginTop: 4, letterSpacing: 2 },
 
-  inputWrap:     { backgroundColor: colors.nocheProfundo, borderRadius: 16, borderWidth: 2, borderColor: 'rgba(93,202,165,0.3)', marginBottom: 10, height: 52, justifyContent: 'center' },
+  inputWrap:     { backgroundColor: colors.nocheProfundo, borderRadius: radii.md, borderWidth: 2, borderColor: 'rgba(93,202,165,0.3)', marginBottom: 10, height: 52, justifyContent: 'center' },
   inputWrapFoco: { borderColor: colors.turquesa, shadowColor: colors.turquesa, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.6, shadowRadius: 10, elevation: 6 },
   inputWrapOk:   { borderColor: colors.turquesa, shadowColor: colors.turquesa, shadowOpacity: 0.6, shadowRadius: 10, elevation: 6 },
   inputWrapErr:  { borderColor: colors.coral },
@@ -365,6 +371,6 @@ const s = StyleSheet.create({
   resContent:   { flexGrow: 1, padding: 22, justifyContent: 'center' },
   resEmoji:     { fontSize: 72, textAlign: 'center' },
   resTit:       { fontSize: 24, fontFamily: fonts.extra, color: colors.doradoNeon, textAlign: 'center', marginTop: 8, textShadowColor: 'rgba(250,199,117,0.4)', textShadowRadius: 10 },
-  resScoreCard: { alignItems: 'center', padding: 18, marginTop: 14, borderRadius: 18, alignSelf: 'center', backgroundColor: colors.nocheCard, borderWidth: 2, borderColor: colors.doradoNeon, paddingHorizontal: 40 },
+  resScoreCard: { ...ui.cardDestacada, alignItems: 'center', padding: 18, marginTop: 14, alignSelf: 'center', paddingHorizontal: 40 },
   resSub:       { fontSize: 24, fontFamily: fonts.extra, color: colors.cielo },
 });

@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, Image, TextInput, StyleSheet, Animated, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Animated, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { useJuego } from '../context/JuegoContext';
 import BotonGlow from '../components/BotonGlow';
+import Medallon from '../components/Medallon';
 
 // Mismo formateo que guardarNombre, para mostrar el nombre correcto en la respuesta
 const formatNombre = (raw) => {
@@ -74,10 +76,13 @@ export default function NombreScreen({ navigation }) {
 
         {/* Avatar de Taita Rimay con glow */}
         <Animated.View style={[s.avatarWrap, { transform: [{ translateY: saltoY }, { scale: escala }] }]}>
+          <View style={s.haloExt} />
           <Animated.View style={[s.glowRing, { opacity: brillo }]} />
-          <Image source={require('../../assets/images/personajes/taita_rimay.jpg')} style={s.avatar} />
+          <Medallon source={require('../../assets/images/personajes/taita_rimay.jpg')} size={140} halo={false} />
         </Animated.View>
-        <Text style={s.nombrePersonaje}>Taita Rimay</Text>
+        <View style={s.nombrePill}>
+          <Text style={s.nombrePillTxt}>Taita Rimay</Text>
+        </View>
 
         {/* Globo de diálogo */}
         {fase === 'pregunta' ? (
@@ -119,7 +124,6 @@ export default function NombreScreen({ navigation }) {
             <View style={s.btns}>
               <BotonGlow
                 texto="Así me llamo"
-                icono="✨"
                 onPress={() => confirmar(texto)}
                 variante="primario"
                 tamano="lg"
@@ -144,26 +148,29 @@ const s = StyleSheet.create({
   content: { flexGrow: 1, justifyContent: 'center', alignItems: 'center', padding: 24, gap: 4 },
 
   avatarWrap: { alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
+  haloExt: {
+    position: 'absolute', width: 196, height: 196, borderRadius: 98,
+    backgroundColor: ui.haloTurquesa,
+  },
   glowRing: {
     position: 'absolute', width: 156, height: 156, borderRadius: 78,
     backgroundColor: colors.doradoNeon,
   },
-  avatar: { width: 140, height: 140, borderRadius: 70, borderWidth: 3.5, borderColor: colors.doradoNeon },
-  nombrePersonaje: { color: colors.doradoNeon, fontSize: 14, fontFamily: fonts.extra, letterSpacing: 2, marginBottom: 14 },
+  nombrePill:    { ...ui.pill, alignSelf: 'center', marginTop: 12, marginBottom: 14 },
+  nombrePillTxt: { ...ui.pillTxt, textTransform: 'uppercase' },
 
   bubble: {
-    backgroundColor: 'rgba(11,31,42,0.6)',
-    borderRadius: 20, padding: 20, marginBottom: 22,
-    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.35)',
+    ...ui.card,
+    marginBottom: 22,
     maxWidth: 360,
   },
-  bubbleResp:  { borderColor: colors.doradoNeon },
-  bubbleTxt:   { color: colors.cielo, fontSize: 15, textAlign: 'center', lineHeight: 23, fontStyle: 'italic' },
-  nombreResp:  { color: colors.doradoNeon, fontFamily: fonts.extra, fontStyle: 'normal' },
+  bubbleResp:  { borderColor: 'rgba(250,199,117,0.55)' },
+  bubbleTxt:   { ...ui.bodyMed, textAlign: 'center', lineHeight: 23 },
+  nombreResp:  { color: colors.doradoNeon, fontFamily: fonts.extra },
 
   inputWrap: {
     alignSelf: 'stretch', height: 52, justifyContent: 'center',
-    backgroundColor: colors.nocheProfundo, borderRadius: 16,
+    backgroundColor: colors.nocheProfundo, borderRadius: radii.md,
     borderWidth: 2, borderColor: 'rgba(93,202,165,0.4)', marginBottom: 20,
   },
   inputWrapFoco: {

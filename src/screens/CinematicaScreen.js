@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground, Dimen
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui } from '../theme/ui';
 import { CINEMATICAS, personajes } from '../data/datos';
 import { imgMundoColor } from '../data/imagenes';
 import { useJuego } from '../context/JuegoContext';
@@ -145,8 +146,13 @@ export default function CinematicaScreen({ route, navigation }) {
 
       {/* Retrato del personaje */}
       <View style={s.retratoWrap}>
-        <View style={[s.retratoFrame, { borderColor: color, shadowColor: color }]}>
-          <Image source={RETRATOS[escena.personaje] || RETRATOS.taita_rimay} style={s.retratoImg} />
+        <View style={s.emblema}>
+          {/* Halos concéntricos (glow real en Android) */}
+          <View style={[s.halo, s.haloLg]} />
+          <View style={[s.halo, s.haloMd]} />
+          <View style={[s.retratoFrame, { borderColor: color, shadowColor: color }]}>
+            <Image source={RETRATOS[escena.personaje] || RETRATOS.taita_rimay} style={s.retratoImg} />
+          </View>
         </View>
         <View style={[s.nombreTag, { backgroundColor: color }]}>
           <Text style={s.nombreTxt}>{nombre}</Text>
@@ -168,25 +174,29 @@ const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.noche },
   bg:        { width, height, flex: 1 },
 
-  saltarBtn: { position: 'absolute', top: 48, right: 16, zIndex: 10, backgroundColor: 'rgba(0,0,0,0.45)', paddingHorizontal: 14, paddingVertical: 9, borderRadius: 20, borderWidth: 1, borderColor: colors.glassBorde },
-  saltarTxt: { color: colors.crema, fontSize: 13, fontFamily: fonts.bold },
+  saltarBtn: { position: 'absolute', top: 48, right: 16, zIndex: 10, backgroundColor: 'rgba(0,0,0,0.45)', paddingHorizontal: 14, paddingVertical: 9, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(93,202,165,0.4)' },
+  saltarTxt: { color: colors.cielo, fontSize: 13, fontFamily: fonts.bold },
 
   tituloWrap: { position: 'absolute', top: 52, left: 16, right: 90, zIndex: 5 },
   tituloTxt:  { color: colors.doradoNeon, fontSize: 14, fontFamily: fonts.extra, textShadowColor: 'rgba(0,0,0,0.6)', textShadowRadius: 8 },
 
   progRow:    { position: 'absolute', top: 86, left: 16, flexDirection: 'row', gap: 7, zIndex: 5 },
-  progDot:    { width: 22, height: 5, borderRadius: 3, backgroundColor: 'rgba(247,240,224,0.25)' },
+  progDot:    { width: 22, height: 5, borderRadius: 3, backgroundColor: 'rgba(225,245,238,0.25)' },
   progDotOn:  { backgroundColor: colors.doradoNeon, width: 30 },
   progDotDone:{ backgroundColor: colors.turquesaClaro },
 
   retratoWrap:  { alignItems: 'center', marginBottom: 14 },
+  emblema:      { alignItems: 'center', justifyContent: 'center' },
+  halo:         { position: 'absolute', borderRadius: 999 },
+  haloLg:       { width: 130 * 1.4, height: 130 * 1.4, backgroundColor: ui.haloTurquesa },
+  haloMd:       { width: 130 * 1.15, height: 130 * 1.15, backgroundColor: ui.haloDorado },
   retratoFrame: { width: 130, height: 130, borderRadius: 65, borderWidth: 4, overflow: 'hidden', shadowOpacity: 0.7, shadowRadius: 20, shadowOffset: { width: 0, height: 0 }, elevation: 16, backgroundColor: colors.noche },
   retratoImg:   { width: '100%', height: '100%' },
-  nombreTag:    { position: 'absolute', bottom: -12, paddingHorizontal: 18, paddingVertical: 6, borderRadius: 20, borderWidth: 1.5, borderColor: colors.glassBorde },
+  nombreTag:    { position: 'absolute', bottom: -12, paddingHorizontal: 18, paddingVertical: 6, borderRadius: 20, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.5)' },
   nombreTxt:    { color: colors.crema, fontSize: 13, fontFamily: fonts.extra, letterSpacing: 0.5 },
 
-  cajaTexto: { margin: 16, marginTop: 6, padding: 20, borderRadius: 20, backgroundColor: 'rgba(11,31,42,0.88)', borderWidth: 1.5, borderColor: colors.turquesa, minHeight: 130 },
-  dialogo:   { color: colors.cielo, fontSize: 16, lineHeight: 25, fontFamily: fonts.medium, textAlign: 'center' },
-  resalte:   { color: colors.doradoNeon, fontWeight: '900', fontFamily: 'serif', textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 8 },
-  tapHint:   { color: colors.turquesaSuave, fontSize: 12, fontStyle: 'italic', textAlign: 'center', marginTop: 14 },
+  cajaTexto: { ...ui.card, margin: 16, marginTop: 6, backgroundColor: 'rgba(8,26,34,0.9)', borderColor: 'rgba(93,202,165,0.5)', minHeight: 130 },
+  dialogo:   { ...ui.bodyMed, fontSize: 16, lineHeight: 25, textAlign: 'center' },
+  resalte:   { ...ui.pastoker, textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 8 },
+  tapHint:   { ...ui.caption, fontSize: 12, textAlign: 'center', marginTop: 14 },
 });

@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
+import Medallon from '../components/Medallon';
 import BotonGlow from '../components/BotonGlow';
 
 const { width } = Dimensions.get('window');
@@ -69,7 +72,9 @@ export default function PersonajesScreen() {
           style={StyleSheet.absoluteFill}
         />
         <View style={s.heroTxt}>
-          <Text style={s.heroBadge}>✨ CONOCE A</Text>
+          <View style={s.heroPill}>
+            <Text style={s.heroPillTxt}>CONOCE A</Text>
+          </View>
           <Text style={s.heroNombre}>{p.nombre}</Text>
           <Text style={s.heroRol}>{p.rol}</Text>
         </View>
@@ -78,19 +83,20 @@ export default function PersonajesScreen() {
       {/* Contenido inferior */}
       <ScrollView style={s.content} contentContainerStyle={{ padding: 16, paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
 
-        <Text style={s.seccionLbl}>HÉROES DEL CAMINO</Text>
+        <View style={s.seccionPill}>
+          <Text style={s.seccionPillTxt}>HÉROES DEL CAMINO</Text>
+        </View>
 
         {/* Selector horizontal */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.minisWrap}>
           {personajes.map((pj, i) => (
             <TouchableOpacity key={pj.id} onPress={() => setIdx(i)} style={[s.mini, i === idx && s.miniOn]} activeOpacity={0.8}>
-              <View style={[
-                s.miniFrame,
-                { borderColor: pj.color },
-                i === idx && s.miniFrameOn,
-              ]}>
-                <Image source={pj.img} style={s.miniImg} />
-              </View>
+              <Medallon
+                source={pj.img}
+                size={64}
+                ring={i === idx ? colors.doradoNeon : pj.color}
+                halo={i === idx}
+              />
               <Text style={[s.miniNom, i === idx && { color: colors.doradoNeon }]}>{pj.nombre}</Text>
             </TouchableOpacity>
           ))}
@@ -117,7 +123,7 @@ export default function PersonajesScreen() {
 
         {/* Tip */}
         <View style={s.tipCard}>
-          <Text style={s.tipEmoji}>💡</Text>
+          <Ionicons name="bulb-outline" size={20} color={colors.doradoNeon} />
           <Text style={s.tipTxt}>Cada personaje tiene un rol especial. Conócelos bien para avanzar en tu camino.</Text>
         </View>
 
@@ -137,42 +143,37 @@ const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.noche },
 
   // Hero
-  hero:      { width, height: 250, justifyContent: 'flex-end', padding: 16 },
-  heroTxt:   { padding: 4 },
-  heroBadge: { color: colors.doradoNeon, fontSize: 11, fontFamily: fonts.extra, letterSpacing: 4, marginBottom: 4 },
-  heroNombre:{ color: colors.cielo, fontSize: 34, fontFamily: fonts.extra, textShadowColor: 'rgba(11,31,42,0.8)', textShadowRadius: 8 },
-  heroRol:   { color: colors.turquesaSuave, fontSize: 12, fontStyle: 'italic', marginTop: 4, letterSpacing: 1 },
+  hero:       { width, height: 250, justifyContent: 'flex-end', padding: 16 },
+  heroTxt:    { padding: 4 },
+  heroPill:   { ...ui.pill, marginBottom: 8 },
+  heroPillTxt:{ ...ui.pillTxt },
+  heroNombre: { color: colors.cielo, fontSize: 34, fontFamily: fonts.extra, textShadowColor: 'rgba(11,31,42,0.8)', textShadowRadius: 8 },
+  heroRol:    { color: colors.turquesaSuave, fontSize: 12, fontFamily: fonts.medium, fontStyle: 'italic', marginTop: 4, letterSpacing: 1 },
 
   // Scroll content
-  content:    { flex: 1 },
-  seccionLbl: { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 2, marginBottom: 12, marginTop: 4 },
+  content:       { flex: 1 },
+  seccionPill:   { ...ui.pill, marginBottom: 12, marginTop: 4 },
+  seccionPillTxt:{ ...ui.pillTxt },
 
   // Miniaturas
-  minisWrap:   { gap: 14, paddingVertical: 6, paddingRight: 10, paddingLeft: 2, marginBottom: 6 },
-  mini:        { alignItems: 'center', width: 80 },
-  miniOn:      { transform: [{ scale: 1.08 }] },
-  miniFrame:   { width: 72, height: 72, borderRadius: 36, borderWidth: 3, overflow: 'hidden', backgroundColor: colors.nocheProfundo },
-  miniFrameOn: {
-    borderColor: colors.doradoNeon, borderWidth: 4,
-    shadowColor: colors.doradoNeon, shadowOpacity: 0.8, shadowRadius: 10, shadowOffset: { width: 0, height: 0 }, elevation: 10,
-  },
-  miniImg: { width: '100%', height: '100%' },
-  miniNom: { fontSize: 11, fontFamily: fonts.semibold, color: colors.turquesaSuave, marginTop: 6, textAlign: 'center' },
+  minisWrap: { gap: 14, paddingVertical: 12, paddingRight: 10, paddingLeft: 2, marginBottom: 6 },
+  mini:      { alignItems: 'center', width: 80 },
+  miniOn:    { transform: [{ scale: 1.08 }] },
+  miniNom:   { fontSize: 11, fontFamily: fonts.semibold, color: colors.turquesaSuave, marginTop: 6, textAlign: 'center' },
 
   // Descripción
-  descCard: { backgroundColor: colors.nocheCard, borderRadius: 16, padding: 16, marginTop: 8, borderLeftWidth: 4, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  descCard: { ...ui.card, padding: 16, marginTop: 8, borderLeftWidth: 4 },
   descLbl:  { fontSize: 10, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 8 },
-  descTxt:  { fontSize: 14, color: colors.cielo, lineHeight: 22 },
+  descTxt:  { ...ui.body, fontSize: 14 },
 
   // Frase
-  fraseWrap:    { borderRadius: 18, padding: 20, marginTop: 12, flexDirection: 'row', alignItems: 'center', overflow: 'hidden', borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.4)' },
-  fraseComilla: { color: colors.doradoNeon, fontSize: 40, fontFamily: 'serif', lineHeight: 40 },
+  fraseWrap:    { borderRadius: radii.md, padding: 20, marginTop: 12, flexDirection: 'row', alignItems: 'center', overflow: 'hidden', borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.4)' },
+  fraseComilla: { color: colors.doradoNeon, fontSize: 40, fontFamily: fonts.extra, lineHeight: 40 },
   fraseTxt:     { flex: 1, color: colors.cielo, fontSize: 15, fontStyle: 'italic', textAlign: 'center', fontFamily: fonts.semibold, paddingHorizontal: 6 },
 
   // Tip
-  tipCard:  { flexDirection: 'row', backgroundColor: colors.nocheProfundo, borderRadius: 14, padding: 12, marginTop: 12, alignItems: 'center', gap: 10 },
-  tipEmoji: { fontSize: 24 },
-  tipTxt:   { flex: 1, fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', lineHeight: 17 },
+  tipCard: { ...ui.card, padding: 14, marginTop: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  tipTxt:  { flex: 1, fontSize: 12, fontFamily: fonts.regular, color: colors.turquesaSuave, fontStyle: 'italic', lineHeight: 17 },
 
   // Nav
   nav:      { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 18, marginBottom: 10 },

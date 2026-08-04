@@ -7,6 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { palabras, mundos, categorias } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import PishkuMascota from '../components/PishkuMascota';
@@ -151,13 +152,13 @@ export default function DiccionarioScreen() {
             const m = mundos.find(x => x.id === id);
             return (
               <TouchableOpacity key={'m' + id} style={s.activoTag} onPress={() => toggleMundo(id)} activeOpacity={0.8}>
-                <Text style={s.activoTxt}>{m?.emoji} {m?.titulo}  <Ionicons name="close" size={13} color={colors.noche} /></Text>
+                <Text style={s.activoTxt}>{m?.emoji} {m?.titulo}  <Ionicons name="close" size={13} color={colors.doradoNeon} /></Text>
               </TouchableOpacity>
             );
           })}
           {[...catsSel].map(c => (
             <TouchableOpacity key={'c' + c} style={s.activoTag} onPress={() => toggleCat(c)} activeOpacity={0.8}>
-              <Text style={s.activoTxt}>{c}  <Ionicons name="close" size={13} color={colors.noche} /></Text>
+              <Text style={s.activoTxt}>{c}  <Ionicons name="close" size={13} color={colors.doradoNeon} /></Text>
             </TouchableOpacity>
           ))}
           <TouchableOpacity style={s.limpiarTag} onPress={limpiarFiltros} activeOpacity={0.8}>
@@ -174,7 +175,7 @@ export default function DiccionarioScreen() {
           onPress={toggleFiltros}
           activeOpacity={0.85}
         >
-          <Text style={[s.filtBtnTxt, (filtrosAbiertos || mundosSel.size + catsSel.size > 0) && { color: colors.noche }]}>
+          <Text style={[s.filtBtnTxt, (filtrosAbiertos || mundosSel.size + catsSel.size > 0) && { color: colors.doradoNeon }]}>
             Filtros{mundosSel.size + catsSel.size > 0 ? ` (${mundosSel.size + catsSel.size})` : ''} {filtrosAbiertos ? '▲' : '▼'}
           </Text>
         </TouchableOpacity>
@@ -184,7 +185,7 @@ export default function DiccionarioScreen() {
       <View style={s.ordenRow}>
         {ORDENES.map(o => (
           <TouchableOpacity key={o.key} style={[s.ordenChip, orden === o.key && s.ordenOn]} onPress={() => setOrden(o.key)} activeOpacity={0.85}>
-            <Text style={[s.ordenTxt, orden === o.key && { color: colors.noche }]}>{o.label}</Text>
+            <Text style={[s.ordenTxt, orden === o.key && { color: colors.doradoNeon }]}>{o.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -198,7 +199,7 @@ export default function DiccionarioScreen() {
               const on = mundosSel.has(m.id);
               return (
                 <TouchableOpacity key={m.id} style={[s.chip, on && s.chipOn]} onPress={() => toggleMundo(m.id)} activeOpacity={0.85}>
-                  <Text style={[s.chipTxt, on && { color: colors.noche }]}>{m.emoji} {m.titulo}</Text>
+                  <Text style={[s.chipTxt, on && { color: colors.doradoNeon }]}>{m.emoji} {m.titulo}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -210,7 +211,7 @@ export default function DiccionarioScreen() {
               const on = catsSel.has(c);
               return (
                 <TouchableOpacity key={c} style={[s.chip, on && s.chipOn]} onPress={() => toggleCat(c)} activeOpacity={0.85}>
-                  <Text style={[s.chipTxt, on && { color: colors.noche }]}>{c}</Text>
+                  <Text style={[s.chipTxt, on && { color: colors.doradoNeon }]}>{c}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -241,7 +242,7 @@ const s = StyleSheet.create({
 
   srchWrap: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: colors.nocheCard, margin: 14, marginBottom: 8, borderRadius: 40,
+    backgroundColor: 'rgba(8,26,34,0.62)', margin: 14, marginBottom: 8, borderRadius: radii.pill,
     borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.35)', paddingHorizontal: 16,
   },
   srchIco: { fontSize: 16, marginRight: 8 },
@@ -250,42 +251,42 @@ const s = StyleSheet.create({
 
   // Etiquetas de filtros activos (removibles)
   activosWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: 14, marginBottom: 8 },
-  activoTag:   { flexDirection: 'row', alignItems: 'center', minHeight: 34, paddingHorizontal: 12, borderRadius: 16, backgroundColor: colors.doradoNeon },
-  activoTxt:   { fontSize: 12, color: colors.noche, fontFamily: fonts.bold },
-  limpiarTag:  { minHeight: 34, justifyContent: 'center', paddingHorizontal: 12, borderRadius: 16, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.4)' },
+  activoTag:   { ...ui.pill, flexDirection: 'row', alignItems: 'center', minHeight: 34, paddingHorizontal: 12 },
+  activoTxt:   { fontSize: 12, color: colors.doradoNeon, fontFamily: fonts.bold },
+  limpiarTag:  { ...ui.chip, minHeight: 34, justifyContent: 'center', paddingHorizontal: 12 },
   limpiarTxt:  { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.semibold },
 
   // Fila contador + botón Filtros
   toolRow:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 10 },
-  contador:    { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.medium },
-  filtBtn:     { minHeight: 40, justifyContent: 'center', paddingHorizontal: 14, borderRadius: 20, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.4)' },
-  filtBtnOn:   { backgroundColor: colors.doradoNeon, borderColor: colors.doradoNeon },
+  contador:    { ...ui.caption },
+  filtBtn:     { minHeight: 40, justifyContent: 'center', paddingHorizontal: 14, borderRadius: radii.pill, backgroundColor: 'rgba(8,26,34,0.62)', borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.4)' },
+  filtBtnOn:   { backgroundColor: 'rgba(250,199,117,0.14)', borderColor: 'rgba(250,199,117,0.6)' },
   filtBtnTxt:  { fontSize: 13, color: colors.doradoNeon, fontFamily: fonts.bold },
 
   ordenRow:  { flexDirection: 'row', gap: 8, paddingHorizontal: 14, marginBottom: 10 },
-  ordenChip: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 48, paddingVertical: 8, borderRadius: 14, backgroundColor: colors.nocheCard, borderWidth: 1, borderColor: 'rgba(93,202,165,0.25)' },
-  ordenOn:   { backgroundColor: colors.doradoNeon, borderColor: colors.doradoNeon },
-  ordenTxt:  { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.semibold, textAlign: 'center' },
+  ordenChip: { ...ui.chip, flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 48, paddingVertical: 8 },
+  ordenOn:   { backgroundColor: 'rgba(250,199,117,0.14)', borderColor: 'rgba(250,199,117,0.6)' },
+  ordenTxt:  { ...ui.chipTxt, textAlign: 'center' },
 
   // Panel colapsable de filtros
-  panel:        { maxHeight: 260, marginHorizontal: 14, marginBottom: 10, borderRadius: 16, backgroundColor: colors.nocheProfundo, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  panel:        { maxHeight: 260, marginHorizontal: 14, marginBottom: 10, borderRadius: radii.md, backgroundColor: colors.nocheProfundo, borderWidth: 1, borderColor: 'rgba(93,202,165,0.28)' },
   panelContent: { padding: 12 },
-  panelLbl:     { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 2, marginBottom: 8 },
+  panelLbl:     { ...ui.pillTxt, letterSpacing: 2, marginBottom: 8 },
   wrap:    { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip:    { minHeight: 44, justifyContent: 'center', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 22, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.3)' },
-  chipOn:  { backgroundColor: colors.doradoNeon, borderColor: colors.doradoNeon },
-  chipTxt: { fontSize: 13, color: colors.turquesaSuave, fontFamily: fonts.semibold },
+  chip:    { ...ui.chip, minHeight: 44, justifyContent: 'center', paddingHorizontal: 14, paddingVertical: 8 },
+  chipOn:  { backgroundColor: 'rgba(250,199,117,0.14)', borderColor: 'rgba(250,199,117,0.6)' },
+  chipTxt: { ...ui.chipTxt, fontSize: 13 },
 
   lista: { flex: 1 },
 
   row: {
-    backgroundColor: colors.nocheCard, borderRadius: 14, padding: 14, marginBottom: 9,
+    ...ui.card,
+    borderRadius: radii.md, padding: 14, marginBottom: 9,
     borderLeftWidth: 4, borderLeftColor: colors.doradoNeon,
-    borderWidth: 1, borderColor: 'rgba(93,202,165,0.15)',
   },
   rowTop:   { flexDirection: 'row', alignItems: 'flex-start' },
   pastLine: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  past: { fontSize: 19, fontWeight: '900', color: colors.doradoNeon, fontFamily: 'serif' },
+  past: { ...ui.pastoker, fontSize: 19 },
   audioBtn: { width: 34, height: 34, borderRadius: 17, backgroundColor: 'rgba(250,199,117,0.16)', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: 'rgba(250,199,117,0.4)' },
   audioIco: { fontSize: 16 },
   esp:  { fontSize: 14, color: colors.cielo, marginTop: 3, fontFamily: fonts.medium },
@@ -293,7 +294,7 @@ const s = StyleSheet.create({
   check: { fontSize: 18, color: colors.doradoNeon, fontFamily: fonts.extra, paddingLeft: 8 },
   lock:  { fontSize: 14, opacity: 0.5, paddingLeft: 8 },
 
-  expand: { marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: 'rgba(93,202,165,0.18)' },
+  expand: { marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: 'rgba(93,202,165,0.28)' },
   fon: { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic' },
   ej:  { fontSize: 13, color: colors.turquesaClaro, fontStyle: 'italic', marginTop: 4 },
 

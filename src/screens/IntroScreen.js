@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Animated, Dimensions, ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
-import Glass from '../components/Glass';
+import { fonts } from '../theme/fonts';
+import { ui } from '../theme/ui';
 import BotonGlow from '../components/BotonGlow';
 
 const { width, height } = Dimensions.get('window');
@@ -127,8 +128,13 @@ export default function IntroScreen({ navigation }) {
 
       {/* Personaje */}
       <Animated.View style={[s.personajeWrap, { opacity: fadeDialog }]}>
-        <View style={[s.personajeFrame, { borderColor: frase.color, shadowColor: frase.color }]}>
-          <Image source={imgPersonaje[frase.personaje]} style={s.personajeImg} />
+        <View style={s.emblema}>
+          {/* Halos concéntricos (glow real en Android) */}
+          <View style={[s.halo, s.haloLg]} />
+          <View style={[s.halo, s.haloMd]} />
+          <View style={[s.personajeFrame, { borderColor: frase.color, shadowColor: frase.color }]}>
+            <Image source={imgPersonaje[frase.personaje]} style={s.personajeImg} />
+          </View>
         </View>
         <LinearGradient
           colors={[frase.color, colors.negro]}
@@ -140,12 +146,14 @@ export default function IntroScreen({ navigation }) {
         </LinearGradient>
       </Animated.View>
 
-      {/* Globo de diálogo en Glass */}
+      {/* Globo de diálogo */}
       <Animated.View style={{ opacity: fadeDialog, marginHorizontal: 22 }}>
-        <Glass tipo="oscuro" intensidad={75} bordeBrillante style={s.dialogBox}>
-          <Text style={s.dialogLabel}>◆ DICE ◆</Text>
+        <View style={s.dialogBox}>
+          <View style={s.dialogPill}>
+            <Text style={s.dialogPillTxt}>DICE</Text>
+          </View>
           <Text style={s.dialogTexto}>{frase.texto}</Text>
-        </Glass>
+        </View>
       </Animated.View>
 
       {/* Botón continuar */}
@@ -162,7 +170,6 @@ export default function IntroScreen({ navigation }) {
             texto="Continuar"
             onPress={siguiente}
             variante="fantasma"
-            icono="→"
             tamano="md"
           />
         )}
@@ -172,7 +179,7 @@ export default function IntroScreen({ navigation }) {
 }
 
 const s = StyleSheet.create({
-  container:     { flex: 1, backgroundColor: colors.negro, justifyContent: 'space-between' },
+  container:     { flex: 1, backgroundColor: colors.noche, justifyContent: 'space-between' },
   bg:            { width, height, flex: 1 },
 
   saltarBtn:     {
@@ -180,32 +187,37 @@ const s = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     paddingHorizontal: 14, paddingVertical: 8,
     borderRadius: 20, borderWidth: 1,
-    borderColor: colors.glassBorde,
+    borderColor: 'rgba(93,202,165,0.4)',
   },
-  saltarTxt:     { color: colors.crema, fontSize: 12, fontWeight: '700' },
+  saltarTxt:     { color: colors.cielo, fontSize: 12, fontFamily: fonts.bold },
 
   progBar:       { flexDirection: 'row', justifyContent: 'center', gap: 8, marginTop: 50, zIndex: 5 },
-  progDot:       { width: 28, height: 4, borderRadius: 2, backgroundColor: 'rgba(247,240,224,0.2)' },
-  progDotOn:     { backgroundColor: colors.doradoBrillo },
+  progDot:       { width: 28, height: 4, borderRadius: 2, backgroundColor: 'rgba(225,245,238,0.2)' },
+  progDotOn:     { backgroundColor: colors.doradoNeon },
 
   personajeWrap: { alignItems: 'center', marginTop: 30, zIndex: 5 },
+  emblema:       { alignItems: 'center', justifyContent: 'center' },
+  halo:          { position: 'absolute', borderRadius: 999 },
+  haloLg:        { width: 180 * 1.4, height: 180 * 1.4, backgroundColor: ui.haloTurquesa },
+  haloMd:        { width: 180 * 1.15, height: 180 * 1.15, backgroundColor: ui.haloDorado },
   personajeFrame:{
     width: 180, height: 180, borderRadius: 90,
     borderWidth: 4, overflow: 'hidden',
     shadowOpacity: 0.7, shadowRadius: 24, shadowOffset: { width: 0, height: 0 },
-    elevation: 20, backgroundColor: colors.negro,
+    elevation: 20, backgroundColor: colors.noche,
   },
   personajeImg:  { width: '100%', height: '100%' },
   nombreTag:     {
     position: 'absolute', bottom: -14,
     paddingHorizontal: 18, paddingVertical: 6,
-    borderRadius: 20, borderWidth: 1.5, borderColor: colors.glassBorde,
+    borderRadius: 20, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.5)',
   },
-  nombreTxt:     { color: colors.crema, fontSize: 13, fontWeight: '900', letterSpacing: 1 },
+  nombreTxt:     { color: colors.crema, fontSize: 13, fontFamily: fonts.extra, letterSpacing: 1 },
 
-  dialogBox:     { padding: 22 },
-  dialogLabel:   { color: colors.doradoBrillo, fontSize: 10, fontWeight: '900', letterSpacing: 4, textAlign: 'center', marginBottom: 12 },
-  dialogTexto:   { color: colors.crema, fontSize: 15, textAlign: 'center', lineHeight: 24, fontStyle: 'italic' },
+  dialogBox:     { ...ui.card, padding: 22 },
+  dialogPill:    { ...ui.pill, alignSelf: 'center', marginBottom: 12 },
+  dialogPillTxt: { ...ui.pillTxt },
+  dialogTexto:   { ...ui.bodyMed, textAlign: 'center', lineHeight: 24 },
 
   btnWrap:       { alignItems: 'center', marginBottom: 40, zIndex: 5 },
 });

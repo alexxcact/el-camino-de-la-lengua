@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated } from '
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { AVATAR_OPCIONES, CATS_AVATAR, atuendosDesbloqueados } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import AvatarSVG from '../components/AvatarSVG';
@@ -124,16 +125,15 @@ const s = StyleSheet.create({
   bg: { flex: 1, backgroundColor: colors.noche },
 
   preview: {
+    ...ui.cardDestacada,
     alignItems: 'center', paddingVertical: 18, marginBottom: 16,
-    borderRadius: 24, backgroundColor: colors.nocheCard,
-    borderWidth: 1.5, borderColor: colors.turquesa,
   },
   previewNom: { fontSize: 20, fontFamily: fonts.extra, color: colors.cielo, marginTop: 10 },
 
   tabs: { flexDirection: 'row', gap: 8, marginBottom: 16 },
   tab: {
-    flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 14,
-    backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.2)',
+    flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: radii.sm,
+    backgroundColor: 'rgba(8,26,34,0.62)', borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.35)',
   },
   tabOn: { borderColor: colors.doradoNeon, backgroundColor: 'rgba(250,199,117,0.12)' },
   tabEmoji: { fontSize: 22 },
@@ -143,8 +143,8 @@ const s = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 10 },
   tile: {
     width: '31%', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 4, marginBottom: 12,
-    borderRadius: 16, backgroundColor: colors.nocheCard,
-    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.2)',
+    borderRadius: radii.md, backgroundColor: 'rgba(8,26,34,0.62)',
+    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.35)',
   },
   tileOn:   { borderColor: colors.doradoNeon, borderWidth: 2, backgroundColor: 'rgba(250,199,117,0.10)' },
   tileLock: { opacity: 0.85 },
@@ -153,7 +153,6 @@ const s = StyleSheet.create({
     ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center',
     backgroundColor: 'rgba(11,31,42,0.55)', borderRadius: 32,
   },
-  lockIco:  { fontSize: 24 },
   tileNom:  { fontSize: 11, color: colors.cielo, fontFamily: fonts.bold, marginTop: 6, textAlign: 'center' },
-  tilePista:{ fontSize: 9, color: colors.turquesaSuave, fontStyle: 'italic', textAlign: 'center', marginTop: 2 },
+  tilePista:{ fontSize: 9, color: colors.turquesaSuave, fontFamily: fonts.regular, fontStyle: 'italic', textAlign: 'center', marginTop: 2 },
 });

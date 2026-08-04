@@ -7,9 +7,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { palabras, mundos, shuffle } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import AvatarSVG from '../components/AvatarSVG';
+import Medallon from '../components/Medallon';
 import PishkuMascota from '../components/PishkuMascota';
 import Confeti from '../components/Confeti';
 import BotonGlow from '../components/BotonGlow';
@@ -274,9 +276,9 @@ export default function DueloScreen({ navigation }) {
       <TouchableOpacity style={[s.bg, s.paseWrap]} activeOpacity={1} onPress={() => setFase('pregunta')}>
         <LinearGradient colors={[colors.noche, colors.nocheCard]} style={StyleSheet.absoluteFill} />
         <Text style={s.paseRonda}>RONDA {rondaIdx + 1} DE {rondas}</Text>
-        <View style={[s.paseAvatar, { borderColor: eq.color, shadowColor: eq.color }]}>
+        <Medallon size={132} ring={eq.color}>
           <AvatarSVG avatar={eq.avatar} tamano={120} conFondo />
-        </View>
+        </Medallon>
         <Text style={s.paseTit}>Pasa el teléfono a</Text>
         <Text style={[s.paseNombre, { color: eq.color }]}>{nom}</Text>
         <View style={s.paseMarcadorRow}>
@@ -455,9 +457,9 @@ export default function DueloScreen({ navigation }) {
           <View style={s.finalMarcador}>
             {[0, 1].map(i => (
               <View key={i} style={s.finalEquipo}>
-                <View style={[s.finalAvatar, { borderColor: EQUIPOS[i].color }]}>
+                <Medallon size={64} ring={EQUIPOS[i].color} halo={false}>
                   <AvatarSVG avatar={EQUIPOS[i].avatar} tamano={56} conFondo />
-                </View>
+                </Medallon>
                 <Text style={[s.finalPuntos, { color: EQUIPOS[i].color }]}>{marcadorRef.current[i]}</Text>
                 <Text style={s.finalEqNom} numberOfLines={1}>{nombres[i].trim() || EQUIPOS[i].def}</Text>
               </View>
@@ -483,14 +485,14 @@ const s = StyleSheet.create({
   tituloGrande: { fontSize: 26, fontFamily: fonts.extra, color: colors.doradoNeon, textAlign: 'center', textShadowColor: 'rgba(250,199,117,0.4)', textShadowRadius: 12 },
   subtitulo: { fontSize: 13, color: colors.turquesaSuave, textAlign: 'center', marginTop: 4, marginBottom: 18, fontFamily: fonts.medium },
 
-  nombreCard: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.nocheCard, borderRadius: 18, padding: 12, marginBottom: 12, borderWidth: 1.5 },
+  nombreCard: { ...ui.card, flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: radii.md, padding: 12, marginBottom: 12 },
   nombreAvatar: { width: 50, height: 50, borderRadius: 25, overflow: 'hidden', borderWidth: 2 },
   nombreLbl: { fontSize: 11, fontFamily: fonts.bold, letterSpacing: 1 },
   nombreInput: { fontSize: 18, color: colors.cielo, fontFamily: fonts.bold, paddingVertical: 6, paddingHorizontal: 0, minHeight: 40 },
 
-  seccion: { fontSize: 12, fontFamily: fonts.bold, color: colors.turquesaSuave, letterSpacing: 2, marginTop: 16, marginBottom: 10 },
+  seccion: { ...ui.pill, ...ui.pillTxt, overflow: 'hidden', marginTop: 18, marginBottom: 10 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip: { paddingHorizontal: 16, minHeight: 48, justifyContent: 'center', borderRadius: 24, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.3)', backgroundColor: colors.nocheCard },
+  chip: { paddingHorizontal: 16, minHeight: 48, justifyContent: 'center', borderRadius: radii.pill, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.4)', backgroundColor: 'rgba(93,202,165,0.12)' },
   chipOn: { backgroundColor: colors.turquesa, borderColor: colors.turquesa },
   chipTxt: { fontSize: 14, color: colors.turquesaSuave, fontFamily: fonts.semibold },
   chipTxtOn: { color: colors.noche },
@@ -501,10 +503,8 @@ const s = StyleSheet.create({
 
   // Pase de teléfono
   paseWrap: { alignItems: 'center', justifyContent: 'center', padding: 28 },
-  paseRonda: { fontSize: 13, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 22 },
-  paseAvatar: { width: 132, height: 132, borderRadius: 66, overflow: 'hidden', borderWidth: 4, shadowOpacity: 0.7, shadowRadius: 22, shadowOffset: { width: 0, height: 0 }, elevation: 16 },
-  paseEmoji: { fontSize: 40, marginTop: 20 },
-  paseTit: { fontSize: 18, color: colors.cielo, fontFamily: fonts.semibold, marginTop: 10 },
+  paseRonda: { ...ui.pill, ...ui.pillTxt, overflow: 'hidden', alignSelf: 'center', marginBottom: 26 },
+  paseTit: { fontSize: 18, color: colors.cielo, fontFamily: fonts.semibold, marginTop: 16 },
   paseNombre: { fontSize: 32, fontFamily: fonts.extra, marginTop: 2, textAlign: 'center' },
   paseMarcadorRow: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 22 },
   paseMarcador: { fontSize: 30, fontFamily: fonts.extra },
@@ -513,7 +513,7 @@ const s = StyleSheet.create({
 
   // Marcador
   marcadorBar: { flexDirection: 'row', gap: 10, paddingHorizontal: 14, paddingTop: 12, paddingBottom: 4 },
-  marcEquipo: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 10, paddingVertical: 8, borderRadius: 14, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.18)', backgroundColor: colors.nocheCard },
+  marcEquipo: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 10, paddingVertical: 8, borderRadius: radii.md, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.2)', backgroundColor: 'rgba(8,26,34,0.62)' },
   marcAvatar: { width: 34, height: 34, borderRadius: 17, overflow: 'hidden', borderWidth: 1.5 },
   marcNombre: { flex: 1, fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.semibold },
   marcPuntos: { fontSize: 22, fontFamily: fonts.extra },
@@ -521,7 +521,7 @@ const s = StyleSheet.create({
   turnoLbl: { fontSize: 13, color: colors.turquesaSuave, fontFamily: fonts.semibold, textAlign: 'center', marginVertical: 12 },
 
   // Quiz / Escucha
-  qCard: { padding: 22, alignItems: 'center', marginBottom: 16, borderRadius: 22, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: colors.turquesa },
+  qCard: { ...ui.cardDestacada, alignItems: 'center', marginBottom: 16 },
   qLabel: { fontSize: 10, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 10 },
   qEmoji: { fontSize: 56, marginBottom: 6 },
   qPast: { fontSize: 34, fontWeight: '900', color: colors.doradoNeon, fontFamily: 'serif', letterSpacing: 1, textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 12 },
@@ -534,7 +534,7 @@ const s = StyleSheet.create({
   audioHint: { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 12 },
 
   opciones: { gap: 10 },
-  op: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.nocheCard, paddingHorizontal: 14, minHeight: 56, borderRadius: 16, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.2)' },
+  op: { ...ui.card, flexDirection: 'row', alignItems: 'center', gap: 12, padding: 0, paddingHorizontal: 14, minHeight: 56, borderRadius: radii.md, borderColor: 'rgba(93,202,165,0.25)' },
   opCorrecta: { borderColor: colors.turquesa, borderWidth: 2, backgroundColor: 'rgba(29,158,117,0.15)' },
   opIncorrecta: { borderColor: colors.coral, borderWidth: 2, backgroundColor: 'rgba(242,120,92,0.12)' },
   opOff: { opacity: 0.4 },
@@ -545,7 +545,7 @@ const s = StyleSheet.create({
 
   // Relámpago
   tilesGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  tile: { width: '47%', minHeight: 84, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.nocheCard, borderRadius: 16, marginBottom: 12, padding: 8, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.2)' },
+  tile: { ...ui.card, width: '47%', minHeight: 84, alignItems: 'center', justifyContent: 'center', borderRadius: radii.md, marginBottom: 12, padding: 8, borderColor: 'rgba(93,202,165,0.25)' },
   tileSel: { borderColor: colors.doradoNeon, borderWidth: 2.5, backgroundColor: 'rgba(250,199,117,0.12)' },
   tileOk: { borderColor: colors.turquesa, borderWidth: 2.5, backgroundColor: 'rgba(29,158,117,0.18)' },
   tileFail: { borderColor: colors.coral, borderWidth: 2.5, backgroundColor: 'rgba(242,120,92,0.14)' },
@@ -557,11 +557,10 @@ const s = StyleSheet.create({
   finalContent: { flexGrow: 1, padding: 24, justifyContent: 'center', alignItems: 'center' },
   finalTit: { fontSize: 30, fontFamily: fonts.extra, color: colors.doradoNeon, marginTop: 16, textAlign: 'center', textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 14 },
   finalSub: { fontSize: 15, color: colors.cielo, fontFamily: fonts.semibold, marginTop: 6, textAlign: 'center' },
-  finalGanaLbl: { fontSize: 14, color: colors.cielo, fontFamily: fonts.bold, letterSpacing: 3, marginTop: 18 },
+  finalGanaLbl: { ...ui.pill, ...ui.pillTxt, overflow: 'hidden', alignSelf: 'center', marginTop: 20 },
   finalNombre: { fontSize: 36, fontFamily: fonts.extra, marginTop: 4, textAlign: 'center', textShadowColor: 'rgba(250,199,117,0.4)', textShadowRadius: 14 },
-  finalMarcador: { flexDirection: 'row', gap: 28, marginTop: 26, marginBottom: 8 },
+  finalMarcador: { ...ui.card, alignSelf: 'stretch', flexDirection: 'row', justifyContent: 'space-evenly', gap: 20, marginTop: 26, marginBottom: 8, paddingVertical: 18 },
   finalEquipo: { alignItems: 'center', width: 110 },
-  finalAvatar: { width: 64, height: 64, borderRadius: 32, overflow: 'hidden', borderWidth: 3 },
   finalPuntos: { fontSize: 44, fontFamily: fonts.extra, marginTop: 6 },
   finalEqNom: { fontSize: 13, color: colors.turquesaSuave, fontFamily: fonts.semibold, marginTop: 2, textAlign: 'center' },
 });

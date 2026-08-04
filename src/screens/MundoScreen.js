@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Animated } from '
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { palabras, mundos, CINEMATICAS } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import { imgMundoColor, imgMundoGris } from '../data/imagenes';
@@ -51,7 +52,7 @@ function LeccionView({ mundo, onTerminar }) {
         </View>
       </View>
       <View style={ls.catWrap}>
-        <Text style={ls.catBadge}>{pal.cat}</Text>
+        <View style={ls.catBadge}><Text style={ls.catBadgeTxt}>{pal.cat}</Text></View>
       </View>
       <BotonGlow
         texto={idx + 1 < pals.length ? 'Siguiente →' : 'Terminar lección'}
@@ -164,7 +165,7 @@ export default function MundoScreen({ route, navigation }) {
           </TouchableOpacity>
         )}
 
-        <Text style={est.seccion}>LECCIÓN</Text>
+        <View style={est.seccionPill}><Text style={ui.pillTxt}>LECCIÓN</Text></View>
         <TouchableOpacity style={est.card} onPress={() => setVistaActiva('leccion')} activeOpacity={0.85}>
           <View style={{ flex: 1 }}>
             <Text style={est.cardTit}>Aprender las palabras</Text>
@@ -173,7 +174,7 @@ export default function MundoScreen({ route, navigation }) {
           <Text style={est.chevron}>›</Text>
         </TouchableOpacity>
 
-        <Text style={est.seccion}>MISIONES</Text>
+        <View style={est.seccionPill}><Text style={ui.pillTxt}>MISIONES</Text></View>
         {misiones.map(m => {
           const comp = estado.misionesCompletadas.has(m.id);
           return (
@@ -209,16 +210,11 @@ export default function MundoScreen({ route, navigation }) {
 
         {/* Banner persistente de mundo completado */}
         {mundoYaCompletado && (
-          <LinearGradient
-            colors={colors.gradVictoria}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={est.compBanner}
-          >
+          <View style={est.compBanner}>
             <Text style={est.compTit}>¡Mundo completado!</Text>
             <Text style={est.compSub}>+20 puntos · Siguiente mundo desbloqueado</Text>
             <BotonGlow texto="Ir al mapa" onPress={() => navigation.navigate('Mapa')} variante="secundario" tamano="sm" />
-          </LinearGradient>
+          </View>
         )}
       </ScrollView>
 
@@ -275,24 +271,26 @@ export default function MundoScreen({ route, navigation }) {
 const ls = StyleSheet.create({
   wrap:    { flex: 1, padding: 16 },
   card:    {
-    borderRadius: 22, padding: 24, alignItems: 'center', marginBottom: 14, overflow: 'hidden',
-    borderWidth: 1.5, borderColor: colors.turquesa,
+    borderRadius: radii.lg, padding: 24, alignItems: 'center', marginBottom: 14, overflow: 'hidden',
+    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.45)',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.25, shadowRadius: 16, elevation: 6,
   },
   emoji:   { fontSize: 60, marginBottom: 10 },
   past:    {
-    fontSize: 36, fontWeight: '900', color: colors.doradoNeon, fontFamily: 'serif',
+    fontSize: 36, color: colors.doradoNeon, fontFamily: fonts.extra,
     textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 12,
   },
   fon:     { fontSize: 13, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 4 },
   esp:     { fontSize: 18, color: colors.cielo, marginTop: 6, fontFamily: fonts.semibold },
-  divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.2)', width: '100%', marginVertical: 12 },
+  divider: { ...ui.divider, width: '100%', marginVertical: 12 },
   ej:      { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', textAlign: 'center' },
   dots:    { flexDirection: 'row', gap: 5, marginTop: 14 },
   dot:     { width: 7, height: 7, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.3)' },
   dotOn:   { backgroundColor: colors.doradoNeon },
-  catWrap: { alignItems: 'center', marginBottom: 14 },
-  catBadge:{ fontSize: 11, backgroundColor: colors.verdeVivo, color: colors.cielo, paddingHorizontal: 12, paddingVertical: 3, borderRadius: 12, fontFamily: fonts.semibold, overflow: 'hidden' },
-  contador:{ textAlign: 'center', fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 12 },
+  catWrap:    { alignItems: 'center', marginBottom: 14 },
+  catBadge:   { ...ui.chip },
+  catBadgeTxt:{ ...ui.chipTxt, fontSize: 11 },
+  contador:{ textAlign: 'center', fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.medium, marginTop: 12 },
 });
 
 const est = StyleSheet.create({
@@ -301,49 +299,50 @@ const est = StyleSheet.create({
   backBtn:   { padding: 16, paddingBottom: 4 },
   backTxt:   { fontSize: 14, color: colors.turquesaClaro, fontFamily: fonts.semibold },
 
-  banner:      { borderRadius: 20, overflow: 'hidden', marginBottom: 18, height: 170, justifyContent: 'flex-end', borderWidth: 1, borderColor: 'rgba(93,202,165,0.2)' },
+  banner:      { borderRadius: radii.lg, overflow: 'hidden', marginBottom: 18, height: 170, justifyContent: 'flex-end', borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.35)' },
   bannerImg:    { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   bannerTxt:    { padding: 16 },
   bannerEmoji:  { fontSize: 34 },
-  bannerTit:    { fontSize: 24, fontFamily: fonts.extra, color: colors.cielo },
-  bannerSub:    { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 3 },
+  bannerTit:    { fontSize: 24, fontFamily: fonts.extra, color: colors.cielo, letterSpacing: 0.3 },
+  bannerSub:    { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.medium, marginTop: 3 },
   miniProgRow:  { flexDirection: 'row', gap: 8, marginTop: 12 },
   miniDot:      { width: 28, height: 5, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.25)' },
   miniDotOn:    { backgroundColor: colors.doradoNeon },
 
-  seccion: { fontSize: 12, fontFamily: fonts.bold, color: colors.turquesaSuave, letterSpacing: 2, marginTop: 6, marginBottom: 10, marginLeft: 4 },
+  seccionPill: { ...ui.pill, marginTop: 8, marginBottom: 10 },
 
-  historiaBtn: { alignSelf: 'flex-start', backgroundColor: 'rgba(250,199,117,0.12)', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 10, marginBottom: 14, borderWidth: 1.5, borderColor: colors.doradoNeon },
-  historiaTxt: { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold },
+  historiaBtn: { ...ui.chip, alignSelf: 'flex-start', paddingHorizontal: 14, paddingVertical: 10, marginBottom: 14 },
+  historiaTxt: { color: colors.turquesaSuave, fontSize: 13, fontFamily: fonts.bold },
 
   card: {
+    ...ui.card,
     flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: colors.nocheCard, borderRadius: 18, padding: 12, marginBottom: 10,
-    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.18)',
+    padding: 14, marginBottom: 10,
   },
-  cardDone:   { borderWidth: 2, borderColor: colors.doradoNeon },
+  cardDone:   { borderColor: 'rgba(250,199,117,0.6)' },
   iconBox:    { width: 54, height: 54, borderRadius: 14, backgroundColor: colors.nocheProfundo, alignItems: 'center', justifyContent: 'center' },
   iconBoxDone:{ backgroundColor: 'rgba(250,199,117,0.18)' },
   iconEmoji:  { fontSize: 28 },
-  cardTit:    { fontSize: 15, fontFamily: fonts.bold, color: colors.cielo },
-  cardSub:    { fontSize: 11, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 2 },
+  cardTit:    { ...ui.h3, fontSize: 15 },
+  cardSub:    { ...ui.sub, fontSize: 11, marginTop: 2 },
   chevron:    { fontSize: 24, color: colors.turquesaClaro, paddingHorizontal: 6 },
   check:      { fontSize: 26, color: colors.doradoNeon, fontFamily: fonts.extra, paddingHorizontal: 6 },
 
-  progCard: { backgroundColor: colors.nocheCard, padding: 14, borderRadius: 16, marginTop: 6, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  progCard: { ...ui.card, padding: 14, marginTop: 6 },
   progTxt:  { fontSize: 12, color: colors.cielo, marginBottom: 7, fontFamily: fonts.semibold },
   progBar:  { height: 8, backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 4, overflow: 'hidden' },
   progFill: { height: '100%', borderRadius: 4 },
 
-  compBanner: { padding: 18, alignItems: 'center', marginTop: 14, borderRadius: 18, gap: 8 },
-  compTit:    { fontSize: 18, fontFamily: fonts.extra, color: colors.noche },
-  compSub:    { fontSize: 13, color: colors.noche, opacity: 0.8, fontFamily: fonts.medium },
+  compBanner: { ...ui.cardDestacada, alignItems: 'center', marginTop: 14, gap: 8 },
+  compTit:    { fontSize: 18, fontFamily: fonts.extra, color: colors.doradoNeon },
+  compSub:    { ...ui.sub, fontSize: 13, textAlign: 'center' },
 
   modalOverlay: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', padding: 22 },
   modalCard: {
-    backgroundColor: colors.nocheCard, borderRadius: 26, padding: 24, alignItems: 'center', alignSelf: 'stretch',
+    ...ui.cardDestacada,
+    borderRadius: 26, padding: 24, alignItems: 'center', alignSelf: 'stretch',
     borderWidth: 2, borderColor: colors.doradoNeon,
-    shadowColor: colors.doradoNeon, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.6, shadowRadius: 20, elevation: 20,
+    shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.6, shadowRadius: 20, elevation: 20,
   },
   modalBanner:{ alignSelf: 'stretch', height: 140, borderRadius: 16, overflow: 'hidden', marginBottom: 14, borderWidth: 1, borderColor: 'rgba(250,199,117,0.4)' },
   medallaBox: { alignItems: 'center', marginTop: 10, marginBottom: 4 },

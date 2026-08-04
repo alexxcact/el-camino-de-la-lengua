@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { mundos, CINEMATICAS } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import HudJugador from '../components/HudJugador';
@@ -103,27 +104,29 @@ const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.noche },
   hudSafe:   { backgroundColor: colors.nocheHeader },
   toast: {
+    ...ui.cardDestacada,
     position: 'absolute', top: 110, alignSelf: 'center',
-    backgroundColor: colors.nocheCard, paddingHorizontal: 20, paddingVertical: 12,
-    borderRadius: 18, borderWidth: 1.5, borderColor: colors.doradoNeon, alignItems: 'center',
-    shadowColor: colors.doradoNeon, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.5, shadowRadius: 12, elevation: 10,
+    paddingHorizontal: 20, paddingVertical: 12,
+    borderRadius: radii.md, borderColor: 'rgba(250,199,117,0.6)', alignItems: 'center',
   },
   toastTxt: { color: colors.doradoNeon, fontSize: 14, fontFamily: fonts.extra },
   toastSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2 },
 
   practicaBtn: {
+    ...ui.card,
     marginHorizontal: 16, marginTop: 4, marginBottom: 10,
-    paddingVertical: 12, paddingHorizontal: 16, borderRadius: 16,
-    backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: colors.turquesa,
+    padding: 0, paddingVertical: 12, paddingHorizontal: 16, borderRadius: radii.md,
+    borderColor: 'rgba(93,202,165,0.55)',
     alignItems: 'center',
   },
   practicaTxt: { color: colors.turquesaClaro, fontSize: 15, fontFamily: fonts.extra },
   practicaSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2 },
 
   dueloBtn: {
+    ...ui.card,
     marginHorizontal: 16, marginTop: 0, marginBottom: 12,
-    paddingVertical: 12, paddingHorizontal: 16, borderRadius: 16,
-    backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: colors.doradoNeon,
+    padding: 0, paddingVertical: 12, paddingHorizontal: 16, borderRadius: radii.md,
+    borderColor: 'rgba(250,199,117,0.5)',
     alignItems: 'center',
   },
   dueloTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.extra },

@@ -4,12 +4,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { palabras, logros as todosLogros } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import HudJugador from '../components/HudJugador';
 import ContadorAnimado from '../components/ContadorAnimado';
 import MedallaPasto, { MEDALLAS_INFO } from '../components/MedallaPasto';
 import AvatarSVG from '../components/AvatarSVG';
+import Medallon from '../components/Medallon';
 import { programarNotificacionDiaria, cancelarNotificaciones } from '../utils/notificaciones';
 
 // Formatea una hora 0-23 a "4:00 PM"
@@ -190,7 +192,9 @@ export function PerfilScreen({ navigation }) {
 
         {/* Avatar grande + acceso a personalizar */}
         <View style={ps.avatarHeader}>
-          <AvatarSVG avatar={estado.avatar} tamano={110} conFondo />
+          <Medallon size={126} ring={ui.ringDorado}>
+            <AvatarSVG avatar={estado.avatar} tamano={110} conFondo />
+          </Medallon>
           <TouchableOpacity style={ps.personalizarBtn} onPress={() => navigation.navigate('Avatar')} activeOpacity={0.85}>
             <Text style={ps.personalizarTxt}>Personalizar avatar</Text>
           </TouchableOpacity>
@@ -243,7 +247,9 @@ export function PerfilScreen({ navigation }) {
         </View>
 
         {/* Vitrina de medallas Pasto */}
-        <Text style={ps.seccion}>VITRINA</Text>
+        <View style={ps.seccionPill}>
+          <Text style={ps.seccionPillTxt}>VITRINA</Text>
+        </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={ps.vitrina}>
           {[1, 2, 3, 4, 5].map(id => {
             const ganada = estado.mundosCompletados.has(id);
@@ -264,7 +270,9 @@ export function PerfilScreen({ navigation }) {
         </ScrollView>
 
         {/* Logros */}
-        <Text style={ps.seccion}>LOGROS</Text>
+        <View style={ps.seccionPill}>
+          <Text style={ps.seccionPillTxt}>LOGROS</Text>
+        </View>
         <View style={ps.logrosGrid}>
           {todosLogros.map(l => {
             const on = estado.logrosDesbloqueados.has(l.id);
@@ -385,52 +393,51 @@ const ss = StyleSheet.create({
 
   srchWrap: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: colors.nocheCard,
-    margin: 16, borderRadius: 40,
-    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.3)',
+    backgroundColor: 'rgba(8,26,34,0.62)',
+    margin: 16, borderRadius: radii.pill,
+    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.35)',
     paddingHorizontal: 16,
   },
   srchIco: { fontSize: 16, marginRight: 8 },
   srchIn:  { flex: 1, paddingVertical: 12, fontSize: 14, color: colors.cielo, fontFamily: fonts.medium },
 
-  catBtn: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.3)', backgroundColor: colors.nocheCard },
+  catBtn: { ...ui.chip },
   catOn:  { backgroundColor: colors.turquesa, borderColor: colors.turquesa },
-  catTxt: { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.semibold },
+  catTxt: { ...ui.chipTxt },
 
   countRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, marginVertical: 8 },
-  count: { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.medium },
+  count: { ...ui.caption },
   dicLink: { fontSize: 12, color: colors.doradoNeon, fontFamily: fonts.bold },
 
   wordRow: {
-    backgroundColor: colors.nocheCard,
-    borderRadius: 14, padding: 14, marginBottom: 9,
+    ...ui.card,
+    padding: 14, marginBottom: 9,
     flexDirection: 'row', alignItems: 'center',
     borderLeftWidth: 4, borderLeftColor: colors.doradoNeon,
-    borderWidth: 1, borderColor: 'rgba(93,202,165,0.15)',
   },
-  wordPast: { fontSize: 19, fontWeight: '900', color: colors.doradoNeon, fontFamily: 'serif' },
+  wordPast: { fontSize: 19, color: colors.doradoNeon, fontFamily: fonts.bold },
   wordEsp:  { fontSize: 13, color: colors.cielo, marginTop: 2, fontFamily: fonts.medium },
-  badge:    { backgroundColor: colors.turquesa, borderRadius: 12, paddingHorizontal: 9, paddingVertical: 4, alignSelf: 'flex-start' },
-  badgeTxt: { fontSize: 9, color: colors.cielo, fontFamily: fonts.semibold },
+  badge:    { ...ui.chip, alignSelf: 'flex-start' },
+  badgeTxt: { ...ui.chipTxt, fontSize: 10 },
 
   backBtn: { marginBottom: 12 },
   backTxt: { fontSize: 13, color: colors.turquesaClaro, fontFamily: fonts.semibold },
 
-  vacioTit: { fontSize: 18, fontFamily: fonts.bold, color: colors.cielo, marginTop: 12, textAlign: 'center' },
-  vacioSub: { fontSize: 14, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 6, textAlign: 'center', lineHeight: 20 },
-  vacioBtn: { backgroundColor: colors.turquesa, borderRadius: 14, paddingHorizontal: 24, paddingVertical: 14, marginTop: 22 },
+  vacioTit: { ...ui.h3, marginTop: 12, textAlign: 'center' },
+  vacioSub: { ...ui.sub, fontSize: 14, fontStyle: 'italic', marginTop: 6, textAlign: 'center', lineHeight: 20 },
+  vacioBtn: { backgroundColor: colors.turquesa, borderRadius: radii.sm, paddingHorizontal: 24, paddingVertical: 14, marginTop: 22 },
   vacioBtnTxt: { color: colors.cielo, fontFamily: fonts.bold, fontSize: 15 },
 
-  detWrap: { borderRadius: 18, padding: 24, marginBottom: 14, overflow: 'hidden', borderWidth: 1.5, borderColor: colors.turquesa },
+  detWrap: { ...ui.cardDestacada, padding: 24, marginBottom: 14, overflow: 'hidden' },
   detCat:  { fontSize: 10, color: colors.turquesaSuave, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6, textAlign: 'center', fontFamily: fonts.bold },
-  detPast: { fontSize: 36, fontWeight: '900', color: colors.doradoNeon, textAlign: 'center', fontFamily: 'serif', textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 12 },
-  detFon:  { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', textAlign: 'center', marginTop: 4 },
+  detPast: { fontSize: 36, color: colors.doradoNeon, textAlign: 'center', fontFamily: fonts.extra, textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 12 },
+  detFon:  { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.regular, fontStyle: 'italic', textAlign: 'center', marginTop: 4 },
   detEsp:  { fontSize: 18, color: colors.cielo, marginTop: 6, textAlign: 'center', fontFamily: fonts.semibold },
-  detDiv:  { height: 1, backgroundColor: 'rgba(255,255,255,0.2)', marginVertical: 12 },
-  detEj:   { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', textAlign: 'center' },
-  infoCard:{ backgroundColor: colors.nocheCard, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  detDiv:  { ...ui.divider, marginVertical: 12 },
+  detEj:   { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.regular, fontStyle: 'italic', textAlign: 'center' },
+  infoCard:{ ...ui.card, padding: 16 },
   infoTit: { fontSize: 14, fontFamily: fonts.bold, color: colors.turquesaClaro, marginBottom: 8 },
-  infoTxt: { fontSize: 13, color: colors.cielo, lineHeight: 20 },
+  infoTxt: { fontSize: 13, color: colors.cielo, fontFamily: fonts.regular, lineHeight: 20 },
 });
 
 // ─── Estilos Perfil ────────────────────────────────────────────
@@ -463,22 +470,23 @@ const ps = StyleSheet.create({
   modalSaveTxt:  { color: colors.cielo, fontFamily: fonts.extra, fontSize: 14 },
 
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 16 },
-  statCard:  { width: '48%', backgroundColor: colors.nocheCard, borderRadius: 16, padding: 16, alignItems: 'center', marginBottom: 12, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  statCard:  { ...ui.card, width: '48%', padding: 16, alignItems: 'center', marginBottom: 12 },
   statN:     { fontSize: 28, fontFamily: fonts.extra, color: colors.doradoNeon },
   statL:     { fontSize: 11, color: colors.turquesaSuave, marginTop: 2, fontFamily: fonts.medium },
 
-  statsBtn:    { backgroundColor: 'rgba(250,199,117,0.12)', borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1.5, borderColor: colors.doradoNeon, alignItems: 'center' },
+  statsBtn:    { backgroundColor: 'rgba(250,199,117,0.12)', borderRadius: radii.md, padding: 16, marginBottom: 16, borderWidth: 1.5, borderColor: colors.doradoNeon, alignItems: 'center' },
   statsBtnTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.extra },
   statsBtnSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 3, textAlign: 'center' },
 
-  card:    { backgroundColor: colors.nocheCard, padding: 16, borderRadius: 18, marginBottom: 18, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
-  cardTit: { fontSize: 15, fontFamily: fonts.bold, color: colors.cielo },
+  card:    { ...ui.card, padding: 16, marginBottom: 18 },
+  cardTit: { ...ui.h3, fontSize: 15 },
   barLbl:  { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.medium },
   barVal:  { fontSize: 11, color: colors.turquesaClaro, fontFamily: fonts.semibold },
   barWrap: { height: 8, backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 4, overflow: 'hidden' },
   barFill: { height: '100%', borderRadius: 4 },
 
-  seccion:    { fontSize: 13, fontFamily: fonts.bold, color: colors.turquesaSuave, letterSpacing: 2, marginBottom: 12 },
+  seccionPill:   { ...ui.pill, marginBottom: 12 },
+  seccionPillTxt:{ ...ui.pillTxt },
 
   vitrina:    { gap: 14, paddingVertical: 4, paddingHorizontal: 2, marginBottom: 18 },
   medallaCol: { width: 76, alignItems: 'center' },
@@ -489,8 +497,8 @@ const ps = StyleSheet.create({
   medModalSig:  { fontSize: 14, color: colors.cielo, textAlign: 'center', marginTop: 10, lineHeight: 21, fontStyle: 'italic' },
   medModalTap:  { fontSize: 11, color: colors.turquesaSuave, marginTop: 16 },
   logrosGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  logroCard:  { width: '48%', borderRadius: 16, padding: 14, alignItems: 'center', marginBottom: 12 },
-  logroOn:    { backgroundColor: colors.nocheCard, borderWidth: 2, borderColor: colors.doradoNeon },
+  logroCard:  { width: '48%', borderRadius: radii.md, padding: 14, alignItems: 'center', marginBottom: 12 },
+  logroOn:    { backgroundColor: 'rgba(8,26,34,0.62)', borderWidth: 2, borderColor: colors.doradoNeon },
   logroOff:   { backgroundColor: colors.nocheProfundo, opacity: 0.5, borderWidth: 1, borderColor: 'rgba(93,202,165,0.15)' },
   logroEmoji: { fontSize: 28, marginBottom: 4 },
   logroEmojiOn:{ textShadowColor: 'rgba(250,199,117,0.7)', textShadowRadius: 12 },
