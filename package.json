@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "build:android": "eas build --platform android --profile preview"
+    "build:android": "eas build --platform android --profile preview",
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"src/**/*.test.mjs\""
   },
   "dependencies": {
     "@expo-google-fonts/baloo-2": "^0.4.2",
