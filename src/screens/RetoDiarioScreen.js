@@ -15,13 +15,14 @@ import PishkuMascota from '../components/PishkuMascota';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { programarNotificacionDiaria } from '../utils/notificaciones';
+import { distinguirDibujos } from '../utils/ejercicios';
 
 // Orden fijo de mecánicas del reto: 2 quiz, 2 parejas rápidas, 1 dictado
 const ORDEN = ['quiz', 'parejas', 'quiz', 'parejas', 'dictado'];
 
 const opcionesCon = (target) => {
   const distractores = shuffle(palabras.filter(x => x.id !== target.id)).slice(0, 3);
-  return shuffle([target, ...distractores]);
+  return distinguirDibujos(shuffle([target, ...distractores]));
 };
 
 // ── Cuenta regresiva hasta medianoche ──
@@ -57,9 +58,22 @@ export default function RetoDiarioScreen({ navigation }) {
   const [preguntarNotif, setPreguntarNotif] = useState(false);
   const [reloj, setReloj] = useState(tiempoHastaMedianoche());
   const timeoutRef = useRef(null);
+  const fechaRetoRef = useRef(estado.ultimaSesion);
 
-  // Construye la secuencia al montar (solo si el reto está disponible).
+  // Al cambiar de día, descarta el resultado y los pasos de la sesión anterior.
   useEffect(() => {
+    if (fechaRetoRef.current !== estado.ultimaSesion) {
+      fechaRetoRef.current = estado.ultimaSesion;
+      clearTimeout(timeoutRef.current);
+      setIdx(0);
+      setAciertos(0);
+      setSeleccion(null);
+      setTexto('');
+      setVerif(null);
+      setFin(false);
+      setConfeti(false);
+      setPreguntarNotif(false);
+    }
     if (!disponible) return;
     const vistas = palabras.filter(p => estado.palabrasVistas.has(p.id));
     const base = vistas.length >= 5 ? vistas : palabras.filter(p => p.mundo === 1);
@@ -73,7 +87,7 @@ export default function RetoDiarioScreen({ navigation }) {
       const target = objetivos[i];
       return { tipo, target, opciones: tipo === 'dictado' ? null : opcionesCon(target) };
     }));
-  }, [disponible]);
+  }, [disponible, estado.ultimaSesion]);
 
   // Reloj de la cuenta regresiva (solo cuando ya completó hoy)
   useEffect(() => {
@@ -136,8 +150,8 @@ export default function RetoDiarioScreen({ navigation }) {
                   tamano="lg"
                   onPress={async () => {
                     setPreguntarNotif(false);
-                    cambiarNotificaciones(true);
-                    await programarNotificacionDiaria(estado.horaNotificacion || 16, nombre);
+                    const programada = await programarNotificacionDiaria(estado.horaNotificacion ?? 16, nombre);
+                    cambiarNotificaciones(programada);
                   }}
                 />
                 <BotonGlow texto="Ahora no" variante="fantasma" tamano="md" onPress={() => setPreguntarNotif(false)} />
@@ -266,6 +280,7 @@ export default function RetoDiarioScreen({ navigation }) {
                     activeOpacity={0.85}
                   >
                     <Text style={s.emojiBig}>{op.emoji}</Text>
+                    {op.etiquetaDibujo && <Text style={s.emojiEtiqueta}>{op.etiquetaDibujo}</Text>}
                   </TouchableOpacity>
                 );
               })}
@@ -353,6 +368,7 @@ const s = StyleSheet.create({
     borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.2)',
   },
   emojiBig: { fontSize: 50 },
+  emojiEtiqueta: { fontSize: 13, color: colors.cielo, fontFamily: fonts.bold, textAlign: 'center', marginTop: 4 },
 
   inputWrap:    { backgroundColor: colors.nocheProfundo, borderRadius: 16, borderWidth: 2, borderColor: 'rgba(93,202,165,0.3)', marginBottom: 10, height: 52, justifyContent: 'center' },
   inputWrapOk:  { borderColor: colors.turquesa },

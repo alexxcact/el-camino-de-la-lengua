@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { ui, radii } from '../theme/ui';
-import { palabras, mundos, shuffle } from '../data/datos';
+import { palabras, mundos } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import AvatarSVG from '../components/AvatarSVG';
 import Medallon from '../components/Medallon';
@@ -18,6 +18,7 @@ import BotonGlow from '../components/BotonGlow';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { decirPalabra, detenerVoz } from '../utils/voz';
+import { bancoDuelo, filtrarBancoDuelo, generarPreguntaDuelo } from '../utils/duelo';
 
 // ══════════════════════════════════════════════════════════════
 // DUELO DE LA LENGUA — 2 jugadores por turnos en el MISMO dispositivo.
@@ -33,33 +34,13 @@ const EQUIPOS = [
 ];
 
 const OPCIONES_RONDAS = [5, 7, 10];
-const TIPOS = ['quiz', 'escucha', 'relampago'];
-
-// Genera la pregunta de un turno: tipo al azar del banco `pool`.
-function generarPregunta(pool) {
-  const tipo = TIPOS[Math.floor(Math.random() * TIPOS.length)];
-
-  if (tipo === 'relampago') {
-    const tres = shuffle(pool).slice(0, 3);
-    const tiles = shuffle([
-      ...tres.map(w => ({ key: 'p' + w.id, id: w.id, txt: w.p, emoji: w.emoji, lado: 'past' })),
-      ...tres.map(w => ({ key: 'e' + w.id, id: w.id, txt: w.e, emoji: w.emoji, lado: 'esp'  })),
-    ]);
-    return { tipo, tiles };
-  }
-
-  const target = pool[Math.floor(Math.random() * pool.length)];
-  const otras = shuffle(palabras.filter(x => x.id !== target.id)).slice(0, 3);
-  const opciones = shuffle([target, ...otras]);
-  return { tipo, target, opciones };
-}
 
 export default function DueloScreen({ navigation }) {
   const { estado, registrarDuelo, verificarLogros } = useJuego();
 
-  // ── Banco base: palabras ya vistas; si hay muy pocas, usa el Mundo 1 ──
+  // ── Banco base: palabras vistas; sin progreso, ofrece el Mundo 1 ──
   const vistas = palabras.filter(p => estado.palabrasVistas.has(p.id));
-  const base = vistas.length >= 6 ? vistas : palabras.filter(p => p.mundo === 1);
+  const base = bancoDuelo(palabras, estado.palabrasVistas);
   const mundosDisponibles = mundos.filter(m => base.some(p => p.mundo === m.id));
   const catsDisponibles = [...new Set(base.map(p => p.cat))];
 
@@ -69,6 +50,7 @@ export default function DueloScreen({ navigation }) {
   const [mundoSel, setMundoSel] = useState(mundosDisponibles[0]?.id ?? 1);
   const [catSel, setCatSel] = useState(catsDisponibles[0] ?? null);
   const [rondas, setRondas] = useState(5);
+  const bancoSeleccionado = filtrarBancoDuelo(base, modoCont, mundoSel, catSel);
 
   // ── Partida ──
   const [fase, setFase] = useState('config');          // config | pase | pregunta | final
@@ -100,10 +82,8 @@ export default function DueloScreen({ navigation }) {
 
   // ── Construye el banco según la selección y arranca la partida ──
   const comenzar = () => {
-    let p = base;
-    if (modoCont === 'mundo')     p = base.filter(w => w.mundo === mundoSel);
-    if (modoCont === 'categoria') p = base.filter(w => w.cat === catSel);
-    if (p.length < 6) p = base;   // red de seguridad: nunca dejar el banco muy corto
+    const p = bancoSeleccionado;
+    if (p.length === 0) return;
 
     marcadorRef.current = [0, 0];
     setPool(p);
@@ -114,7 +94,7 @@ export default function DueloScreen({ navigation }) {
   // Prepara un turno: genera su pregunta y muestra el "pase de teléfono"
   const iniciarTurno = (t, poolActual = pool) => {
     setTurno(t);
-    setPregunta(generarPregunta(poolActual));
+    setPregunta(generarPreguntaDuelo(poolActual));
     setSeleccion(null);
     setParPrimera(null);
     setParSegunda(null);
@@ -187,7 +167,7 @@ export default function DueloScreen({ navigation }) {
 
   // ─── CONFIGURACIÓN ───
   function Config() {
-    const puedeEmpezar = nombres[0].trim().length > 0 && nombres[1].trim().length > 0;
+    const puedeEmpezar = nombres[0].trim().length > 0 && nombres[1].trim().length > 0 && bancoSeleccionado.length > 0;
     return (
       <KeyboardAvoidingView style={s.bg} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={s.configContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
@@ -243,8 +223,14 @@ export default function DueloScreen({ navigation }) {
               ))}
             </View>
           )}
-          {vistas.length < 6 && (
-            <Text style={s.aviso}>Aún hay pocas palabras aprendidas: el duelo usará las del Mundo 1.</Text>
+          {vistas.length === 0 && (
+            <Text style={s.aviso}>Aún no hay palabras aprendidas: el duelo usará las del Mundo 1.</Text>
+          )}
+          {bancoSeleccionado.length === 1 && (
+            <Text style={s.aviso}>Jugarán con una palabra: une su pareja en cada turno.</Text>
+          )}
+          {bancoSeleccionado.length === 0 && (
+            <Text style={s.aviso}>No hay palabras para esta selección. Elige otro mundo o categoría.</Text>
           )}
 
           {/* Rondas */}
@@ -381,7 +367,7 @@ export default function DueloScreen({ navigation }) {
     );
   }
 
-  // Parejas-relámpago: encontrar 1 par entre 6 fichas
+  // Parejas-relámpago: encontrar 1 par entre las fichas del banco seleccionado
   function Relampago() {
     const primera = parPrimera ? pregunta.tiles.find(t => t.key === parPrimera) : null;
     return (

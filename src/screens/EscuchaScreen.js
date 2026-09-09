@@ -11,9 +11,12 @@ import Acompanante from '../components/Acompanante';
 import BotonGlow from '../components/BotonGlow';
 import Confeti from '../components/Confeti';
 import PishkuMascota from '../components/PishkuMascota';
+import PalabraIlustrada from '../components/PalabraIlustrada';
+import IconoActividad from '../components/IconoActividad';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { decirPalabra, detenerVoz } from '../utils/voz';
+import { distinguirDibujos, sesionAprobada } from '../utils/ejercicios';
 
 const RONDAS = 5;
 
@@ -42,7 +45,7 @@ export default function EscuchaScreen({ route, navigation }) {
   useEffect(() => {
     const nuevas = shuffle(palabrasMundo).slice(0, nPreguntas || RONDAS).map(p => {
       const otras = shuffle(palabras.filter(x => x.id !== p.id)).slice(0, 3);
-      return { palabra: p, opciones: shuffle([p, ...otras]) };
+      return { palabra: p, opciones: distinguirDibujos(shuffle([p, ...otras])) };
     });
     setRondas(nuevas);
   }, []);
@@ -83,16 +86,17 @@ export default function EscuchaScreen({ route, navigation }) {
         setSeleccion(null);
       } else {
         const total = aciertos + (acerto ? 1 : 0);
+        const exito = sesionAprobada(total, rondas.length);
         setFin(true);
         if (!modoPractica) {
-          if (total >= 3) {
+          if (exito) {
             completarMision(`escucha-${mundoId}`);
             ganarPuntos(20);
             sonar.mision(); vibrar.exito();
           }
         } else {
           completarPractica();
-          if (total >= 3) { sonar.mision(); vibrar.exito(); }
+          if (exito) { sonar.mision(); vibrar.exito(); }
         }
         verificarLogros();
       }
@@ -101,7 +105,7 @@ export default function EscuchaScreen({ route, navigation }) {
 
   // ─── Resultado ───
   if (fin) {
-    const exito = aciertos >= 3;
+    const exito = sesionAprobada(aciertos, rondas.length);
     return (
       <View style={s.resBg}>
         <LinearGradient colors={exito ? colors.gradAurora : ['#0B1F2A', '#0E2730', '#11353F']} style={StyleSheet.absoluteFill} />
@@ -125,11 +129,12 @@ export default function EscuchaScreen({ route, navigation }) {
 
   return (
     <View style={s.bg}>
-      <ScrollView contentContainerStyle={{ padding: 14, flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
 
         <View style={s.header}>
           <View style={s.headerTop}>
             <View style={s.headerPill}>
+              <IconoActividad tipo="escucha" tamano={22} />
               <Text style={s.headerPillTxt}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
             </View>
             <Text style={s.aciertosTxt}>{idx + 1}/{rondas.length} · ✓ {aciertos}</Text>
@@ -144,20 +149,20 @@ export default function EscuchaScreen({ route, navigation }) {
         {/* Botón de audio grande */}
         <View style={s.audioWrap}>
           <Text style={s.instruccion}>Escucha y elige el dibujo</Text>
-          <TouchableOpacity onPress={() => decirPalabra(ronda.palabra.p)} activeOpacity={0.85}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Escuchar la palabra otra vez" onPress={() => decirPalabra(ronda.palabra.p)} activeOpacity={0.85}>
             <View style={s.audioGlowWrap}>
               {/* Halo (círculos concéntricos translúcidos: glow real en Android) */}
               <View style={[s.audioHalo, s.audioHaloLg]} />
               <View style={[s.audioHalo, s.audioHaloMd]} />
               <Animated.View style={[s.audioBtn, { transform: [{ scale: pulsoScale }] }]}>
-                <Ionicons name="volume-high" size={56} color={colors.cielo} />
+                <Ionicons name="volume-high" size={44} color={colors.crema} />
               </Animated.View>
             </View>
           </TouchableOpacity>
           <Text style={s.audioHint}>Toca para oír otra vez</Text>
         </View>
 
-        {/* Opciones de emoji */}
+        {/* Dibujos y etiquetas para distinguir significados ambiguos */}
         <View style={s.grid}>
           {ronda.opciones.map(op => {
             const esCorr = op.id === ronda.palabra.id;
@@ -172,11 +177,16 @@ export default function EscuchaScreen({ route, navigation }) {
                   seleccion !== null && !esCorr && !elegida && s.opOff,
                 ]}
                 onPress={() => elegir(op)}
+                accessibilityRole="button"
+                accessibilityLabel={`${op.e}${seleccion !== null && esCorr ? ', respuesta correcta' : seleccion !== null && elegida ? ', respuesta incorrecta' : ''}`}
+                accessibilityState={{ disabled: seleccion !== null, selected: elegida }}
                 disabled={seleccion !== null}
                 activeOpacity={0.85}
               >
-                <Text style={s.opEmoji}>{op.emoji}</Text>
-                {seleccion !== null && esCorr && <Text style={s.opEsp}>{op.e}</Text>}
+                <PalabraIlustrada palabra={op} tamano={64} />
+                {(op.etiquetaDibujo || (seleccion !== null && esCorr)) && <Text style={s.opEsp}>{op.e}</Text>}
+                {seleccion !== null && esCorr && <Text style={[s.opEstado, s.opEstadoCorrecto]}>✓</Text>}
+                {seleccion !== null && elegida && !esCorr && <Text style={[s.opEstado, s.opEstadoError]}>×</Text>}
               </TouchableOpacity>
             );
           })}
@@ -200,48 +210,50 @@ export default function EscuchaScreen({ route, navigation }) {
 
 const s = StyleSheet.create({
   bg: { flex: 1, backgroundColor: colors.noche },
+  content: { padding: 16, flexGrow: 1, width: '100%', maxWidth: 620, alignSelf: 'center' },
 
-  header:        { ...ui.card, padding: 14, marginBottom: 16 },
-  headerTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
-  headerPill:    { ...ui.pill, flexShrink: 1 },
-  headerPillTxt: { ...ui.pillTxt },
-  aciertosTxt:   { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold },
+  header:        { paddingVertical: 4, marginBottom: 16 },
+  headerTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 10 },
+  headerPill:    { flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 },
+  headerPillTxt: { color: colors.turquesaSuave, fontFamily: fonts.semibold, fontSize: 14, flexShrink: 1 },
+  aciertosTxt:   { color: colors.cielo, fontSize: 14, fontFamily: fonts.bold },
   progBar:     { flexDirection: 'row', gap: 7, alignItems: 'center' },
   progDot:     { width: 18, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.18)' },
   progDone:    { backgroundColor: colors.doradoNeon },
   progActive:  { backgroundColor: colors.doradoNeon, width: 30, height: 8, borderRadius: 4 },
 
-  audioWrap:    { alignItems: 'center', marginBottom: 22 },
-  instruccion:  { ...ui.sub, fontSize: 15, fontFamily: fonts.semibold, marginBottom: 16 },
-  audioGlowWrap:{ alignItems: 'center', justifyContent: 'center', paddingVertical: 20 },
+  audioWrap:    { alignItems: 'center', marginBottom: 18 },
+  instruccion:  { color: colors.cielo, fontSize: 18, fontFamily: fonts.semibold, marginBottom: 8, textAlign: 'center' },
+  audioGlowWrap:{ alignItems: 'center', justifyContent: 'center', paddingVertical: 12 },
   audioHalo:    { position: 'absolute', borderRadius: radii.pill },
-  audioHaloLg:  { width: 168, height: 168, backgroundColor: ui.haloTurquesa },
-  audioHaloMd:  { width: 140, height: 140, backgroundColor: ui.haloDorado },
+  audioHaloLg:  { width: 128, height: 128, backgroundColor: 'rgba(93,202,165,0.06)' },
+  audioHaloMd:  { width: 112, height: 112, backgroundColor: 'rgba(93,202,165,0.12)' },
   audioBtn: {
-    width: 120, height: 120, borderRadius: 60,
-    backgroundColor: colors.turquesa, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 3, borderColor: ui.ringTurquesa,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 8,
+    width: 88, height: 88, borderRadius: 44,
+    backgroundColor: colors.nocheCard, alignItems: 'center', justifyContent: 'center',
+    borderWidth: 2, borderColor: colors.turquesaClaro,
   },
-  audioHint: { ...ui.caption, fontSize: 12, letterSpacing: 0.5, marginTop: 4 },
+  audioHint: { color: colors.turquesaSuave, fontFamily: fonts.medium, fontSize: 14, marginTop: 8 },
 
   grid:   { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 12 },
   opBtn:  {
     ...ui.card,
-    borderRadius: radii.md, padding: 0,
-    width: '47%', aspectRatio: 1.3, alignItems: 'center', justifyContent: 'center',
-    marginBottom: 12,
+    borderRadius: radii.md, padding: 14,
+    width: '48%', minHeight: 128, alignItems: 'center', justifyContent: 'center',
+    marginBottom: 12, backgroundColor: colors.crema, borderColor: colors.arena, shadowOpacity: 0, elevation: 0,
   },
-  opCorrecta:   { borderColor: colors.turquesa, borderWidth: 2.5, backgroundColor: 'rgba(29,158,117,0.18)' },
-  opIncorrecta: { borderColor: colors.coral, borderWidth: 2.5, backgroundColor: 'rgba(242,120,92,0.14)' },
-  opOff:        { opacity: 0.4 },
-  opEmoji: { fontSize: 56 },
-  opEsp:   { fontSize: 13, color: colors.cielo, fontFamily: fonts.bold, marginTop: 4 },
+  opCorrecta:   { borderColor: colors.verdeM, borderWidth: 2, backgroundColor: colors.respuestaCorrecta },
+  opIncorrecta: { borderColor: colors.rojoVivo, borderWidth: 2, backgroundColor: colors.respuestaIncorrecta },
+  opOff:        { opacity: 0.72 },
+  opEsp:   { fontSize: 16, lineHeight: 21, color: colors.noche, fontFamily: fonts.bold, marginTop: 6, textAlign: 'center' },
+  opEstado: { position: 'absolute', top: 5, right: 10, fontSize: 24, fontFamily: fonts.extra },
+  opEstadoCorrecto: { color: colors.verdeM },
+  opEstadoError: { color: colors.rojoVivo },
 
   resBg:      { flex: 1 },
   resContent: { flexGrow: 1, padding: 22, justifyContent: 'center', alignItems: 'center' },
   resTit:     { fontSize: 24, fontFamily: fonts.extra, color: colors.doradoNeon, textAlign: 'center', marginTop: 18, textShadowColor: 'rgba(250,199,117,0.4)', textShadowRadius: 10 },
   scoreCard:  { ...ui.cardDestacada, alignItems: 'center', marginVertical: 22, alignSelf: 'stretch' },
   scoreNum:   { fontSize: 52, fontFamily: fonts.extra, color: colors.cielo },
-  scoreLbl:   { fontSize: 13, color: colors.turquesaSuave, fontFamily: fonts.medium, marginTop: 2 },
+  scoreLbl:   { fontSize: 14, color: colors.turquesaSuave, fontFamily: fonts.medium, marginTop: 2 },
 });

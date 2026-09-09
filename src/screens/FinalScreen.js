@@ -13,6 +13,7 @@ import ContadorAnimado from '../components/ContadorAnimado';
 import MedallaPasto from '../components/MedallaPasto';
 import Medallon from '../components/Medallon';
 import { sonar } from '../utils/sonidos';
+import { volverAlTerritorio } from '../utils/navegacion';
 
 const { width: W } = Dimensions.get('window');
 
@@ -80,7 +81,7 @@ export default function FinalScreen({ navigation }) {
   }, [fase, escIdx]);
 
   const saltar = () => { setEscIdx(mundos.length); setFase(4); };
-  const salir = () => { marcarFinalVisto(); navigation.replace('MainTabs'); };
+  const salir = () => { marcarFinalVisto(); volverAlTerritorio(navigation); };
   const compartir = async () => {
     try {
       await Share.share({ message: `¡Completé El Camino de la Lengua y aprendí ${estado.palabrasVistas.size} palabras del Pastoker! 🌿 #PuebloPasto #PUMAMAKI` });

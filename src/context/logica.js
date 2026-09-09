@@ -68,6 +68,18 @@ export const fechaISO = (d) => {
 export const fechaHoy  = () => fechaISO(new Date());
 export const fechaAyer = () => { const d = new Date(); d.setDate(d.getDate() - 1); return fechaISO(d); };
 
+// Usa la siguiente medianoche local, también en días con cambio de horario.
+export function msHastaMedianoche(ahora = new Date()) {
+  const manana = new Date(ahora);
+  manana.setHours(24, 0, 0, 0);
+  return manana.getTime() - ahora.getTime();
+}
+
+export function normalizarHora(hora) {
+  const numero = parseInt(hora, 10);
+  return Number.isNaN(numero) ? 16 : Math.max(0, Math.min(23, numero));
+}
+
 // Hash determinístico de una fecha → entero estable (misma fecha = mismo número en
 // todos los dispositivos, y no cambia al recargar). Sirve de "semilla" para elegir
 // la palabra del día sin azar.

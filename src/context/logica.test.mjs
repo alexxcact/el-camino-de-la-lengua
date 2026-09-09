@@ -12,6 +12,8 @@ import {
   fechaISO,
   fechaHoy,
   fechaAyer,
+  msHastaMedianoche,
+  normalizarHora,
   seedFecha,
   MAX_DIAS_ACTIVOS,
   agregarDiaActivo,
@@ -136,6 +138,25 @@ test('aplicarSesion: mejorRacha se actualiza cuando la racha nueva la supera', (
 });
 
 // ─── Días activos ───
+
+test('la siguiente medianoche usa la fecha local y cruza fin de mes y año', () => {
+  assert.equal(msHastaMedianoche(new Date(2026, 8, 5, 23, 59, 59, 500)), 500);
+  assert.equal(msHastaMedianoche(new Date(2026, 8, 30, 23, 59)), 60000);
+  assert.equal(msHastaMedianoche(new Date(2026, 11, 31, 23, 59)), 60000);
+  assert.ok(msHastaMedianoche(new Date(2026, 8, 6, 0, 0)) > 0);
+});
+
+test('normalizarHora conserva medianoche y las 24 horas seleccionables', () => {
+  for (let hora = 0; hora < 24; hora++) {
+    assert.equal(normalizarHora(hora), hora);
+    assert.equal(normalizarHora(String(hora)), hora);
+  }
+  assert.equal(normalizarHora(-1), 0);
+  assert.equal(normalizarHora(24), 23);
+  for (const invalida of [null, undefined, '', 'no es una hora']) {
+    assert.equal(normalizarHora(invalida), 16);
+  }
+});
 
 test('agregarDiaActivo añade hoy una sola vez (idempotente)', () => {
   const base = hidratarEstado(null);

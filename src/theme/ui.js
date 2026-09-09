@@ -1,4 +1,4 @@
-// Tokens de diseño compartidos — "Futurismo Andino" pulido.
+// Tokens compartidos — aventura ilustrada andina.
 // Fuente única de verdad del look de la app (derivada de la pantalla de Bienvenida).
 // Úsalos en los StyleSheet de las pantallas para que TODO se vea consistente:
 //   import { ui } from '../theme/ui';
@@ -22,14 +22,14 @@ export const ui = {
   card: {
     borderRadius: radii.lg,
     backgroundColor: 'rgba(8,26,34,0.62)',
-    borderWidth: 1.5,
-    borderColor: 'rgba(93,202,165,0.35)',
+    borderWidth: 1,
+    borderColor: colors.bordeSuave,
     padding: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 6,
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 2,
   },
   // Variante de tarjeta destacada (foco de la pantalla)
   cardDestacada: {
@@ -40,9 +40,9 @@ export const ui = {
     padding: 22,
     shadowColor: colors.doradoNeon,
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 18,
-    elevation: 8,
+    shadowOpacity: 0.16,
+    shadowRadius: 10,
+    elevation: 3,
   },
 
   // ── Chip / badge con borde dorado (reemplaza los rótulos con emoji) ──
@@ -55,7 +55,7 @@ export const ui = {
     borderWidth: 1,
     borderColor: 'rgba(250,199,117,0.5)',
   },
-  pillTxt: { color: colors.doradoNeon, fontSize: 11, fontFamily: fonts.extra, letterSpacing: 3 },
+  pillTxt: { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold, letterSpacing: 0.5 },
 
   // Chip secundario (turquesa) para filtros/etiquetas neutras
   chip: {
@@ -66,7 +66,7 @@ export const ui = {
     borderWidth: 1,
     borderColor: 'rgba(93,202,165,0.4)',
   },
-  chipTxt: { color: colors.turquesaSuave, fontSize: 12, fontFamily: fonts.semibold, letterSpacing: 0.5 },
+  chipTxt: { color: colors.turquesaSuave, fontSize: 14, fontFamily: fonts.semibold },
 
   // ── Separador fino ──
   divider: { height: 1, backgroundColor: 'rgba(93,202,165,0.28)' },
@@ -75,10 +75,10 @@ export const ui = {
   h1:      { fontSize: 28, fontFamily: fonts.extra, color: colors.cielo, letterSpacing: 0.3 },
   h2:      { fontSize: 22, fontFamily: fonts.bold, color: colors.cielo },
   h3:      { fontSize: 17, fontFamily: fonts.bold, color: colors.cielo },
-  body:    { fontSize: 15, fontFamily: fonts.regular, color: colors.cielo, lineHeight: 22 },
-  bodyMed: { fontSize: 15, fontFamily: fonts.medium, color: colors.cielo, lineHeight: 22 },
-  sub:     { fontSize: 13, fontFamily: fonts.medium, color: colors.turquesaSuave, lineHeight: 19 },
-  caption: { fontSize: 11, fontFamily: fonts.regular, color: colors.turquesaSuave, letterSpacing: 1, opacity: 0.75 },
+  body:    { fontSize: 16, fontFamily: fonts.regular, color: colors.cielo, lineHeight: 24 },
+  bodyMed: { fontSize: 16, fontFamily: fonts.medium, color: colors.cielo, lineHeight: 24 },
+  sub:     { fontSize: 14, fontFamily: fonts.medium, color: colors.turquesaSuave, lineHeight: 21 },
+  caption: { fontSize: 12, fontFamily: fonts.medium, color: colors.turquesaSuave, lineHeight: 18 },
   // Palabra pastoker resaltada dentro de un texto
   pastoker:{ color: colors.doradoNeon, fontFamily: fonts.bold },
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { ui, radii } from '../theme/ui';
@@ -33,11 +34,11 @@ export default function MapaScreen({ navigation }) {
   }, [toastAtuendo]);
 
   // Palabra del día: se calcula en un efecto (getPalabraDelDia persiste estado, no
-  // debe llamarse en render). Se recalcula si cambia la fecha asignada.
+  // debe llamarse en render). Se recalcula también al cambiar de día sin cerrar la app.
   const [palabraDia, setPalabraDia] = useState(null);
   useEffect(() => {
     setPalabraDia(getPalabraDelDia());
-  }, [estado.palabraDiaFecha, estado.palabrasVistas]);
+  }, [estado.ultimaSesion, estado.palabraDiaFecha, estado.palabrasVistas]);
 
   // Entra a un mundo: la PRIMERA vez muestra su cinemática de entrada; luego, directo.
   // (El auto-completar y el paso de mundoId quedan igual: solo se interpone la cinemática.)
@@ -77,13 +78,21 @@ export default function MapaScreen({ navigation }) {
               retoCompletado={!retoDiarioDisponible()}
               onReto={() => navigation.navigate('RetoDiario')}
             />
-            <TouchableOpacity style={s.practicaBtn} onPress={() => navigation.navigate('Practica')} activeOpacity={0.85}>
-              <Text style={s.practicaTxt}>Práctica libre</Text>
-              <Text style={s.practicaSub}>Repasa lo aprendido sin avanzar la historia</Text>
+            <TouchableOpacity style={s.atajoBtn} onPress={() => navigation.navigate('Practica')} activeOpacity={0.85} accessibilityRole="button">
+              <View style={s.atajoIcono}><Ionicons name="leaf-outline" size={25} color={colors.turquesaSuave} /></View>
+              <View style={s.atajoContenido}>
+                <Text style={s.atajoTitulo}>Práctica libre</Text>
+                <Text style={s.atajoSub}>Repasa las palabras que ya aprendiste</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={colors.turquesaSuave} />
             </TouchableOpacity>
-            <TouchableOpacity style={s.dueloBtn} onPress={() => navigation.navigate('Duelo')} activeOpacity={0.85}>
-              <Text style={s.dueloTxt}>Duelo de 2</Text>
-              <Text style={s.dueloSub}>Reta a otra persona en este mismo dispositivo</Text>
+            <TouchableOpacity style={[s.atajoBtn, s.atajoUltimo]} onPress={() => navigation.navigate('Duelo')} activeOpacity={0.85} accessibilityRole="button">
+              <View style={s.atajoIcono}><Ionicons name="people-outline" size={25} color={colors.turquesaSuave} /></View>
+              <View style={s.atajoContenido}>
+                <Text style={s.atajoTitulo}>Duelo de 2</Text>
+                <Text style={s.atajoSub}>Jueguen juntos en este dispositivo</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={colors.turquesaSuave} />
             </TouchableOpacity>
           </View>
         }
@@ -110,25 +119,18 @@ const s = StyleSheet.create({
     borderRadius: radii.md, borderColor: 'rgba(250,199,117,0.6)', alignItems: 'center',
   },
   toastTxt: { color: colors.doradoNeon, fontSize: 14, fontFamily: fonts.extra },
-  toastSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2 },
+  toastSub: { color: colors.turquesaSuave, fontSize: 13, fontFamily: fonts.medium, marginTop: 2 },
 
-  practicaBtn: {
-    ...ui.card,
+  atajoBtn: {
     marginHorizontal: 16, marginTop: 4, marginBottom: 10,
-    padding: 0, paddingVertical: 12, paddingHorizontal: 16, borderRadius: radii.md,
-    borderColor: 'rgba(93,202,165,0.55)',
-    alignItems: 'center',
+    paddingVertical: 12, paddingHorizontal: 14, borderRadius: radii.md,
+    backgroundColor: colors.nocheCard, borderWidth: 1,
+    borderColor: 'rgba(159,225,203,0.16)', minHeight: 76,
+    flexDirection: 'row', alignItems: 'center', gap: 12,
   },
-  practicaTxt: { color: colors.turquesaClaro, fontSize: 15, fontFamily: fonts.extra },
-  practicaSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2 },
-
-  dueloBtn: {
-    ...ui.card,
-    marginHorizontal: 16, marginTop: 0, marginBottom: 12,
-    padding: 0, paddingVertical: 12, paddingHorizontal: 16, borderRadius: radii.md,
-    borderColor: 'rgba(250,199,117,0.5)',
-    alignItems: 'center',
-  },
-  dueloTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.extra },
-  dueloSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2 },
+  atajoUltimo: { marginBottom: 16 },
+  atajoIcono: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(159,225,203,0.08)' },
+  atajoContenido: { flex: 1, minWidth: 0 },
+  atajoTitulo: { color: colors.cielo, fontSize: 16, fontFamily: fonts.extra },
+  atajoSub: { color: colors.turquesaSuave, fontSize: 13, lineHeight: 18, fontFamily: fonts.regular, marginTop: 1 },
 });

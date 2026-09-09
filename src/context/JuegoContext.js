@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { logros, palabras, CATS_AVATAR, atuendosDesbloqueados } from '../data/datos';
 import { setSonido } from '../utils/ajustes';
 import {
   STORAGE_KEY, estadoInicial, niveles, seedFecha,
-  fechaHoy, agregarDiaActivo, aplicarSesion,
+  fechaHoy, agregarDiaActivo, aplicarSesion, msHastaMedianoche, normalizarHora,
   serializarEstado, hidratarEstado,
 } from './logica';
 
@@ -43,11 +44,35 @@ export function JuegoProvider({ children }) {
 
   const actualizarEstado = useCallback((fn) => {
     setEstado(prev => {
-      const nuevo = fn(prev);
-      guardarEstado(nuevo);
+      // Una acción puede llegar antes que el aviso de medianoche o de reanudación.
+      const nuevo = fn(aplicarSesion(prev));
+      if (nuevo !== prev) guardarEstado(nuevo);
       return nuevo;
     });
   }, [guardarEstado]);
+
+  useEffect(() => {
+    if (!cargado) return;
+    let temporizador;
+    let activa = AppState.currentState == null || AppState.currentState === 'active';
+
+    const sincronizarDia = () => {
+      clearTimeout(temporizador);
+      if (!activa) return;
+      actualizarEstado(prev => prev);
+      temporizador = setTimeout(sincronizarDia, msHastaMedianoche());
+    };
+
+    const suscripcion = AppState.addEventListener('change', siguiente => {
+      activa = siguiente === 'active';
+      sincronizarDia();
+    });
+    sincronizarDia();
+    return () => {
+      clearTimeout(temporizador);
+      suscripcion.remove();
+    };
+  }, [cargado, actualizarEstado]);
 
   // Guarda el nombre del jugador: trim, valida 2-15, capitaliza la inicial.
   // Si queda fuera de rango usa "Caminante" (nunca bloquea el flujo).
@@ -93,7 +118,7 @@ export function JuegoProvider({ children }) {
   );
 
   // Marca el reto del día como completado (una vez por día), suma el contador
-  // histórico y da el bonus de puntos. La racha la mantiene aplicarSesion() al abrir.
+  // histórico y da el bonus de puntos. actualizarEstado mantiene la fecha de sesión.
   const completarRetoDiario = useCallback(() => {
     actualizarEstado(prev => {
       if (prev.retoDiarioFecha === fechaHoy()) return prev;
@@ -113,7 +138,7 @@ export function JuegoProvider({ children }) {
   }, [actualizarEstado]);
 
   const guardarHoraNotificacion = useCallback((h) => {
-    const hora = Math.max(0, Math.min(23, parseInt(h, 10) || 16));
+    const hora = normalizarHora(h);
     actualizarEstado(prev => ({ ...prev, horaNotificacion: hora }));
   }, [actualizarEstado]);
 
@@ -127,7 +152,7 @@ export function JuegoProvider({ children }) {
 
   // Completa una sesión de práctica libre: suma el contador y da un bonus simbólico
   // (+5, inline para no depender de ganarPuntos definido más abajo). NO completa
-  // misiones ni afecta desbloqueos. La racha la mantiene aplicarSesion() al abrir.
+  // misiones ni afecta desbloqueos. actualizarEstado mantiene la fecha de sesión.
   const completarPractica = useCallback(() => {
     actualizarEstado(prev => {
       const puntos = prev.puntos + 5;

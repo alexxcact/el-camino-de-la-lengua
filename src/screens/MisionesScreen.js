@@ -10,8 +10,11 @@ import { useJuego } from '../context/JuegoContext';
 import Acompanante from '../components/Acompanante';
 import BotonGlow from '../components/BotonGlow';
 import Confeti from '../components/Confeti';
+import PalabraIlustrada from '../components/PalabraIlustrada';
+import IconoActividad from '../components/IconoActividad';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
+import { sesionAprobada } from '../utils/ejercicios';
 
 // ══════════════════════════════════════════════════════════
 // PAREJAS — Uma acompaña
@@ -40,8 +43,8 @@ export function ParejasScreen({ route, navigation }) {
     const pals = fuente.slice(0, totalPares);
     const cartas = [];
     pals.forEach((p, i) => {
-      cartas.push({ id: `past-${i}`, grupo: i, texto: p.p, tipo: 'pastoker', emoji: p.emoji });
-      cartas.push({ id: `esp-${i}`,  grupo: i, texto: p.e, tipo: 'español',  emoji: p.emoji });
+      cartas.push({ id: `past-${i}`, grupo: i, texto: p.p, tipo: 'pastoker', palabra: p });
+      cartas.push({ id: `esp-${i}`,  grupo: i, texto: p.e, tipo: 'español', palabra: p });
     });
     setTarjetas(shuffle(cartas));
   }, []);
@@ -117,16 +120,18 @@ export function ParejasScreen({ route, navigation }) {
 
   return (
     <View style={s.bg}>
-      <ScrollView contentContainerStyle={{ padding: 14 }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
 
         <View style={s.header}>
           <View style={s.headerTop}>
             <View style={s.headerPill}>
+              <IconoActividad tipo="parejas" tamano={22} />
               <Text style={s.headerPillTxt}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
             </View>
-            <Text style={s.headerInfo}>✓ {resueltas.size}/{totalPares} · {intentos}</Text>
+            <Text style={s.headerInfo}>✓ {resueltas.size}/{totalPares}</Text>
           </View>
-          <Text style={s.headerSub}>Une las parejas: pastoker ↔ español</Text>
+          <Text style={s.headerSub}>Une cada palabra con su significado</Text>
+          <Text style={s.headerIntentos}>{intentos} intentos</Text>
         </View>
 
         <View style={s.grid}>
@@ -148,11 +153,17 @@ export function ParejasScreen({ route, navigation }) {
                   resuelta     && s.tarjetaResuelta,
                 ]}
                 onPress={() => elegir(i)}
+                accessibilityRole="button"
+                accessibilityLabel={`${t.tipo}: ${t.texto}${resuelta ? ', pareja completada' : errada ? ', pareja incorrecta' : ''}`}
+                accessibilityState={{ disabled: resuelta, selected: seleccionada }}
                 disabled={resuelta}
                 activeOpacity={0.85}
               >
-                <Text style={s.tarjEmoji}>{t.emoji}</Text>
+                <Text style={s.tarjIdioma}>{esPast ? 'Pastoker' : 'Español'}</Text>
+                <PalabraIlustrada palabra={t.palabra} tamano={32} />
                 <Text style={[s.tarjTxt, esPast && s.tarjTxtPast]}>{t.texto}</Text>
+                {(resuelta || acertada) && <Text style={[s.tarjEstado, s.tarjEstadoOk]}>✓</Text>}
+                {errada && <Text style={[s.tarjEstado, s.tarjEstadoErr]}>×</Text>}
               </TouchableOpacity>
             );
           })}
@@ -161,7 +172,7 @@ export function ParejasScreen({ route, navigation }) {
         <View style={{ marginTop: 12 }}>
           <Acompanante
             personaje="uma"
-            mensaje="Pas wawa... toca primero una palabra dorada en pastoker y después su significado. Si aciertas, ambas se unen en el tejido."
+            mensaje="Pas wawa... une una carta Pastoker con su significado en español. Si aciertas, ambas se unen en el tejido."
           />
         </View>
       </ScrollView>
@@ -211,15 +222,16 @@ export function DictadoScreen({ route, navigation }) {
       } else {
         setFin(true);
         const total = aciertos + (correcto ? 1 : 0);
+        const exito = sesionAprobada(total, listaDict.length);
         if (!modoPractica) {
-          if (total >= 3) {
+          if (exito) {
             completarMision(`dictado-${mundoId}`);
             ganarPuntos(20);
             sonar.mision(); vibrar.exito();
           }
         } else {
           completarPractica();
-          if (total >= 3) { sonar.mision(); vibrar.exito(); }
+          if (exito) { sonar.mision(); vibrar.exito(); }
         }
         verificarLogros();
       }
@@ -227,7 +239,7 @@ export function DictadoScreen({ route, navigation }) {
   };
 
   if (fin) {
-    const exito = aciertos >= 3;
+    const exito = sesionAprobada(aciertos, listaDict.length);
     return (
       <View style={s.resBg}>
         <LinearGradient
@@ -258,11 +270,12 @@ export function DictadoScreen({ route, navigation }) {
       style={s.bg}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerStyle={{ padding: 16, flexGrow: 1 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 
         <View style={s.header}>
           <View style={s.headerTop}>
             <View style={s.headerPill}>
+              <IconoActividad tipo="dictado" tamano={22} />
               <Text style={s.headerPillTxt}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
             </View>
             <Text style={s.headerInfo}>{idx + 1}/{listaDict.length} · ✓ {aciertos}</Text>
@@ -271,8 +284,8 @@ export function DictadoScreen({ route, navigation }) {
         </View>
 
         <View style={s.qCard}>
-          <Text style={s.qLabel}>¿CÓMO SE DICE EN PASTOKER?</Text>
-          <Text style={s.qEmoji}>{pal.emoji}</Text>
+          <Text style={s.qLabel}>¿Cómo se dice en pastoker?</Text>
+          <PalabraIlustrada palabra={pal} tamano={64} />
           <Text style={s.qEsp}>{pal.e}</Text>
           <Text style={s.qCat}>{pal.cat}</Text>
         </View>
@@ -286,7 +299,8 @@ export function DictadoScreen({ route, navigation }) {
           <TextInput
             style={s.input}
             placeholder="Escribe aquí..."
-            placeholderTextColor={colors.turquesaSuave}
+            placeholderTextColor={colors.gris}
+            accessibilityLabel="Tu respuesta en pastoker"
             value={texto}
             onChangeText={setTexto}
             onFocus={() => setFoco(true)}
@@ -324,44 +338,48 @@ export function DictadoScreen({ route, navigation }) {
 
 const s = StyleSheet.create({
   bg: { flex: 1, backgroundColor: colors.noche },
+  content: { padding: 16, flexGrow: 1, width: '100%', maxWidth: 620, alignSelf: 'center' },
 
   // ─── Header compartido ───
-  header:        { ...ui.card, padding: 14, marginBottom: 14 },
-  headerTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  headerPill:    { ...ui.pill, flexShrink: 1 },
-  headerPillTxt: { ...ui.pillTxt },
-  headerInfo:    { color: colors.doradoNeon, fontSize: 12, fontFamily: fonts.bold },
-  headerSub:     { ...ui.sub, fontFamily: fonts.semibold },
+  header:        { paddingVertical: 4, marginBottom: 16 },
+  headerTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 8 },
+  headerPill:    { flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 },
+  headerPillTxt: { color: colors.turquesaSuave, fontFamily: fonts.semibold, fontSize: 14, flexShrink: 1 },
+  headerInfo:    { color: colors.cielo, fontSize: 14, fontFamily: fonts.bold },
+  headerSub:     { color: colors.cielo, fontSize: 16, lineHeight: 23, fontFamily: fonts.semibold },
+  headerIntentos: { color: colors.turquesaSuave, fontSize: 14, fontFamily: fonts.medium, marginTop: 3 },
 
   // ─── Parejas ───
   grid:    { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   tarjeta: {
-    width: '48%', minHeight: 84,
+    width: '48%', minHeight: 132,
     borderRadius: radii.md, alignItems: 'center', justifyContent: 'center',
-    padding: 10, borderWidth: 1.5, marginBottom: 10,
+    padding: 12, borderWidth: 2, marginBottom: 12,
   },
-  tarjetaPast:     { backgroundColor: 'rgba(250,199,117,0.20)', borderColor: ui.ringDorado, borderWidth: 2 },
-  tarjetaEsp:      { backgroundColor: 'rgba(8,26,34,0.62)', borderColor: 'rgba(93,202,165,0.35)' },
-  tarjetaSel:      { borderColor: colors.turquesaClaro, borderWidth: 3, transform: [{ scale: 0.96 }] },
-  tarjetaAcierto:  { borderColor: colors.turquesa, borderWidth: 3, backgroundColor: 'rgba(29,158,117,0.30)' },
-  tarjetaError:    { borderColor: colors.coral, borderWidth: 3, backgroundColor: 'rgba(242,120,92,0.18)' },
-  tarjetaResuelta: { opacity: 0.3, borderColor: colors.turquesa },
-  tarjEmoji:       { fontSize: 24, marginBottom: 4 },
-  tarjTxt:         { fontSize: 13, fontFamily: fonts.semibold, color: colors.cielo, textAlign: 'center' },
-  tarjTxtPast:     { ...ui.pastoker, fontSize: 15, fontFamily: fonts.extra },
+  tarjetaPast:     { backgroundColor: colors.crema, borderColor: colors.arena },
+  tarjetaEsp:      { backgroundColor: colors.crema, borderColor: colors.arena },
+  tarjetaSel:      { borderColor: colors.verdeM, borderWidth: 3, transform: [{ scale: 0.96 }] },
+  tarjetaAcierto:  { borderColor: colors.verdeM, borderWidth: 3, backgroundColor: colors.respuestaCorrecta },
+  tarjetaError:    { borderColor: colors.rojoVivo, borderWidth: 3, backgroundColor: colors.respuestaIncorrecta },
+  tarjetaResuelta: { borderColor: colors.verdeM, backgroundColor: colors.respuestaCorrecta },
+  tarjIdioma:      { fontSize: 14, fontFamily: fonts.medium, color: colors.gris, marginBottom: 6 },
+  tarjTxt:         { fontSize: 17, lineHeight: 23, marginTop: 6, fontFamily: fonts.semibold, color: colors.noche, textAlign: 'center' },
+  tarjTxtPast:     { color: colors.verdeM, fontSize: 18, fontFamily: fonts.extra },
+  tarjEstado:      { position: 'absolute', top: 3, right: 8, fontSize: 20, fontFamily: fonts.extra },
+  tarjEstadoOk:    { color: colors.verdeM },
+  tarjEstadoErr:   { color: colors.rojoVivo },
 
   // ─── Dictado ───
-  qCard:  { ...ui.cardDestacada, alignItems: 'center', marginBottom: 14 },
-  qLabel: { ...ui.caption, fontSize: 10, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 4, opacity: 1 },
-  qEmoji: { fontSize: 56, marginVertical: 8 },
-  qEsp:   { fontSize: 28, fontFamily: fonts.extra, color: colors.cielo },
-  qCat:   { fontSize: 11, color: colors.doradoNeon, fontFamily: fonts.medium, marginTop: 4, letterSpacing: 2 },
+  qCard:  { backgroundColor: colors.crema, borderRadius: radii.lg, padding: 18, alignItems: 'center', marginBottom: 16, borderWidth: 1, borderColor: colors.arena },
+  qLabel: { color: colors.gris, fontSize: 15, fontFamily: fonts.semibold, marginBottom: 10, textAlign: 'center' },
+  qEsp:   { fontSize: 30, fontFamily: fonts.extra, color: colors.noche, textAlign: 'center', marginTop: 6 },
+  qCat:   { fontSize: 14, color: colors.gris, fontFamily: fonts.medium, marginTop: 4 },
 
-  inputWrap:     { backgroundColor: colors.nocheProfundo, borderRadius: radii.md, borderWidth: 2, borderColor: 'rgba(93,202,165,0.3)', marginBottom: 10, height: 52, justifyContent: 'center' },
-  inputWrapFoco: { borderColor: colors.turquesa, shadowColor: colors.turquesa, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.6, shadowRadius: 10, elevation: 6 },
-  inputWrapOk:   { borderColor: colors.turquesa, shadowColor: colors.turquesa, shadowOpacity: 0.6, shadowRadius: 10, elevation: 6 },
+  inputWrap:     { backgroundColor: colors.crema, borderRadius: radii.md, borderWidth: 2, borderColor: colors.arena, marginBottom: 12, minHeight: 56, justifyContent: 'center' },
+  inputWrapFoco: { borderColor: colors.turquesaClaro },
+  inputWrapOk:   { borderColor: colors.verdeM, backgroundColor: colors.respuestaCorrecta },
   inputWrapErr:  { borderColor: colors.coral },
-  input:         { paddingHorizontal: 16, fontSize: 18, color: colors.cielo, textAlign: 'center', fontFamily: fonts.bold },
+  input:         { paddingHorizontal: 16, paddingVertical: 12, fontSize: 20, color: colors.noche, textAlign: 'center', fontFamily: fonts.bold },
 
   msgOk:  { color: colors.turquesaClaro, fontSize: 14, fontFamily: fonts.bold, textAlign: 'center', marginBottom: 10 },
   msgErr: { color: colors.coral, fontSize: 14, fontFamily: fonts.bold, textAlign: 'center', marginBottom: 10 },

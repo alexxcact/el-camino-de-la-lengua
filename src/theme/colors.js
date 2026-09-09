@@ -48,6 +48,16 @@ export const colors = {
   coral:        '#F2785C',   // Errores / fallos
   cielo:        '#E1F5EE',   // Texto principal sobre noche
 
+  // Superficies de lectura y estados del tablero.
+  cartaDorso:   '#1A4650',
+  cartaBorde:   '#739B91',
+  cartaResuelta:'#E6EDD2',
+  respuestaCorrecta: '#E3EEDB',
+  respuestaIncorrecta: '#F7E0D8',
+  textoPapel:   '#344E42',
+  bordeSuave:   'rgba(159,225,203,0.22)',
+  fondoSuave:   'rgba(159,225,203,0.08)',
+
   // Gradientes nuevos
   gradAurora:   ['#0B1F2A', '#0F6E56', '#1D9E75'],     // Fondos hero
   gradXP:       ['#FAC775', '#EF9F27'],                 // Barras de XP

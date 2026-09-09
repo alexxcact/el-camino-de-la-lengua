@@ -11,8 +11,11 @@ import Acompanante from '../components/Acompanante';
 import BotonGlow from '../components/BotonGlow';
 import Confeti from '../components/Confeti';
 import PishkuMascota from '../components/PishkuMascota';
+import PalabraIlustrada from '../components/PalabraIlustrada';
+import IconoActividad from '../components/IconoActividad';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
+import { sesionAprobada } from '../utils/ejercicios';
 
 export default function QuizScreen({ route, navigation }) {
   const { mundoId, palabrasPractica, modoPractica = false, nPreguntas } = route.params || {};
@@ -62,7 +65,7 @@ export default function QuizScreen({ route, navigation }) {
         setIdx(idx + 1);
         setSeleccion(null);
       } else {
-        const exito = aciertos + (acerto ? 1 : 0) >= 3;
+        const exito = sesionAprobada(aciertos + (acerto ? 1 : 0), preguntas.length);
         setFin(true);
         if (!modoPractica) {
           sumarQuiz();
@@ -83,7 +86,7 @@ export default function QuizScreen({ route, navigation }) {
   // ─── Resultado ───
   if (fin) {
     const porcentaje = Math.round((aciertos / preguntas.length) * 100);
-    const exito = aciertos >= 3;
+    const exito = sesionAprobada(aciertos, preguntas.length);
     return (
       <View style={s.resultBg}>
         <LinearGradient
@@ -128,15 +131,16 @@ export default function QuizScreen({ route, navigation }) {
 
   return (
     <View style={s.bg}>
-      <ScrollView contentContainerStyle={{ padding: 14, flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
 
         {/* Header compacto */}
         <View style={s.header}>
           <View style={s.headerTop}>
             <View style={s.headerPill}>
+              <IconoActividad tipo="quiz" tamano={22} />
               <Text style={s.headerPillTxt}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
             </View>
-            <Text style={s.aciertosTxt}>✓ {aciertos}</Text>
+            <Text style={s.aciertosTxt}>{idx + 1}/{preguntas.length} · ✓ {aciertos}</Text>
           </View>
           <View style={s.progBar}>
             {preguntas.map((_, i) => (
@@ -147,8 +151,8 @@ export default function QuizScreen({ route, navigation }) {
 
         {/* Tarjeta de pregunta */}
         <View style={s.qCard}>
-          <Text style={s.qLabel}>¿QUÉ SIGNIFICA EN ESPAÑOL?</Text>
-          <Text style={s.qEmoji}>{pregunta.palabra.emoji}</Text>
+          <Text style={s.qLabel}>¿Qué significa en español?</Text>
+          <PalabraIlustrada palabra={pregunta.palabra} tamano={64} />
           <Text style={s.qPast}>{pregunta.palabra.p}</Text>
           <Text style={s.qFon}>[ {pregunta.palabra.fon} ]</Text>
         </View>
@@ -168,13 +172,16 @@ export default function QuizScreen({ route, navigation }) {
                   seleccion !== null && !esCorr && !elegida && s.opDeshabilitada,
                 ]}
                 onPress={() => elegir(op)}
+                accessibilityRole="button"
+                accessibilityLabel={`${op.e}${seleccion !== null && esCorr ? ', respuesta correcta' : seleccion !== null && elegida ? ', respuesta incorrecta' : ''}`}
+                accessibilityState={{ disabled: seleccion !== null, selected: elegida }}
                 disabled={seleccion !== null}
                 activeOpacity={0.85}
               >
-                <Text style={s.opEmoji}>{op.emoji}</Text>
+                <PalabraIlustrada palabra={op} tamano={36} />
                 <Text style={s.opTxt}>{op.e}</Text>
                 {seleccion !== null && esCorr             && <Text style={s.opCheck}>✓</Text>}
-                {seleccion !== null && elegida && !esCorr  && <Ionicons name="close" size={22} color={colors.coral} />}
+                {seleccion !== null && elegida && !esCorr  && <Ionicons name="close" size={22} color={colors.rojoVivo} />}
               </TouchableOpacity>
             );
           })}
@@ -191,35 +198,35 @@ export default function QuizScreen({ route, navigation }) {
 
 const s = StyleSheet.create({
   bg: { flex: 1, backgroundColor: colors.noche },
+  content: { padding: 16, flexGrow: 1, width: '100%', maxWidth: 620, alignSelf: 'center' },
 
-  header:        { ...ui.card, padding: 14, marginBottom: 16 },
-  headerTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
-  headerPill:    { ...ui.pill, flexShrink: 1 },
-  headerPillTxt: { ...ui.pillTxt },
-  aciertosTxt:   { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold },
+  header:        { paddingVertical: 4, marginBottom: 16 },
+  headerTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 10 },
+  headerPill:    { flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 },
+  headerPillTxt: { color: colors.turquesaSuave, fontFamily: fonts.semibold, fontSize: 14, flexShrink: 1 },
+  aciertosTxt:   { color: colors.cielo, fontSize: 14, fontFamily: fonts.bold },
   progBar:      { flexDirection: 'row', gap: 7, alignItems: 'center' },
   progDot:      { width: 18, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.18)' },
   progDone:     { backgroundColor: colors.doradoNeon },
   progActive:   { backgroundColor: colors.doradoNeon, width: 30, height: 8, borderRadius: 4 },
 
-  qCard:  { ...ui.cardDestacada, alignItems: 'center', marginBottom: 16 },
-  qLabel: { ...ui.caption, fontSize: 10, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 10, opacity: 1 },
-  qEmoji: { fontSize: 60, marginBottom: 8 },
-  qPast:  { ...ui.pastoker, fontSize: 36, fontFamily: fonts.extra, letterSpacing: 1, textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 12 },
-  qFon:   { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.medium, marginTop: 4, opacity: 0.9 },
+  qCard:  { backgroundColor: colors.crema, borderRadius: radii.lg, padding: 18, alignItems: 'center', marginBottom: 16, borderWidth: 1, borderColor: colors.arena },
+  qLabel: { color: colors.gris, fontSize: 15, fontFamily: fonts.semibold, marginBottom: 10, textAlign: 'center' },
+  qPast:  { color: colors.verdeM, fontSize: 34, fontFamily: fonts.extra, marginTop: 4, textAlign: 'center' },
+  qFon:   { fontSize: 16, color: colors.gris, fontFamily: fonts.medium, marginTop: 2, textAlign: 'center' },
 
   opciones: { gap: 10, marginBottom: 12 },
   op: {
     ...ui.card,
-    borderRadius: radii.md, padding: 0, paddingHorizontal: 14, minHeight: 56,
+    borderRadius: radii.md, paddingVertical: 10, paddingHorizontal: 14, minHeight: 60,
     flexDirection: 'row', alignItems: 'center', gap: 12,
+    backgroundColor: colors.crema, borderColor: colors.arena, shadowOpacity: 0, elevation: 0,
   },
-  opCorrecta:      { borderColor: colors.turquesa, borderWidth: 2, backgroundColor: 'rgba(29,158,117,0.15)' },
-  opIncorrecta:    { borderColor: colors.coral, borderWidth: 2, backgroundColor: 'rgba(242,120,92,0.12)' },
-  opDeshabilitada: { opacity: 0.4 },
-  opEmoji: { fontSize: 26 },
-  opTxt:   { flex: 1, fontSize: 15, fontFamily: fonts.bold, color: colors.cielo },
-  opCheck: { fontSize: 22, color: colors.turquesa, fontFamily: fonts.extra },
+  opCorrecta:      { borderColor: colors.verdeM, borderWidth: 2, backgroundColor: colors.respuestaCorrecta },
+  opIncorrecta:    { borderColor: colors.rojoVivo, borderWidth: 2, backgroundColor: colors.respuestaIncorrecta },
+  opDeshabilitada: { opacity: 0.72 },
+  opTxt:   { flex: 1, fontSize: 17, lineHeight: 23, fontFamily: fonts.bold, color: colors.noche },
+  opCheck: { fontSize: 22, color: colors.verdeM, fontFamily: fonts.extra },
 
   resultBg:      { flex: 1 },
   resultContent: { flexGrow: 1, padding: 22, justifyContent: 'center', alignItems: 'center' },

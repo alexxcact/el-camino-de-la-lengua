@@ -250,10 +250,13 @@ export const AVATAR_OPCIONES = {
 // Categorías con desbloqueo (la piel queda fuera: siempre disponible)
 export const CATS_AVATAR = ['ropa', 'sombrero', 'accesorio'];
 
-// Índices desbloqueados de una categoría según el estado (idx 0 siempre incluido)
+// Conserva lo ya ganado aunque baje la racha; también admite partidas antiguas
+// sin historial de atuendos. Solo devuelve índices que existen en la categoría.
 export function atuendosDesbloqueados(estado, cat) {
+  const historial = estado.avatarDesbloqueados?.[cat];
+  const ganados = new Set(Array.isArray(historial) ? historial : []);
   return AVATAR_OPCIONES[cat]
-    .map((o, i) => (i === 0 || (o.cond ? o.cond(estado) : true)) ? i : -1)
+    .map((o, i) => (i === 0 || ganados.has(i) || (o.cond ? o.cond(estado) : true)) ? i : -1)
     .filter(i => i >= 0);
 }
 

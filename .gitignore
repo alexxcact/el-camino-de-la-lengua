@@ -1,7 +1,9 @@
 node_modules/
 .expo/
+.claude/
 dist/
 *.jks
+*.keystore
 *.p8
 *.p12
 *.key

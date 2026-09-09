@@ -12,7 +12,8 @@ Acompañas a **Kinti** en su camino por recuperar las palabras del pastoker. A m
 
 - **75 palabras** organizadas en **5 mundos** temáticos.
 - Sistema de progreso **gris → color** que premia el aprendizaje.
-- Narrativa culturalmente situada, con la paleta Pasto (verde / dorado / tierra) sobre un look nocturno luminoso ("Futurismo Andino").
+- Narrativa culturalmente situada, con la paleta Pasto (verde / dorado / tierra), fondos nocturnos y tarjetas claras para aprender.
+- 15 ilustraciones vectoriales del primer mundo y un mapa con miniaturas de los escenarios.
 
 ### Modos y mecánicas
 
@@ -33,7 +34,7 @@ Incluye además logros declarativos, medallas Pasto, mascota (Pishku), audio y v
 
 ## Stack técnico
 
-- **React Native 0.74** + **Expo SDK 51** (managed).
+- **React Native 0.74** + **Expo SDK 51**, con el proyecto nativo Android incluido.
 - Navegación: React Navigation (stack + bottom tabs).
 - Estado global: Context propio (`JuegoContext`) con persistencia en **AsyncStorage**.
 - Gráficos vectoriales: `react-native-svg`. Audio/háptica: `expo-av`, `expo-haptics`. Voz placeholder: `expo-speech`.
@@ -43,40 +44,63 @@ Incluye además logros declarativos, medallas Pasto, mascota (Pishku), audio y v
 
 ```
 src/
-├── screens/      Pantallas (19)
+├── screens/      Pantallas y pruebas de sus flujos
 ├── components/   Componentes reutilizables (Medallon, SenderoMapa, Hud…)
 ├── context/      JuegoContext + logica.js (lógica pura) + tests
 ├── data/         datos.js (palabras, mundos, logros, cinemáticas)
 ├── theme/        colors.js, fonts.js, ui.js (tokens de diseño)
-└── utils/        sonidos, feedback, notificaciones, voz, ajustes
+├── test/         Herramientas de prueba de componentes
+└── utils/        Ejercicios, duelo, navegación, sonidos, voz y notificaciones
 ```
 
 La **lógica pura del estado** (serialización de Sets, hidratación/merge, racha, semilla de la palabra del día) vive aislada en `src/context/logica.js` y está cubierta por tests.
+
+Las reglas visuales compartidas se documentan en [design.md](design.md).
+
+### Correcciones recientes
+
+- Memoria calcula el tamaño de cada carta a partir del ancho real del tablero y conserva la partida al redimensionar.
+- Los ejercicios distinguen dibujos repetidos y calculan la aprobación según la cantidad de preguntas de la sesión.
+- El progreso diario se actualiza al reanudar la app y al cambiar de día; los atuendos ganados siguen disponibles al perder una racha.
+- Duelo respeta el vocabulario aprendido y los filtros; volver desde el final reutiliza la navegación existente.
+- El recordatorio conserva las 00:00 y refleja si se autorizó su programación.
 
 ---
 
 ## Desarrollo
 
-Requisitos: Node.js LTS y, para compilar el APK, un entorno Android (SDK + JDK).
+Requisitos: Node.js (verificación realizada con Node 24) y, para compilar el APK, un entorno Android con SDK y JDK 17.
 
 ```bash
 npm install          # instalar dependencias
 npm start            # arrancar Metro (Expo)
-npm test             # correr la suite de lógica pura (node --test)
+npm test             # lógica y flujos de componentes (node --test)
 ```
 
 ### Compilar el APK release
 
-El bundle JS es un artefacto de build (no se versiona) y se regenera así:
+Gradle genera automáticamente el bundle JavaScript y sus recursos. No hace falta ejecutar `expo export:embed` manualmente ni copiar archivos a `android/app/src/main`.
+
+Configura `JAVA_HOME` y `ANDROID_HOME`. La configuración actual usa `android/app/debug.keystore` para las compilaciones de desarrollo, incluido el APK release de prueba. Ese archivo se conserva localmente y no se versiona. Para actualizar una instalación existente, usa su misma clave; para una instalación de prueba nueva puedes generar una con el JDK:
 
 ```bash
-npx expo export:embed --platform android --entry-file index.js \
-  --bundle-output android/app/src/main/assets/index.android.bundle \
-  --assets-dest android/app/src/main/res
-
-cd android && ./gradlew assembleRelease
-# → android/app/build/outputs/apk/release/app-release.apk
+keytool -genkeypair -keystore android/app/debug.keystore -storepass android -alias androiddebugkey -keypass android -dname "CN=Android Debug,O=Android,C=US" -keyalg RSA -keysize 2048 -validity 10000
 ```
+
+Desde PowerShell:
+
+```powershell
+cd android
+.\gradlew.bat :app:assembleRelease --no-daemon --max-workers=2 --console=plain
+```
+
+En macOS/Linux, el comando equivalente es `./gradlew :app:assembleRelease`. El resultado queda en `android/app/build/outputs/apk/release/app-release.apk`. Se puede añadir `--offline` cuando las dependencias ya están disponibles en la caché.
+
+Los APK y demás archivos generados no se versionan. La distribución de producción requiere configurar una clave propia de publicación.
+
+### Verificación de esta actualización
+
+Las 41 pruebas automatizadas pasan y el APK release compila con firma verificada. Las vistas se comprobaron en una previsualización web, incluida Memoria a 320, 375, 414 y 768 píxeles. Esa revisión no sustituye la comprobación visual en un dispositivo Android.
 
 ---
 

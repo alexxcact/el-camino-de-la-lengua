@@ -10,13 +10,17 @@ import Acompanante from '../components/Acompanante';
 import BotonGlow from '../components/BotonGlow';
 import Confeti from '../components/Confeti';
 import PishkuMascota from '../components/PishkuMascota';
+import PalabraIlustrada from '../components/PalabraIlustrada';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
+import { distinguirDibujos } from '../utils/ejercicios';
 
 const PARES = 6;
+const COLUMNAS = 3;
+const SEPARACION = 12;
 
 // ── Carta individual con volteo (rotateY, useNativeDriver) ──
-function Carta({ carta, faceUp, resuelta, onPress }) {
+function Carta({ carta, faceUp, resuelta, onPress, ancho, posicion }) {
   const flip = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -34,26 +38,41 @@ function Carta({ carta, faceUp, resuelta, onPress }) {
 
   return (
     <TouchableOpacity
-      style={cs.slot}
+      style={[cs.slot, { width: ancho, height: Math.round(ancho / 0.82) }]}
       onPress={onPress}
       disabled={faceUp || resuelta}
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={faceUp || resuelta
+        ? `${carta.tipo === 'past' ? carta.contenido : carta.palabra.e}${resuelta ? ', pareja encontrada' : ''}`
+        : `Carta ${posicion}, oculta`}
+      accessibilityHint={faceUp || resuelta ? undefined : 'Toca para descubrirla'}
+      accessibilityState={{ disabled: faceUp || resuelta, selected: faceUp || resuelta }}
       activeOpacity={0.9}
     >
       {/* Dorso (símbolo Pasto) */}
-      <Animated.View style={[cs.cara, cs.dorso, { transform: [{ perspective: 800 }, { rotateY: backRotate }] }]}>
+      <Animated.View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[cs.cara, cs.dorso, { transform: [{ perspective: 800 }, { rotateY: backRotate }] }]}>
+        <View style={cs.marcoDorso} />
         <View style={cs.rombo} />
         <View style={cs.romboInner} />
       </Animated.View>
 
-      {/* Frente (palabra o emoji) */}
-      <Animated.View style={[
+      {/* Frente de lectura: palabra o ilustración. */}
+      <Animated.View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[
         cs.cara, cs.frente,
         resuelta && cs.frenteResuelta,
         { transform: [{ perspective: 800 }, { rotateY: frontRotate }] },
       ]}>
         {carta.tipo === 'emoji'
-          ? <Text style={cs.emoji}>{carta.contenido}</Text>
-          : <Text style={cs.past}>{carta.contenido}</Text>}
+          ? <>
+              <PalabraIlustrada palabra={carta.palabra} tamano={Math.min(88, Math.round(ancho * (carta.etiquetaDibujo ? 0.52 : 0.66)))} />
+              {carta.etiquetaDibujo && <Text style={cs.etiqueta} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.85}>{carta.etiquetaDibujo}</Text>}
+            </>
+          : <>
+              <Text style={cs.tipoCarta}>Pastoker</Text>
+              <Text style={cs.past} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.7}>{carta.contenido}</Text>
+            </>}
+        {resuelta && <View style={cs.sello}><Text style={cs.selloTxt}>✓</Text></View>}
       </Animated.View>
     </TouchableOpacity>
   );
@@ -80,14 +99,16 @@ export default function MemoriaScreen({ route, navigation }) {
   const [intentos, setIntentos] = useState(0);
   const [bloqueo, setBloqueo] = useState(false);
   const [fin, setFin] = useState(false);
+  const [anchoTablero, setAnchoTablero] = useState(0);
   const timeoutRef = useRef(null);
+  const anchoCarta = Math.max(1, Math.floor((anchoTablero - SEPARACION * (COLUMNAS - 1)) / COLUMNAS));
 
   useEffect(() => {
-    const pals = shuffle(fuente).slice(0, pares);
+    const pals = distinguirDibujos(shuffle(fuente).slice(0, pares));
     const baraja = [];
     pals.forEach((p, i) => {
       baraja.push({ key: `p${i}`, grupo: i, tipo: 'past',  contenido: p.p });
-      baraja.push({ key: `e${i}`, grupo: i, tipo: 'emoji', contenido: p.emoji });
+      baraja.push({ key: `e${i}`, grupo: i, tipo: 'emoji', contenido: p.emoji, palabra: p, etiquetaDibujo: p.etiquetaDibujo });
     });
     setCartas(shuffle(baraja));
   }, []);
@@ -175,23 +196,35 @@ export default function MemoriaScreen({ route, navigation }) {
 
   return (
     <View style={s.bg}>
-      <ScrollView contentContainerStyle={{ padding: 14 }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={s.contenido} showsVerticalScrollIndicator={false}>
 
         <View style={s.header}>
           <View style={s.headerTop}>
             <View style={s.headerPill}>
               <Text style={s.headerPillTxt}>{modoPractica ? 'Práctica libre' : mundo.titulo}</Text>
             </View>
-            <Text style={s.headerInfo}>✓ {resueltas.size}/{pares} · {intentos} intentos</Text>
+            <Text style={s.headerInfo}>{intentos} {intentos === 1 ? 'intento' : 'intentos'}</Text>
           </View>
-          <Text style={s.headerSub}>Encuentra las parejas: palabra ↔ dibujo</Text>
+          <Text style={s.headerTitulo}>Una palabra, un dibujo</Text>
+          <View style={s.progresoFila}>
+            <View style={s.progresoBarra} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: pares, now: resueltas.size }}>
+              <View style={[s.progresoRelleno, { width: `${pares ? resueltas.size / pares * 100 : 0}%` }]} />
+            </View>
+            <Text style={s.parejasInfo} accessibilityLiveRegion="polite">{resueltas.size}/{pares} parejas</Text>
+          </View>
         </View>
 
-        <View style={s.tablero}>
-          {cartas.map((c, i) => (
+        <View
+          style={s.tablero}
+          onLayout={({ nativeEvent }) => setAnchoTablero(nativeEvent.layout.width)}
+          testID="memoria-tablero"
+        >
+          {anchoTablero > 0 && cartas.map((c, i) => (
             <Carta
               key={c.key}
               carta={c}
+              ancho={anchoCarta}
+              posicion={i + 1}
               faceUp={volteadas.includes(i)}
               resuelta={resueltas.has(c.grupo)}
               onPress={() => tocar(i)}
@@ -202,7 +235,7 @@ export default function MemoriaScreen({ route, navigation }) {
         <View style={{ marginTop: 14 }}>
           <Acompanante
             personaje="uma"
-            mensaje="Voltea dos cartas. Si la palabra y su dibujo coinciden, quedan encendidas. Cuantas menos intentes, más fuerte tu memoria."
+            mensaje="Voltea dos cartas y une cada palabra con su dibujo. Las parejas encontradas quedan marcadas."
           />
         </View>
       </ScrollView>
@@ -212,15 +245,20 @@ export default function MemoriaScreen({ route, navigation }) {
 
 const s = StyleSheet.create({
   bg: { flex: 1, backgroundColor: colors.noche },
+  contenido: { padding: 14, paddingBottom: 28, width: '100%', maxWidth: 600, alignSelf: 'center' },
 
-  header:        { ...ui.card, padding: 14, marginBottom: 14 },
-  headerTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+  header:        { paddingHorizontal: 2, paddingTop: 2, paddingBottom: 16 },
+  headerTop:     { flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   headerPill:    { ...ui.pill, flexShrink: 1 },
   headerPillTxt: { ...ui.pillTxt },
-  headerInfo:    { color: colors.doradoNeon, fontSize: 12, fontFamily: fonts.bold },
-  headerSub:     { ...ui.sub, fontFamily: fonts.semibold },
+  headerInfo:    { ...ui.sub },
+  headerTitulo:  { ...ui.h2, fontSize: 21, marginBottom: 8 },
+  progresoFila:  { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  progresoBarra: { flex: 1, height: 6, borderRadius: 3, overflow: 'hidden', backgroundColor: colors.cartaDorso },
+  progresoRelleno: { height: '100%', borderRadius: 3, backgroundColor: colors.doradoNeon },
+  parejasInfo:   { color: colors.doradoNeon, fontFamily: fonts.bold, fontSize: 14 },
 
-  tablero: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  tablero: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start' },
 
   resBg:      { flex: 1 },
   resContent: { flexGrow: 1, padding: 22, justifyContent: 'center', alignItems: 'center' },
@@ -231,33 +269,38 @@ const s = StyleSheet.create({
   perfectoTxt:{ fontSize: 15, color: colors.doradoNeon, fontFamily: fonts.bold, marginTop: 10 },
 });
 
-// Carta: cada celda ~30% del ancho, las dos caras superpuestas
+// Las caras absolutas no aportan altura: la celda recibe dimensiones numéricas
+// del ancho medido del tablero, incluso dentro del ScrollView de Android.
 const cs = StyleSheet.create({
-  slot: { width: '31%', aspectRatio: 0.82, marginBottom: 12 },
+  slot: { marginBottom: SEPARACION, flexShrink: 0 },
   cara: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 14, alignItems: 'center', justifyContent: 'center',
+    borderRadius: 16, alignItems: 'center', justifyContent: 'center',
     backfaceVisibility: 'hidden',
   },
   dorso: {
-    backgroundColor: 'rgba(8,26,34,0.62)',
-    borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.4)',
+    backgroundColor: colors.cartaDorso,
+    borderWidth: 1, borderColor: colors.cartaBorde,
   },
+  marcoDorso: { position: 'absolute', top: 7, left: 7, right: 7, bottom: 7, borderRadius: 10, borderWidth: 1, borderColor: colors.bordeSuave },
   rombo: {
     position: 'absolute', width: 30, height: 30,
-    borderWidth: 2, borderColor: colors.doradoNeon,
-    transform: [{ rotate: '45deg' }], opacity: 0.5,
+    borderWidth: 1.5, borderColor: colors.doradoNeon,
+    transform: [{ rotate: '45deg' }], opacity: 0.9,
   },
   romboInner: {
     width: 10, height: 10, backgroundColor: colors.doradoNeon,
     transform: [{ rotate: '45deg' }], opacity: 0.8,
   },
   frente: {
-    backgroundColor: colors.nocheProfundo,
-    borderWidth: 2, borderColor: colors.turquesa,
-    paddingHorizontal: 4,
+    backgroundColor: colors.crema,
+    borderWidth: 2, borderColor: colors.arena,
+    paddingHorizontal: 6, paddingVertical: 10,
   },
-  frenteResuelta: { borderColor: colors.doradoNeon, backgroundColor: 'rgba(29,158,117,0.18)' },
-  emoji: { fontSize: 40 },
-  past:  { ...ui.pastoker, fontSize: 18, fontFamily: fonts.extra, textAlign: 'center' },
+  frenteResuelta: { borderColor: colors.doradoNeon, backgroundColor: colors.cartaResuelta },
+  tipoCarta: { fontSize: 11, color: colors.textoPapel, fontFamily: fonts.medium, marginBottom: 4 },
+  etiqueta: { fontSize: 12, lineHeight: 15, color: colors.textoPapel, fontFamily: fonts.semibold, textAlign: 'center', marginTop: 3 },
+  past:  { color: colors.noche, fontSize: 21, lineHeight: 27, fontFamily: fonts.extra, textAlign: 'center' },
+  sello: { position: 'absolute', top: 4, right: 4, width: 20, height: 20, borderRadius: 10, backgroundColor: colors.verde, alignItems: 'center', justifyContent: 'center' },
+  selloTxt: { color: colors.crema, fontFamily: fonts.bold, fontSize: 13, lineHeight: 18 },
 });
