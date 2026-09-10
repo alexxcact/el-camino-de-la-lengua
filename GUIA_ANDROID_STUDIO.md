@@ -1,5 +1,5 @@
 # 📱 GUÍA PARA GENERAR EL APK EN ANDROID STUDIO
-## "El Camino de la Lengua" — Asociación PUMA-MAKI
+## "El Camino de la Lengua"
 
 ---
 
@@ -93,7 +93,7 @@ npx expo run:android
 6. En "Key store path" selecciona **Create new**:
    - Key store path: elige dónde guardar el archivo `.jks`
    - Password: pon una contraseña (¡guárdala bien!)
-   - Key alias: `pumamaki`
+   - Key alias: `camino-lengua`
    - Validity: 25 años
 7. Haz clic en **Next**
 8. Selecciona **release** y haz clic en **Finish**
@@ -158,20 +158,24 @@ el-camino-de-la-lengua/
 
 ---
 
-## CÓMO AGREGAR MÁS PALABRAS PASTOQUER
+## CÓMO REVISAR EL VOCABULARIO
 
-Abre `src/data/datos.js` y agrega al array `palabras`:
+Las 75 entradas de `src/data/datos.js` forman el corpus de esta versión. Conserva sus IDs y los 15 IDs de cada mundo. Para corregir una entrada, documenta su procedencia y ejecuta `npm test`; ampliar el corpus requiere revisar también las reglas de progreso. Ejemplo de estructura actual:
 
 ```javascript
 {
-  id: 51,
-  p: "TuPalabra",        // Palabra en Pastoquer
-  e: "Traducción",       // En español
-  cat: "Categoría",      // Naturaleza, Familia, Verbos, etc.
-  fon: "tu-pa-la-bra",  // Pronunciación fonética
-  ej: "Frase de ejemplo",
-  emoji: "🌿",
-  mundo: 1              // En qué mundo aparece (1 al 5)
+  id: 5,
+  p: "Pud",
+  e: "Cerro / altura",
+  cat: "Territorio",
+  fon: "pud", // Grafía de apoyo, no transcripción fonética
+  ej: "Pud representa las alturas del territorio.",
+  emoji: "⛰️",
+  mundo: 1,
+  tipo: "raiz",
+  respaldo: "pendiente_validacion",
+  fuente: "Listado de vocabulario aportado para esta actualización",
+  nota: "Entrada relacionada con cerro y altura. Referencia sugerida: Lengua de los Pastos; falta cotejar edición y página."
 }
 ```
 
@@ -188,10 +192,8 @@ Abre `src/data/datos.js` y agrega al array `palabras`:
 
 ---
 
-## CONTACTO Y SOPORTE
+## SOBRE EL CONTENIDO
 
-Asociación Indígena Agroecológica PUMA-MAKI
-Pueblo Pasto · Nariño · Colombia
-"El Camino de la Lengua" — Preservando el pastoker
+"El Camino de la Lengua" — Vocabulario y territorio del pueblo Pasto.
 
-🌄 *Rimashun Pastoquer — Hablemos Pastoquer*
+Los significados proceden del listado aportado para la actualización y requieren cotejo documental y revisión cultural. Los ejemplos están escritos en español.

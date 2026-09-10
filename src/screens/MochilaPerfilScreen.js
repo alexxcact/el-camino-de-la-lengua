@@ -55,18 +55,19 @@ export function MochilaScreen({ navigation }) {
         <Text style={ss.detCat}>{detalle.cat}</Text>
         <Text style={{ fontSize: 56, textAlign: 'center', marginBottom: 8 }}>{detalle.emoji}</Text>
         <Text style={ss.detPast}>{detalle.p}</Text>
-        <Text style={ss.detFon}>[{detalle.fon}]</Text>
+        <Text style={ss.detFon}>Grafía: {detalle.fon}</Text>
         <Text style={ss.detEsp}>{detalle.e}</Text>
         <View style={ss.detDiv} />
-        <Text style={ss.detEj}>"{detalle.ej}"</Text>
+        <Text style={ss.detEj}>{detalle.ej}</Text>
       </View>
 
       <View style={ss.infoCard}>
-        <Text style={ss.infoTit}>Contexto cultural</Text>
-        <Text style={ss.infoTxt}>
-          El pastoker es la lengua ancestral del pueblo Pasto de Nariño, Colombia.
-          Cada palabra es un puente entre generaciones y una forma de nombrar el territorio.
-        </Text>
+        <Text style={ss.infoTit}>Sobre esta entrada</Text>
+        <Text style={ss.infoTxt}>{detalle.nota}</Text>
+        <Text style={ss.infoTxt}>Fuente: {detalle.fuente}</Text>
+        {detalle.respaldo === 'pendiente_validacion' && (
+          <Text style={ss.infoTxt}>Validación documental pendiente.</Text>
+        )}
       </View>
     </ScrollView>
   );
@@ -91,7 +92,7 @@ export function MochilaScreen({ navigation }) {
         <Ionicons name="search" size={16} color={colors.turquesaSuave} style={ss.srchIco} />
         <TextInput
           style={ss.srchIn}
-          placeholder="Buscar en Pastoker o Español…"
+          placeholder="Buscar palabra o significado…"
           placeholderTextColor={colors.turquesaSuave}
           value={busqueda}
           onChangeText={setBusqueda}
@@ -306,7 +307,7 @@ export function PerfilScreen({ navigation }) {
           />
         </View>
 
-        {/* Recordatorio diario de Pishku */}
+        {/* Recordatorio diario */}
         <View style={ps.ajusteRow}>
           <Text style={ps.ajusteLbl}>Recordatorio diario</Text>
           <Switch
@@ -331,7 +332,7 @@ export function PerfilScreen({ navigation }) {
           </View>
         )}
 
-        <Text style={ps.footer}>Asociación PUMA-MAKI · El Camino de la Lengua</Text>
+        <Text style={ps.footer}>El Camino de la Lengua · Vocabulario Pasto</Text>
       </ScrollView>
 
       {/* Modal significado de medalla */}

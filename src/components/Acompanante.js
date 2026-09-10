@@ -2,17 +2,20 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, Image, StyleSheet, Animated } from 'react-native';
 import { colors } from '../theme/colors';
 import Glass from './Glass';
+import { personajes } from '../data/datos';
 
 const PERSONAJES = {
-  kinti:       { img: require('../../assets/images/personajes/kinti.jpg'),       nom: 'Kinti',       color: '#C49010' },
-  uma:         { img: require('../../assets/images/personajes/uma.jpg'),         nom: 'Uma',         color: '#7A1515' },
-  taita_rimay: { img: require('../../assets/images/personajes/taita_rimay.jpg'), nom: 'Taita Rimay', color: '#8B4513' },
-  pishku:      { img: require('../../assets/images/personajes/pishku.jpg'),      nom: 'Pishku',      color: '#1A3A5C' },
-  chutun:      { img: require('../../assets/images/personajes/chutun.jpg'),      nom: 'Los Chutún',  color: '#2D5A16' },
+  kinti:       { img: require('../../assets/images/personajes/kinti.jpg'), id: 'kinti' },
+  uma:         { img: require('../../assets/images/personajes/uma.jpg'), id: 'uma' },
+  taita_rimay: { img: require('../../assets/images/personajes/taita_rimay.jpg'), id: 'taita-rimay' },
+  pishku:      { img: require('../../assets/images/personajes/pishku.jpg'), id: 'pishku' },
+  chutun:      { img: require('../../assets/images/personajes/chutun.jpg'), id: 'chutun' },
 };
 
 export default function Acompanante({ personaje = 'pishku', mensaje = '', lado = 'izq', compacto = false }) {
-  const p      = PERSONAJES[personaje] || PERSONAJES.pishku;
+  const retrato = PERSONAJES[personaje] || PERSONAJES.pishku;
+  const datos = personajes.find(p => p.id === retrato.id);
+  const p = { img: retrato.img, nom: datos.nombre, color: datos.color };
   const fadeIn = useRef(new Animated.Value(0)).current;
   const bounce = useRef(new Animated.Value(0)).current;
 

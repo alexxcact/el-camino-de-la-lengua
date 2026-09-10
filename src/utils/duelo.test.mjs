@@ -4,8 +4,10 @@ import { palabras } from '../data/datos.js';
 import { bancoDuelo, filtrarBancoDuelo, generarPreguntaDuelo } from './duelo.js';
 
 test('Duelo respeta desde la primera palabra aprendida; Mundo 1 solo sin progreso', () => {
-  const puka = palabras.find(p => p.p === 'Puka');
-  assert.deepEqual(bancoDuelo(palabras, new Set([puka.id])), [puka]);
+  const poyo = palabras.find(p => p.p === 'Poyo');
+  assert.ok(poyo);
+  assert.notEqual(poyo.mundo, 1);
+  assert.deepEqual(bancoDuelo(palabras, new Set([poyo.id])), [poyo]);
   assert.deepEqual(bancoDuelo(palabras, new Set()), palabras.filter(p => p.mundo === 1));
 });
 
@@ -39,7 +41,8 @@ test('todos los filtros conservan objetivos y distractores dentro del banco eleg
 });
 
 test('una categoría de una palabra ofrece una pareja jugable', () => {
-  const banco = filtrarBancoDuelo(palabras, 'categoria', null, 'Colores');
+  const banco = filtrarBancoDuelo(palabras, 'categoria', null, 'Lugares');
+  assert.equal(banco.length, 1);
   const pregunta = generarPreguntaDuelo(banco);
   assert.equal(pregunta.tipo, 'relampago');
   assert.equal(pregunta.tiles.length, 2);

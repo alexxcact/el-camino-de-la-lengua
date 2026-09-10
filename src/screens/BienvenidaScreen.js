@@ -124,14 +124,14 @@ export default function BienvenidaScreen({ navigation }) {
         <Animated.View style={{ opacity: fadeCard }}>
           <View style={s.storyCard}>
             <View style={s.kintiPill}>
-              <Text style={s.kintiPillTxt}>KINTI · TU GUÍA</Text>
+              <Text style={s.kintiPillTxt}>COMIENZA LA AVENTURA</Text>
             </View>
             <Text style={s.storyTxt}>
-              Las palabras del <Text style={s.dorado}>pastoker</Text> están desapareciendo del territorio.
+              Explora el vocabulario del <Text style={s.dorado}>pueblo Pasto</Text> y sus vínculos con el territorio.
             </Text>
             <View style={s.storyDivider} />
             <Text style={s.storyTxt2}>
-              Ayúdanos a recuperarlas y a encender otra vez el <Text style={s.dorado}>Tuta</Text> y el <Text style={s.dorado}>Pued</Text> sagrados.
+              Recorre <Text style={s.dorado}>cinco mundos</Text> y descubre <Text style={s.dorado}>75 palabras</Text> entre las alturas, la chagra, la comunidad, el hogar y el agua.
             </Text>
           </View>
         </Animated.View>
@@ -145,7 +145,7 @@ export default function BienvenidaScreen({ navigation }) {
             tamano="lg"
             desactivado={!cargado}
           />
-          <Text style={s.creditos}>Asociación PUMA-MAKI · Muellamués</Text>
+          <Text style={s.creditos}>El Camino de la Lengua</Text>
         </Animated.View>
       </SafeAreaView>
     </View>

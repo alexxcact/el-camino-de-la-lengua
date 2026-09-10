@@ -4,16 +4,16 @@ import Svg, { Circle, Path, Rect, G, Line } from 'react-native-svg';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 
-// Info cultural de cada medalla (también la usa el modal y la vitrina)
+// Recompensas del juego (también las usan el modal y la vitrina).
 export const MEDALLAS_INFO = {
-  1: { nombre: 'Espiral del Viento', bg: colors.verde,     significado: 'El churo cósmico representa el viento que lleva la palabra por todo el territorio.' },
-  2: { nombre: 'Rombo de la Chagra', bg: colors.verdeVivo, significado: 'El rombo del chumbe teje la siembra y la palabra en un mismo hilo.' },
-  3: { nombre: 'Sol de los Pastos',  bg: colors.tierra,    significado: 'El sol de ocho puntas guía los ciclos del territorio y de la lengua.' },
-  4: { nombre: 'Llama de la Tulpa',  bg: colors.rojo,      significado: 'Las tres piedras del fogón guardan la palabra que se cuenta al calor.' },
-  5: { nombre: 'Espejo de la Laguna', bg: colors.azul,     significado: 'La laguna refleja el cielo: la palabra que vuelve a quien la nombra.' },
+  1: { nombre: 'Espiral de Pud', bg: colors.verde,     significado: 'Reconoce tu recorrido por Las Alturas: cerros, volcanes, cielo, colores y formas.' },
+  2: { nombre: 'Rombo de Piar', bg: colors.verdeVivo, significado: 'Reconoce tu recorrido por La Tierra que Alimenta y las palabras de la chagra.' },
+  3: { nombre: 'Encuentro de Paskal', bg: colors.tierra, significado: 'Reconoce tu recorrido por La Fuerza de la Comunidad: familia, trabajo y tejido.' },
+  4: { nombre: 'Llama de In', bg: colors.rojo, significado: 'Reconoce tu recorrido por El Fuego del Hogar y las palabras de la leña, la cocina y el abrigo.' },
+  5: { nombre: 'Reflejo de Cuasmal', bg: colors.azul, significado: 'Reconoce tu recorrido por El Camino del Agua y las palabras de ríos, plantas y animales.' },
 };
 
-// Espiral de Arquímedes (churo) como path
+// Espiral de Arquímedes como path
 function espiralPath(cx, cy, vueltas, rMax, steps = 64) {
   let d = '';
   for (let i = 0; i <= steps; i++) {
@@ -30,9 +30,9 @@ function espiralPath(cx, cy, vueltas, rMax, steps = 64) {
 function Simbolo({ mundoId, color }) {
   const sw = 3.5;
   switch (mundoId) {
-    case 1: // Espiral del Viento
+    case 1: // Espiral de Pud
       return <Path d={espiralPath(50, 50, 2.5, 32)} stroke={color} strokeWidth={3.2} fill="none" strokeLinecap="round" />;
-    case 2: // Rombo de la Chagra
+    case 2: // Rombo de Piar
       return (
         <G>
           <Path d="M50 20 L80 50 L50 80 L20 50 Z" stroke={color} strokeWidth={sw} fill="none" />
@@ -40,7 +40,7 @@ function Simbolo({ mundoId, color }) {
           <Circle cx={50} cy={50} r={4} fill={color} />
         </G>
       );
-    case 3: // Sol de los Pastos (dos cuadrados rotados)
+    case 3: // Encuentro de Paskal (dos cuadrados rotados)
       return (
         <G>
           <Rect x={27} y={27} width={46} height={46} stroke={color} strokeWidth={sw} fill="none" />
@@ -50,7 +50,7 @@ function Simbolo({ mundoId, color }) {
           <Circle cx={50} cy={50} r={9} fill={color} />
         </G>
       );
-    case 4: // Llama de la Tulpa
+    case 4: // Llama de In
       return (
         <G>
           <Path d="M50 24 C40 40 46 56 50 56 C54 56 60 40 50 24 Z" fill={color} />
@@ -59,7 +59,7 @@ function Simbolo({ mundoId, color }) {
           <Circle cx={50} cy={80} r={7} fill={color} />
         </G>
       );
-    case 5: // Espejo de la Laguna
+    case 5: // Reflejo de Cuasmal
       return (
         <G>
           <Line x1={22} y1={50} x2={78} y2={50} stroke={color} strokeWidth={3} strokeLinecap="round" />

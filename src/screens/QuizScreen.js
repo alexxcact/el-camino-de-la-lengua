@@ -151,10 +151,10 @@ export default function QuizScreen({ route, navigation }) {
 
         {/* Tarjeta de pregunta */}
         <View style={s.qCard}>
-          <Text style={s.qLabel}>¿Qué significa en español?</Text>
+          <Text style={s.qLabel}>Elige el significado completo de esta entrada</Text>
           <PalabraIlustrada palabra={pregunta.palabra} tamano={64} />
           <Text style={s.qPast}>{pregunta.palabra.p}</Text>
-          <Text style={s.qFon}>[ {pregunta.palabra.fon} ]</Text>
+          <Text style={s.qFon}>Grafía: {pregunta.palabra.fon}</Text>
         </View>
 
         {/* Opciones */}

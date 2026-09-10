@@ -75,7 +75,7 @@ export default function HudJugador({ expandido = false }) {
 
   return (
     <View style={[s.wrap, expandido && s.wrapExp]}>
-      {/* Avatar del jugador + insignia de Kinti (inicial como fallback) */}
+      {/* Avatar del jugador + insignia del Caminante (inicial como fallback) */}
       <View style={s.avatarBox}>
         <View style={s.avatarMarco}>
           {estado.avatar

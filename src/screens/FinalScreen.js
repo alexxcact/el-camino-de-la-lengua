@@ -84,7 +84,7 @@ export default function FinalScreen({ navigation }) {
   const salir = () => { marcarFinalVisto(); volverAlTerritorio(navigation); };
   const compartir = async () => {
     try {
-      await Share.share({ message: `¡Completé El Camino de la Lengua y aprendí ${estado.palabrasVistas.size} palabras del Pastoker! 🌿 #PuebloPasto #PUMAMAKI` });
+      await Share.share({ message: `¡Completé El Camino de la Lengua y aprendí ${estado.palabrasVistas.size} entradas del vocabulario Pasto! 🌿 #PuebloPasto` });
     } catch (e) {}
   };
 
@@ -132,17 +132,17 @@ export default function FinalScreen({ navigation }) {
         </View>
       )}
 
-      {/* Fase 3 — mensaje de Taita Rimay */}
+      {/* Fase 3 — mensaje del guía */}
       {fase === 3 && (
         <View style={s.centro}>
           <Animated.View style={[s.msgCard, { opacity: msgFade }]}>
             <View style={s.msgPill}>
-              <Text style={s.msgPillTxt}>TAITA RIMAY</Text>
+              <Text style={s.msgPillTxt}>EL GUÍA</Text>
             </View>
             <Text style={s.msgTxt}>
-              {nombre}, las palabras viven porque tú las caminaste.{'\n\n'}
-              El territorio tiene de nuevo su voz.{'\n\n'}
-              Pas, wawa. El camino sigue en ti.
+              {nombre}, recorriste las alturas, la chagra, la comunidad, el hogar y el agua.{'\n\n'}
+              Cada palabra abre una nueva oportunidad para aprender.{'\n\n'}
+              Gracias por caminar con nosotros. Sigue explorando.
             </Text>
           </Animated.View>
         </View>

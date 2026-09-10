@@ -31,7 +31,7 @@ export const estadoInicial = {
   palabraDiaId: null,      // id de la palabra del día
   retoDiarioFecha: null,   // 'YYYY-MM-DD' del último reto diario completado
   retosDiariosTotal: 0,    // contador histórico de retos (para logros)
-  notificacionesActivadas: false, // recordatorio diario de Pishku
+  notificacionesActivadas: false, // recordatorio diario del ave mensajera
   horaNotificacion: 16,    // hora local (0-23) del recordatorio, default 4:00 PM
   memoriaPerfecta: false,  // ganó alguna vez Memoria sin errores (primitivo)
   diccionarioAbierto: 0,   // veces que abrió el diccionario (para logro Consultor)
@@ -50,7 +50,7 @@ export const estadoInicial = {
 export const niveles = [
   { min: 0,  nombre: "Aprendiz de la Palabra" },
   { min: 10, nombre: "Conocedor Andino" },
-  { min: 20, nombre: "Guardián del Pastoker" },
+  { min: 20, nombre: "Guardián de las Palabras" },
   { min: 30, nombre: "Sabedor del Territorio" },
   { min: 50, nombre: "Taita de la Lengua" },
 ];

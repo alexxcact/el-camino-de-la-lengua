@@ -73,7 +73,7 @@ export default function EstadisticasScreen() {
   const compartir = async () => {
     try {
       await Share.share({
-        message: `${nombre} ha aprendido ${aprendidas} palabras del Pastoker, completado ${mundosComp} mundos y lleva una racha de ${racha} días en El Camino de la Lengua 🌿 #PuebloPasto`,
+        message: `${nombre} ha aprendido ${aprendidas} entradas del vocabulario Pasto, completado ${mundosComp} mundos y lleva una racha de ${racha} días en El Camino de la Lengua 🌿 #PuebloPasto`,
       });
     } catch (e) {}
   };

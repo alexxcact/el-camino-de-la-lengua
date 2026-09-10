@@ -17,7 +17,7 @@ import { vibrar } from '../utils/feedback';
 import { sesionAprobada } from '../utils/ejercicios';
 
 // ══════════════════════════════════════════════════════════
-// PAREJAS — Uma acompaña
+// PAREJAS — la tejedora acompaña
 // ══════════════════════════════════════════════════════════
 export function ParejasScreen({ route, navigation }) {
   const { mundoId, palabrasPractica, modoPractica = false } = route.params || {};
@@ -109,7 +109,7 @@ export function ParejasScreen({ route, navigation }) {
           <View style={{ height: 20 }} />
           <Acompanante
             personaje="uma"
-            mensaje={`Pas wawa ${nombre}... has unido las palabras como se unen los hilos en el chumbe. El tejido de la lengua vive en ti.`}
+            mensaje={`Bien hecho, ${nombre}. Has unido las palabras con sus significados, como hilos que forman un tejido.`}
           />
           <BotonGlow texto={modoPractica ? '← Volver a practicar' : '← Volver al mundo'} onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
@@ -130,7 +130,7 @@ export function ParejasScreen({ route, navigation }) {
             </View>
             <Text style={s.headerInfo}>✓ {resueltas.size}/{totalPares}</Text>
           </View>
-          <Text style={s.headerSub}>Une cada palabra con su significado</Text>
+          <Text style={s.headerSub}>Une cada entrada con el significado completo de su ficha</Text>
           <Text style={s.headerIntentos}>{intentos} intentos</Text>
         </View>
 
@@ -159,7 +159,7 @@ export function ParejasScreen({ route, navigation }) {
                 disabled={resuelta}
                 activeOpacity={0.85}
               >
-                <Text style={s.tarjIdioma}>{esPast ? 'Pastoker' : 'Español'}</Text>
+                <Text style={s.tarjIdioma}>{esPast ? 'Palabra' : 'Significado'}</Text>
                 <PalabraIlustrada palabra={t.palabra} tamano={32} />
                 <Text style={[s.tarjTxt, esPast && s.tarjTxtPast]}>{t.texto}</Text>
                 {(resuelta || acertada) && <Text style={[s.tarjEstado, s.tarjEstadoOk]}>✓</Text>}
@@ -172,7 +172,7 @@ export function ParejasScreen({ route, navigation }) {
         <View style={{ marginTop: 12 }}>
           <Acompanante
             personaje="uma"
-            mensaje="Pas wawa... une una carta Pastoker con su significado en español. Si aciertas, ambas se unen en el tejido."
+            mensaje="Busca el significado completo de cada ficha. Si aciertas, ambas cartas se unen en el tejido."
           />
         </View>
       </ScrollView>
@@ -182,7 +182,7 @@ export function ParejasScreen({ route, navigation }) {
 
 
 // ══════════════════════════════════════════════════════════
-// DICTADO — Taita Rimay acompaña
+// DICTADO — el guía acompaña
 // ══════════════════════════════════════════════════════════
 export function DictadoScreen({ route, navigation }) {
   const { mundoId, palabrasPractica, modoPractica = false, nPreguntas } = route.params || {};
@@ -256,7 +256,7 @@ export function DictadoScreen({ route, navigation }) {
             personaje="taita_rimay"
             mensaje={exito
               ? `Las palabras que escribes son piedras del camino, ${nombre}. Cada letra trae de regreso una memoria.`
-              : 'No te desanimes, wawa. Cada intento es un paso más en el camino de la lengua.'}
+              : 'No te desanimes. Cada intento es un paso más en el camino de la lengua.'}
           />
           <BotonGlow texto={modoPractica ? '← Volver a practicar' : '← Volver al mundo'} onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
@@ -280,11 +280,11 @@ export function DictadoScreen({ route, navigation }) {
             </View>
             <Text style={s.headerInfo}>{idx + 1}/{listaDict.length} · ✓ {aciertos}</Text>
           </View>
-          <Text style={s.headerSub}>Escribe la palabra en pastoker</Text>
+          <Text style={s.headerSub}>Escribe la entrada de esta ficha</Text>
         </View>
 
         <View style={s.qCard}>
-          <Text style={s.qLabel}>¿Cómo se dice en pastoker?</Text>
+          <Text style={s.qLabel}>¿Qué entrada tiene este significado completo?</Text>
           <PalabraIlustrada palabra={pal} tamano={64} />
           <Text style={s.qEsp}>{pal.e}</Text>
           <Text style={s.qCat}>{pal.cat}</Text>
@@ -300,7 +300,7 @@ export function DictadoScreen({ route, navigation }) {
             style={s.input}
             placeholder="Escribe aquí..."
             placeholderTextColor={colors.gris}
-            accessibilityLabel="Tu respuesta en pastoker"
+            accessibilityLabel="La palabra que corresponde al significado"
             value={texto}
             onChangeText={setTexto}
             onFocus={() => setFoco(true)}
@@ -326,8 +326,8 @@ export function DictadoScreen({ route, navigation }) {
           <Acompanante
             personaje="taita_rimay"
             mensaje={verif === null
-              ? `Recuerda: "${pal.e}" en español. ¿Cuál es la palabra en pastoker?`
-              : verif === 'ok' ? '¡Muy bien, wawa!' : 'No te preocupes. Prueba la siguiente.'}
+              ? `Recuerda el significado completo de la ficha: "${pal.e}". ¿Cuál es la entrada?`
+              : verif === 'ok' ? '¡Muy bien!' : 'No te preocupes. Prueba la siguiente.'}
           />
         </View>
       </ScrollView>

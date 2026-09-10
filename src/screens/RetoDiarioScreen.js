@@ -106,7 +106,7 @@ export default function RetoDiarioScreen({ navigation }) {
         <ScrollView contentContainerStyle={s.resContent}>
           <PishkuMascota celebrando={false} tamano={92} />
           <Text style={s.resTit}>¡Reto completado, {nombre}!</Text>
-          <Text style={s.resSub}>Ya recuperaste tu palabra de hoy. Pishku te espera mañana.</Text>
+          <Text style={s.resSub}>Ya repasaste tu palabra de hoy. El Ave mensajera te espera mañana.</Text>
           <View style={s.relojCard}>
             <Text style={s.relojLbl}>VUELVE EN</Text>
             <Text style={s.relojTxt}>{reloj}</Text>
@@ -141,7 +141,7 @@ export default function RetoDiarioScreen({ navigation }) {
           <View style={s.modalOverlay}>
             <LinearGradient colors={['rgba(11,31,42,0.94)', 'rgba(15,110,86,0.88)']} style={StyleSheet.absoluteFill} />
             <View style={s.modalCard}>
-              <Text style={s.modalTit}>¿Quieres que Pishku te recuerde tu palabra del día?</Text>
+              <Text style={s.modalTit}>¿Quieres un recordatorio de tu palabra del día?</Text>
               <Text style={s.modalSub}>Te avisará una vez al día. Puedes cambiarlo en tu perfil.</Text>
               <View style={{ gap: 10, alignSelf: 'stretch', marginTop: 14 }}>
                 <BotonGlow
@@ -217,14 +217,14 @@ export default function RetoDiarioScreen({ navigation }) {
           </View>
         </View>
 
-        {/* QUIZ: pastoker → significado en español */}
+        {/* QUIZ: palabra → significado en español */}
         {paso.tipo === 'quiz' && (
           <>
             <View style={s.qCard}>
-              <Text style={s.qLabel}>¿QUÉ SIGNIFICA?</Text>
+              <Text style={s.qLabel}>ELIGE EL SIGNIFICADO COMPLETO DE ESTA ENTRADA</Text>
               <Text style={s.qEmoji}>{paso.target.emoji}</Text>
               <Text style={s.qPast}>{paso.target.p}</Text>
-              <Text style={s.qFon}>[ {paso.target.fon} ]</Text>
+              <Text style={s.qFon}>Grafía: {paso.target.fon}</Text>
             </View>
             <View style={s.opciones}>
               {paso.opciones.map(op => {
@@ -288,11 +288,11 @@ export default function RetoDiarioScreen({ navigation }) {
           </>
         )}
 
-        {/* DICTADO: escribe la palabra en pastoker */}
+        {/* DICTADO: escribe la palabra del vocabulario */}
         {paso.tipo === 'dictado' && (
           <>
             <View style={s.qCard}>
-              <Text style={s.qLabel}>¿CÓMO SE ESCRIBE EN PASTOKER?</Text>
+              <Text style={s.qLabel}>ESCRIBE LA ENTRADA DE ESTA FICHA</Text>
               <Text style={s.qEmoji}>{paso.target.emoji}</Text>
               <Text style={s.qEsp}>{paso.target.e}</Text>
             </View>

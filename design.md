@@ -9,7 +9,7 @@ La interfaz acompaña el aprendizaje de palabras con paisajes del territorio y d
 - Memoria: tres columnas de cartas con dimensiones numéricas derivadas del tablero medido; ancho máximo de contenido 600. No usar caras absolutas como fuente de altura.
 - Actividades: instrucción breve sobre el área de juego; ilustraciones comunes entre lección, pregunta y memoria; no mostrar la respuesta antes de contestar.
 - Mapa: sendero y estados existentes, escenarios como miniaturas y paisaje discreto que no tape los controles. Ancho adaptable al contenedor.
-- Ilustraciones: vectoriales locales del primer mundo, con formas distinguibles y una paleta común. Mantener el vocabulario y etiquetas necesarias para evitar ambigüedad.
+- Ilustraciones: vectoriales locales asociadas al término del vocabulario, con formas distinguibles y una paleta común. Al reasignar IDs, revisar la correspondencia del dibujo; usar emoji cuando no haya ilustración compatible. Mantener las etiquetas necesarias para evitar ambigüedad.
 - Movimiento: conservar el volteo y las celebraciones existentes; no agregar animaciones permanentes a las nuevas ilustraciones ni al paisaje.
 
 Revisión Hallmark: filosofía 4, jerarquía 4, ejecución 4, especificidad 5, contención 4, variedad 4. La comprobación visual del dispositivo es independiente de las pruebas de componentes.

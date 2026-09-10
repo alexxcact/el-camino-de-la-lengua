@@ -316,25 +316,25 @@ export default function DueloScreen({ navigation }) {
     );
   }
 
-  // Quiz (ver pastoker → elegir español) y Escucha (oír → elegir dibujo)
+  // Quiz (ver palabra → elegir significado) y Escucha (oír → elegir dibujo)
   function QuizEscucha() {
     const esEscucha = pregunta.tipo === 'escucha';
     return (
       <View>
         {esEscucha ? (
           <View style={s.audioWrap}>
-            <Text style={s.instruccion}>Escucha y elige el significado</Text>
+            <Text style={s.instruccion}>Escucha y elige el significado completo de esta entrada</Text>
             <TouchableOpacity onPress={() => decirPalabra(pregunta.target.p)} activeOpacity={0.85} style={s.audioBtn}>
               <Ionicons name="volume-high" size={52} color={colors.cielo} />
             </TouchableOpacity>
-            <Text style={s.audioHint}>Toca para oír otra vez</Text>
+            <Text style={s.audioHint}>Voz sintética de práctica · Toca para repetir</Text>
           </View>
         ) : (
           <View style={s.qCard}>
-            <Text style={s.qLabel}>¿QUÉ SIGNIFICA EN ESPAÑOL?</Text>
+            <Text style={s.qLabel}>ELIGE EL SIGNIFICADO COMPLETO DE ESTA ENTRADA</Text>
             <Text style={s.qEmoji}>{pregunta.target.emoji}</Text>
             <Text style={s.qPast}>{pregunta.target.p}</Text>
-            <Text style={s.qFon}>[ {pregunta.target.fon} ]</Text>
+            <Text style={s.qFon}>Grafía: {pregunta.target.fon}</Text>
           </View>
         )}
 
@@ -372,7 +372,7 @@ export default function DueloScreen({ navigation }) {
     const primera = parPrimera ? pregunta.tiles.find(t => t.key === parPrimera) : null;
     return (
       <View>
-        <Text style={s.instruccion}>Toca una palabra y su significado</Text>
+        <Text style={s.instruccion}>Une cada entrada con el significado completo de su ficha</Text>
         <View style={s.tilesGrid}>
           {pregunta.tiles.map(tile => {
             const sel = parPrimera === tile.key || parSegunda === tile.key;

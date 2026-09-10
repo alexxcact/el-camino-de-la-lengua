@@ -24,8 +24,8 @@ const norm = (s) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,
 const CATS = categorias.filter(c => c !== 'Todas');
 
 const ORDENES = [
-  { key: 'past',  label: 'A-Z pastoker' },
-  { key: 'esp',   label: 'A-Z español' },
+  { key: 'past',  label: 'A-Z palabra' },
+  { key: 'esp',   label: 'A-Z significado' },
   { key: 'mundo', label: 'Por mundo' },
 ];
 
@@ -102,6 +102,8 @@ export default function DiccionarioScreen() {
               <TouchableOpacity
                 style={s.audioBtn}
                 onPress={() => decirPalabra(item.p)}
+                accessibilityRole="button"
+                accessibilityLabel={`Leer ${item.p} con voz sintética de práctica`}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 activeOpacity={0.7}
               >
@@ -117,8 +119,14 @@ export default function DiccionarioScreen() {
         </View>
         {abierto && (
           <View style={s.expand}>
-            <Text style={s.fon}>[{item.fon}]</Text>
-            <Text style={s.ej}>"{item.ej}"</Text>
+            <Text style={s.fon}>Grafía: {item.fon} · Voz sintética de práctica</Text>
+            <Text style={s.ej}>{item.ej}</Text>
+            <Text style={s.documentacion}>Tipo: {item.tipo === 'raiz' ? 'Raíz' : 'Entrada de vocabulario'}</Text>
+            <Text style={s.documentacion}>Fuente: {item.fuente}</Text>
+            <Text style={s.documentacion}>{item.nota}</Text>
+            {item.respaldo === 'pendiente_validacion' && (
+              <Text style={s.documentacion}>Validación documental pendiente.</Text>
+            )}
           </View>
         )}
       </TouchableOpacity>
@@ -132,7 +140,7 @@ export default function DiccionarioScreen() {
         <Ionicons name="search" size={16} color={colors.turquesaSuave} style={s.srchIco} />
         <TextInput
           style={s.srchIn}
-          placeholder="Busca en pastoker o español…"
+          placeholder="Busca una palabra o significado…"
           placeholderTextColor={colors.turquesaSuave}
           value={busqueda}
           onChangeText={setBusqueda}
@@ -297,6 +305,7 @@ const s = StyleSheet.create({
   expand: { marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: 'rgba(93,202,165,0.28)' },
   fon: { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic' },
   ej:  { fontSize: 13, color: colors.turquesaClaro, fontStyle: 'italic', marginTop: 4 },
+  documentacion: { fontSize: 12, lineHeight: 18, color: colors.turquesaSuave, fontFamily: fonts.regular, marginTop: 6 },
 
   vacio:    { alignItems: 'center', paddingTop: 40 },
   vacioTxt: { fontSize: 15, color: colors.turquesaSuave, fontFamily: fonts.semibold, marginTop: 14, textAlign: 'center' },

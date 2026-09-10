@@ -6,13 +6,13 @@ import { useJuego } from '../context/JuegoContext';
 
 const frasesCon = (n) => [
   `¡Pío, ${n}! ¡Una palabra más viva!`,
-  `¡Pas, ${n}! ¡Lo lograste!`,
+  `¡Bien hecho, ${n}! ¡Lo lograste!`,
   `¡${n}, el territorio brilla otra vez!`,
   `¡Sigamos el camino, ${n}!`,
 ];
 
 /**
- * Pishku, la mascota que celebra los logros.
+ * Ave mensajera, la mascota que celebra los logros.
  * Props:
  *  celebrando bool   — dispara el salto y muestra el globo (default true)
  *  mensaje    string — texto fijo del globo (si no, frase aleatoria)

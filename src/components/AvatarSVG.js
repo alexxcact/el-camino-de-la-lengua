@@ -113,7 +113,7 @@ function renderAccesorio(idx) {
   if (!idx) return null; // 0 = ninguno
 
   if (idx === 1) {
-    // Pishku al hombro (derecho)
+    // Ave mensajera al hombro (derecho)
     return (
       <G>
         <Ellipse cx={74} cy={74} rx={8} ry={6.5} fill={colors.azul} />
@@ -126,7 +126,7 @@ function renderAccesorio(idx) {
   }
 
   if (idx === 2) {
-    // Chumbe tejido (faja en la cintura)
+    // Faja tejida en la cintura
     return (
       <G>
         <Rect x={20} y={91} width={60} height={7} fill={colors.rojo} />

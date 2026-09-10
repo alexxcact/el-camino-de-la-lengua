@@ -294,8 +294,8 @@ export default function SenderoMapa({ mundos, estado, saludo, nombre, onSelect, 
         </View>
 
         <View style={s.footer}>
-          <Text style={s.footNeg}>PUMA-MAKI</Text>
-          <Text style={s.footSub}>Pueblo Pasto · Resguardo de Muellamués · Nariño</Text>
+          <Text style={s.footNeg}>EL CAMINO DE LA LENGUA</Text>
+          <Text style={s.footSub}>Vocabulario del pueblo Pasto</Text>
         </View>
       </ScrollView>
 

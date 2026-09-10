@@ -25,15 +25,14 @@ const VEL_ESCRITURA = 28; // ms por carácter (máquina de escribir suave)
 const infoPersonaje = (clave) => {
   const map = { taita_rimay: 'taita-rimay' };
   const p = personajes.find(x => x.id === (map[clave] || clave));
-  return { nombre: p?.nombre || 'Taita Rimay', color: p?.color || colors.tierra };
+  return { nombre: p?.nombre || 'El guía', color: p?.color || colors.tierra };
 };
 
-// Parte un texto resaltando en dorado las palabras de `resaltar` (pastoker).
+// Parte un texto resaltando en dorado las entradas de vocabulario de `resaltar`.
 function renderResaltado(texto, resaltar = []) {
   if (!resaltar.length) return texto;
-  const escapadas = resaltar.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-  const re = new RegExp(`(${escapadas.join('|')})`, 'g');
-  return texto.split(re).map((parte, i) =>
+  // Comparar palabras completas evita resaltar Pa dentro de Pas o Paskal.
+  return texto.split(/([A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)/).map((parte, i) =>
     resaltar.includes(parte)
       ? <Text key={i} style={s.resalte}>{parte}</Text>
       : <Text key={i}>{parte}</Text>

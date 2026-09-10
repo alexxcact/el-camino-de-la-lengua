@@ -26,7 +26,7 @@ export default function NombreScreen({ navigation }) {
 
   const pulso   = useRef(new Animated.Value(0)).current;   // glow del avatar
   const respFade = useRef(new Animated.Value(0)).current;  // aparición de la respuesta
-  const salto   = useRef(new Animated.Value(0)).current;   // saltito de Taita al responder
+  const salto   = useRef(new Animated.Value(0)).current;   // salto del guía al responder
 
   // Glow suave continuo del avatar
   useEffect(() => {
@@ -74,21 +74,21 @@ export default function NombreScreen({ navigation }) {
       <LinearGradient colors={colors.gradAurora} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
       <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 
-        {/* Avatar de Taita Rimay con glow */}
+        {/* Avatar del guía con glow */}
         <Animated.View style={[s.avatarWrap, { transform: [{ translateY: saltoY }, { scale: escala }] }]}>
           <View style={s.haloExt} />
           <Animated.View style={[s.glowRing, { opacity: brillo }]} />
           <Medallon source={require('../../assets/images/personajes/taita_rimay.jpg')} size={140} halo={false} />
         </Animated.View>
         <View style={s.nombrePill}>
-          <Text style={s.nombrePillTxt}>Taita Rimay</Text>
+          <Text style={s.nombrePillTxt}>El guía</Text>
         </View>
 
         {/* Globo de diálogo */}
         {fase === 'pregunta' ? (
           <View style={s.bubble}>
             <Text style={s.bubbleTxt}>
-              Pas, wawa... Soy Taita Rimay, el padre de la palabra.{'\n'}
+              Hola, soy el guía de esta aventura.{'\n'}
               ¿Cómo te llamas tú, caminante?
             </Text>
           </View>
@@ -96,7 +96,7 @@ export default function NombreScreen({ navigation }) {
           <Animated.View style={[s.bubble, s.bubbleResp, { opacity: respFade }]}>
             <Text style={s.bubbleTxt}>
               ¡<Text style={s.nombreResp}>{nombreFinal}</Text>! Un buen nombre para un guardián de la lengua.
-              Acompaña a Kinti en este camino...
+              Acompaña al Caminante en este recorrido...
             </Text>
           </Animated.View>
         )}

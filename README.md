@@ -1,19 +1,27 @@
 # El Camino de la Lengua
 
-Videojuego educativo móvil para **revitalizar la lengua pastoker** del Pueblo Pasto, acompañando a niños, jóvenes y familias de los resguardos en el aprendizaje de su idioma ancestral.
+Videojuego educativo móvil para explorar vocabulario y contextos culturales del pueblo Pasto mediante una aventura de aprendizaje.
 
-> Proyecto **comunitario de largo plazo** de la Asociación PUMA‑MAKI (resguardo de Muellamués, Nariño, Colombia). El objetivo es que sea una herramienta viva y genuinamente útil para la comunidad: la calidad y el respeto cultural están por encima de todo.
+El corpus contiene las 75 entradas proporcionadas para esta actualización. Su cotejo documental y revisión cultural están pendientes; la aplicación no acredita una afiliación institucional ni una validación comunitaria.
 
 ---
 
 ## Sobre el juego
 
-Acompañas a **Kinti** en su camino por recuperar las palabras del pastoker. A medida que aprendes, el mundo pasa de gris a color: cada palabra recuperada devuelve vida al territorio.
+Acompañas al **Caminante** por cinco mundos. A medida que aprendes, el mundo pasa de gris a color: cada palabra recuperada devuelve vida al territorio dentro del relato del juego.
 
 - **75 palabras** organizadas en **5 mundos** temáticos.
 - Sistema de progreso **gris → color** que premia el aprendizaje.
 - Narrativa culturalmente situada, con la paleta Pasto (verde / dorado / tierra), fondos nocturnos y tarjetas claras para aprender.
-- 15 ilustraciones vectoriales del primer mundo y un mapa con miniaturas de los escenarios.
+- Ilustraciones vectoriales asociadas al término, con emojis de apoyo para las demás entradas, y un mapa con miniaturas de los escenarios.
+
+| ID | Mundo | Subtítulo | IDs de vocabulario |
+|----|-------|-----------|--------------------|
+| 1 | Pud | Las Alturas | 1–15 |
+| 2 | Piar | La Tierra que Alimenta | 16–30 |
+| 3 | Paskal | La Fuerza de la Comunidad | 31–45 |
+| 4 | In | El Fuego del Hogar | 46–60 |
+| 5 | Cuasmal | El Camino del Agua | 61–75 |
 
 ### Modos y mecánicas
 
@@ -22,13 +30,23 @@ Acompañas a **Kinti** en su camino por recuperar las palabras del pastoker. A m
 | **Misiones** | Quiz, Parejas, Dictado, Escucha y Memoria por cada mundo |
 | **Reto diario** | Palabra del Día determinística + reto de 5 pasos con bono |
 | **Práctica libre** | Repaso de las palabras aprendidas sin afectar la historia |
-| **Diccionario** | Las 75 palabras consultables, con búsqueda, filtros y fonética |
+| **Diccionario** | Las 75 entradas consultables, con búsqueda, filtros, contextos y datos de procedencia |
 | **Duelo de 2** | Partida local por turnos en el mismo dispositivo |
 | **Cinemáticas** | Escenas narrativas entre mundos |
 | **Avatar** | Personalización por capas con desbloqueos |
 | **Estadísticas** | Racha diaria, progreso por mundo/categoría y calendario de actividad |
 
-Incluye además logros declarativos, medallas Pasto, mascota (Pishku), audio y vibración, y recordatorio diario opcional.
+Incluye además logros declarativos, medallas, un ave mensajera, audio y vibración, y recordatorio diario opcional.
+
+### Contenido y compatibilidad
+
+Cada entrada conserva `id`, `p`, `e`, `cat`, `fon`, `ej`, `emoji` y `mundo`, y añade `tipo`, `respaldo`, `fuente` y `nota`. `respaldo: "pendiente_validacion"` distingue el listado recibido de una fuente cotejada. `fon` es una grafía de apoyo en minúsculas; la lectura sintética en español no acredita la pronunciación de la lengua.
+
+Los ejemplos y diálogos están en español. La colección interna `frases` conserva sus IDs y campos, pero ahora contiene términos individuales, sus significados y contextos; no presenta oraciones construidas como traducciones.
+
+Se conservan la clave de AsyncStorage, los IDs de palabras, mundos, misiones y logros, y los identificadores técnicos de la aplicación. La marca anterior se retira de los textos y recursos visibles. Las claves históricas de logros permanecen para reconocer las medallas guardadas.
+
+El progreso se mantiene **por ID**, por decisión del propietario: una palabra marcada como aprendida sigue marcada aunque ese ID ahora represente otra entrada. No se migran equivalencias de significado ni se reinician puntos, mundos, medallas o atuendos.
 
 ---
 
@@ -100,20 +118,20 @@ Los APK y demás archivos generados no se versionan. La distribución de producc
 
 ### Verificación de esta actualización
 
-Las 41 pruebas automatizadas pasan y el APK release compila con firma verificada. Las vistas se comprobaron en una previsualización web, incluida Memoria a 320, 375, 414 y 768 píxeles. Esa revisión no sustituye la comprobación visual en un dispositivo Android.
+`npm test` comprueba la tabla de 75 entradas, la distribución de 15 por mundo, las referencias narrativas, la conservación del progreso y los flujos de juego. Las pruebas de ilustraciones verifican que una entrada no herede un dibujo por reutilizar un ID. La revisión visual en Android debe realizarse con el APK de esta versión.
+
+Resultado de esta actualización: 51 pruebas aprobadas y compilación `assembleRelease` correcta. La firma del APK y la coincidencia entre su bundle y el recién generado se verificaron. Queda pendiente la prueba visual en un teléfono Android.
 
 ---
 
 ## Nota cultural
 
-El contenido lingüístico y narrativo (incluidos los guiones de las cinemáticas) es **material en revisión por la comunidad**. Nada aquí sustituye el conocimiento de los sabedores y sabedoras del Pueblo Pasto; el juego es una herramienta de apoyo, no una fuente de autoridad sobre la lengua.
+El contenido lingüístico y narrativo requiere revisión documental y cultural. La referencia sugerida «Lengua de los Pastos» no incluye edición ni páginas en la solicitud recibida. Los metadatos registran esa limitación sin atribuir una revisión ya realizada a los sabedores y sabedoras del pueblo Pasto.
 
 Repositorio **privado** mientras avanza esa revisión cultural.
 
 ---
 
-## Créditos
+## Propósito
 
-Desarrollado con y para la comunidad del resguardo de Muellamués (Nariño) — Asociación PUMA‑MAKI.
-
-*Sumak kawsay* — que el camino de la lengua siga vivo.
+Una herramienta de apoyo para acercarse al vocabulario y al territorio del pueblo Pasto, con respeto por sus conocimientos y sus procesos de revisión.

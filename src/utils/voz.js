@@ -1,5 +1,5 @@
 // Voz placeholder para los minijuegos orales mientras no hay grabaciones reales.
-// Usa expo-speech (voz sintética) — NO es pastoker real, solo da la mecánica.
+// Usa expo-speech en español; es una lectura de apoyo, no pronunciación validada.
 // Lazy require + try/catch: si el módulo nativo no está (Metro sobre binario viejo)
 // no crashea.
 let Speech = null;

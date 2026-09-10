@@ -91,7 +91,7 @@ function DiccionarioStackScreen() {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator screenOptions={hdrOpts}>
-      <Stack.Screen name="DiccionarioMain" component={DiccionarioScreen} options={{ title: 'Diccionario Pastoker' }} />
+      <Stack.Screen name="DiccionarioMain" component={DiccionarioScreen} options={{ title: 'Diccionario Pasto' }} />
     </Stack.Navigator>
   );
 }

@@ -40,10 +40,10 @@ function LeccionView({ mundo, onTerminar }) {
         <Text style={ls.contador}>{idx + 1} de {pals.length} palabras</Text>
         <View style={ls.ilustracion}><PalabraIlustrada palabra={pal} tamano={96} /></View>
         <Text style={ls.past}>{pal.p}</Text>
-        <Text style={ls.fon}>[{pal.fon}]</Text>
+        <Text style={ls.fon}>Grafía: {pal.fon}</Text>
         <Text style={ls.esp}>{pal.e}</Text>
         <View style={ls.divider} />
-        <Text style={ls.ej}>"{pal.ej}"</Text>
+        <Text style={ls.ej}>{pal.ej}</Text>
         <View style={ls.dots}>
           {pals.map((_, i) => <View key={i} style={[ls.dot, i === idx && ls.dotOn]} />)}
         </View>
@@ -87,7 +87,7 @@ export default function MundoScreen({ route, navigation }) {
   const misiones = [
     { id: `quiz-${mundoId}`,    tipo: 'quiz', titulo: 'Quiz de palabras', desc: 'Elige la traducción correcta', pantalla: 'Quiz', params: { mundoId } },
     { id: `parejas-${mundoId}`, tipo: 'parejas', titulo: 'Une las parejas', desc: 'Conecta palabra y significado', pantalla: 'Parejas', params: { mundoId } },
-    { id: `dictado-${mundoId}`, tipo: 'dictado', titulo: 'Dictado cultural', desc: 'Escribe la palabra en pastoker', pantalla: 'Dictado', params: { mundoId } },
+    { id: `dictado-${mundoId}`, tipo: 'dictado', titulo: 'Dictado cultural', desc: 'Escribe la palabra del vocabulario', pantalla: 'Dictado', params: { mundoId } },
     { id: `escucha-${mundoId}`, tipo: 'escucha', titulo: 'Escucha y elige', desc: 'Reconoce la palabra que suena', pantalla: 'Escucha', params: { mundoId } },
     { id: `memoria-${mundoId}`, tipo: 'memoria', titulo: 'Memoria andina', desc: 'Encuentra las parejas de cartas', pantalla: 'Memoria', params: { mundoId } },
   ];

@@ -1,4 +1,4 @@
-// Notificación local diaria de "Pishku" para recordar la palabra del día.
+// Notificación local del ave mensajera para recordar la palabra del día.
 // Todo va envuelto en try/catch: si el módulo nativo no está (Metro sobre un
 // binario viejo) o el permiso se niega, nunca crashea ni insiste.
 //

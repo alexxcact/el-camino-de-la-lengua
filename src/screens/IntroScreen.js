@@ -11,39 +11,39 @@ const { width, height } = Dimensions.get('window');
 const FRASES = [
   {
     personaje: 'taita_rimay',
-    nombre: 'Taita Rimay',
+    nombre: 'El guía',
     color: '#8B4513',
-    texto: 'Kinti, escucha bien...\nEl territorio ha perdido su color. Las palabras de nuestra lengua desaparecen como neblina al sol.',
+    texto: 'Bienvenido al camino.\nEn esta aventura conocerás palabras relacionadas con el territorio y la vida del pueblo Pasto.',
   },
   {
     personaje: 'taita_rimay',
-    nombre: 'Taita Rimay',
+    nombre: 'El guía',
     color: '#8B4513',
-    texto: 'Los cerros han olvidado sus nombres. Los ríos callan. Los animales guardianes se pierden en la niebla.',
+    texto: 'Empezaremos en Pud, Las Alturas. Encontrarás cerros, volcanes, viento y cielo entre las palabras del recorrido.',
   },
   {
     personaje: 'uma',
-    nombre: 'Uma',
+    nombre: 'La tejedora',
     color: '#7A1515',
-    texto: 'Wawa... solo tú puedes devolver la vida al territorio. Cada palabra pastoker que aprendas traerá de regreso un color, un sonido, una memoria.',
+    texto: 'También visitaremos la chagra, el encuentro comunitario y el hogar. Los ejemplos en español te ayudarán a relacionar cada palabra con su significado.',
   },
   {
     personaje: 'pishku',
-    nombre: 'Pishku',
+    nombre: 'Ave mensajera',
     color: '#1A3A5C',
-    texto: '¡Pío pío! Yo volaré contigo entre los mundos. Cuando aprendas una palabra, yo la cantaré para que nunca más se olvide.',
+    texto: '¡Pío pío! Volaré contigo entre los mundos y celebraremos cada avance. Puedes volver al diccionario siempre que quieras repasar.',
   },
   {
     personaje: 'chutun',
-    nombre: 'Los Chutún',
+    nombre: 'Niebla juguetona',
     color: '#2D5A16',
-    texto: 'Ji ji ji... nosotros te desafiaremos. Si sabes la palabra, el páramo revivirá. Si no la sabes... ¡el olvido seguirá creciendo!',
+    texto: 'Soy un personaje de fantasía de este juego. Te propondré retos de palabras, parejas y memoria. ¡Cada intento te ayuda a aprender!',
   },
   {
     personaje: 'taita_rimay',
-    nombre: 'Taita Rimay',
+    nombre: 'El guía',
     color: '#8B4513',
-    texto: 'Ve, Kinti. Restaura el Tuta — la espiral del centro — y el Pued — el círculo sagrado. Que el territorio vuelva a cantar en pastoker.',
+    texto: 'Nuestro recorrido termina en Cuasmal, El Camino del Agua. Hay cinco mundos y 75 entradas para explorar. ¡Demos el primer paso!',
   },
 ];
 

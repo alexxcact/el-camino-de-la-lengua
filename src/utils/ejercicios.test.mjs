@@ -14,9 +14,13 @@ test('las prácticas pequeñas pueden aprobarse y las largas exigen el 60%', () 
   assert.equal(sesionAprobada(3, 15), false);
   assert.equal(sesionAprobada(8, 15), false);
   assert.equal(sesionAprobada(9, 15), true);
+  const lugares = palabras.filter(p => p.cat === 'Lugares');
+  assert.equal(lugares.length, 1);
+  assert.equal(sesionAprobada(1, lugares.length), true);
   const colores = palabras.filter(p => p.cat === 'Colores');
-  assert.equal(colores.length, 1);
-  assert.equal(sesionAprobada(1, colores.length), true);
+  assert.equal(colores.length, 3);
+  assert.equal(sesionAprobada(1, colores.length), false);
+  assert.equal(sesionAprobada(2, colores.length), true);
 });
 
 test('todos los dibujos del vocabulario se distinguen sin quitar palabras', () => {
@@ -27,12 +31,16 @@ test('todos los dibujos del vocabulario se distinguen sin quitar palabras', () =
   assert.ok(palabras.every(p => !Object.hasOwn(p, 'etiquetaDibujo')));
 });
 
-test('Nina, Imba y Tulpa llevan significado; un dibujo único no necesita etiqueta', () => {
-  const fuego = palabras.filter(p => ['Nina', 'Imba', 'Tulpa'].includes(p.p));
-  assert.equal(fuego.length, 3);
-  const puka = palabras.find(p => p.p === 'Puka');
-  const opciones = distinguirDibujos([...fuego, puka]);
-  assert.deepEqual(opciones.slice(0, 3).map(p => p.etiquetaDibujo), fuego.map(p => p.e));
-  assert.equal(opciones[3].etiquetaDibujo, null);
-  assert.equal(distinguirDibujos([fuego[0]])[0].etiquetaDibujo, null);
+test('las entradas de leña y agua llevan significado al repetir dibujo; uno único no necesita etiqueta', () => {
+  const cuanda = palabras.find(p => p.p === 'Cuanda');
+  assert.ok(cuanda);
+  for (const terminos of [['Chu', 'Chula', 'Chular', 'Chuma'], ['Cual', 'Pi', 'Es']]) {
+    const repetidas = palabras.filter(p => terminos.includes(p.p));
+    assert.equal(repetidas.length, terminos.length);
+    assert.equal(new Set(repetidas.map(p => p.emoji)).size, 1);
+    const opciones = distinguirDibujos([...repetidas, cuanda]);
+    assert.deepEqual(opciones.slice(0, -1).map(p => p.etiquetaDibujo), repetidas.map(p => p.e));
+    assert.equal(opciones.at(-1).etiquetaDibujo, null);
+    assert.equal(distinguirDibujos([repetidas[0]])[0].etiquetaDibujo, null);
+  }
 });

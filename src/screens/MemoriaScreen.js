@@ -69,7 +69,7 @@ function Carta({ carta, faceUp, resuelta, onPress, ancho, posicion }) {
               {carta.etiquetaDibujo && <Text style={cs.etiqueta} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.85}>{carta.etiquetaDibujo}</Text>}
             </>
           : <>
-              <Text style={cs.tipoCarta}>Pastoker</Text>
+              <Text style={cs.tipoCarta}>Palabra</Text>
               <Text style={cs.past} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.7}>{carta.contenido}</Text>
             </>}
         {resuelta && <View style={cs.sello}><Text style={cs.selloTxt}>✓</Text></View>}
@@ -185,7 +185,7 @@ export default function MemoriaScreen({ route, navigation }) {
           </View>
           <Acompanante
             personaje="uma"
-            mensaje={`Pas wawa ${nombre}, tu memoria guarda las palabras como la tierra guarda las semillas.`}
+            mensaje={`${nombre}, tu memoria guarda las palabras como la tierra guarda las semillas.`}
           />
           <BotonGlow texto={modoPractica ? '← Volver a practicar' : '← Volver al mundo'} onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>

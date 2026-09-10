@@ -7,56 +7,18 @@ import { fonts } from '../theme/fonts';
 import { ui, radii } from '../theme/ui';
 import Medallon from '../components/Medallon';
 import BotonGlow from '../components/BotonGlow';
+import { personajes as personajesDatos } from '../data/datos';
 
 const { width } = Dimensions.get('window');
 
-const personajes = [
-  {
-    id: 'kinti',
-    nombre: 'Kinti',
-    rol: 'Protagonista · Guardián del Camino',
-    img: require('../../assets/images/personajes/kinti.jpg'),
-    color: '#C49010',
-    desc: 'Joven indígena de Muellamués. Curioso, valiente y respetuoso con los mayores. Es a quien tú controlas en el juego. Porta ruana tradicional y camina por el páramo con palabras doradas flotando a su alrededor.',
-    frase: '¡Voy a recuperar las palabras de mi pueblo!',
-  },
-  {
-    id: 'taita-rimay',
-    nombre: 'Taita Rimay',
-    rol: 'Espíritu Guía · El Padre de la Palabra',
-    img: require('../../assets/images/personajes/taita_rimay.jpg'),
-    color: '#8B4513',
-    desc: 'Espíritu ancestral envuelto en niebla dorada. Habla solo en pastoker y narra el inicio de cada mundo. Aparece como una figura luminosa de anciano sabio rodeado de símbolos sagrados flotantes.',
-    frase: 'Solo recuperando las palabras restaurarás el Tuta y el Pued.',
-  },
-  {
-    id: 'uma',
-    nombre: 'Uma',
-    rol: 'Abuela Tejedora · Maestra del Chumbe',
-    img: require('../../assets/images/personajes/uma.jpg'),
-    color: '#7A1515',
-    desc: 'Tejedora de Muellamués. Habla únicamente en pastoker y solo responde cuando usas las palabras correctas. Viste anacu, rebozo tejido y sombrero de lana. Sus manos siempre aparecen tejiendo el chumbe.',
-    frase: 'Pas wawa, rimay Pastoquer.',
-  },
-  {
-    id: 'pishku',
-    nombre: 'Pishku',
-    rol: 'Pájaro Mensajero · Voz del Pastoker',
-    img: require('../../assets/images/personajes/pishku.jpg'),
-    color: '#1A3A5C',
-    desc: 'Colibrí de los Andes con plumas de los colores del quincha. Pronuncia cada palabra nueva y celebra tus logros con cantos. Deja estelas doradas por donde vuela.',
-    frase: '¡Pío pío! ¡Pas rimay!',
-  },
-  {
-    id: 'chutun',
-    nombre: 'Los Chutún',
-    rol: 'Espíritus del Páramo · Guardianes del Olvido',
-    img: require('../../assets/images/personajes/chutun.jpg'),
-    color: '#2D5A16',
-    desc: 'Espíritus traviesos del páramo con apariencia neblinosa y suave. Representan las fuerzas del olvido y te desafían con acertijos lingüísticos. Aparecen en grupo cerca del fogón o entre las piedras del páramo.',
-    frase: 'Si no sabes nuestra palabra... ¡no pasas!',
-  },
-];
+const retratos = {
+  kinti: require('../../assets/images/personajes/kinti.jpg'),
+  'taita-rimay': require('../../assets/images/personajes/taita_rimay.jpg'),
+  uma: require('../../assets/images/personajes/uma.jpg'),
+  pishku: require('../../assets/images/personajes/pishku.jpg'),
+  chutun: require('../../assets/images/personajes/chutun.jpg'),
+};
+const personajes = personajesDatos.map(p => ({ ...p, img: retratos[p.id] }));
 
 export default function PersonajesScreen() {
   const [idx, setIdx] = useState(0);

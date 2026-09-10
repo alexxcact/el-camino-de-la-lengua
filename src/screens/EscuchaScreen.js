@@ -21,7 +21,7 @@ import { distinguirDibujos, sesionAprobada } from '../utils/ejercicios';
 const RONDAS = 5;
 
 // ══════════════════════════════════════════════════════════
-// ESCUCHA Y ELIGE — refuerza lo oral (Pishku acompaña)
+// ESCUCHA Y ELIGE — ejercicio con lectura sintética y dibujos
 // ══════════════════════════════════════════════════════════
 export default function EscuchaScreen({ route, navigation }) {
   const { mundoId, palabrasPractica, modoPractica = false, nPreguntas } = route.params || {};
@@ -112,7 +112,7 @@ export default function EscuchaScreen({ route, navigation }) {
         <ScrollView contentContainerStyle={s.resContent}>
           {exito
             ? <PishkuMascota celebrando tamano={96} />
-            : <Acompanante personaje="pishku" mensaje="¡Sigue escuchando, wawa! Tus oídos aprenderán el canto de las palabras." lado="izq" />}
+            : <Acompanante personaje="pishku" mensaje="Sigue practicando. Relaciona la palabra que escuchas con su significado." lado="izq" />}
           <Text style={s.resTit}>{exito ? `¡Buen oído, ${nombre}!` : `Sigue escuchando, ${nombre}`}</Text>
           <View style={s.scoreCard}>
             <Text style={s.scoreNum}>{aciertos} / {rondas.length}</Text>
@@ -148,7 +148,7 @@ export default function EscuchaScreen({ route, navigation }) {
 
         {/* Botón de audio grande */}
         <View style={s.audioWrap}>
-          <Text style={s.instruccion}>Escucha y elige el dibujo</Text>
+          <Text style={s.instruccion}>Escucha y elige el significado completo de esta entrada</Text>
           <TouchableOpacity accessibilityRole="button" accessibilityLabel="Escuchar la palabra otra vez" onPress={() => decirPalabra(ronda.palabra.p)} activeOpacity={0.85}>
             <View style={s.audioGlowWrap}>
               {/* Halo (círculos concéntricos translúcidos: glow real en Android) */}
@@ -159,7 +159,7 @@ export default function EscuchaScreen({ route, navigation }) {
               </Animated.View>
             </View>
           </TouchableOpacity>
-          <Text style={s.audioHint}>Toca para oír otra vez</Text>
+          <Text style={s.audioHint}>Voz sintética de práctica · Toca para repetir</Text>
         </View>
 
         {/* Dibujos y etiquetas para distinguir significados ambiguos */}
@@ -195,7 +195,7 @@ export default function EscuchaScreen({ route, navigation }) {
         <Acompanante
           personaje="pishku"
           mensaje={seleccion === null
-            ? '¡Pío! Escucha bien la palabra y toca el dibujo que le corresponde.'
+            ? '¡Pío! Usa el dibujo y su etiqueta para reconocer el significado completo de la ficha.'
             : (seleccion === ronda.palabra.id
                 ? `¡Eso es! "${ronda.palabra.p}" = "${ronda.palabra.e}"`
                 : `Era "${ronda.palabra.p}" = "${ronda.palabra.e}". ¡La próxima la oirás mejor!`)}
