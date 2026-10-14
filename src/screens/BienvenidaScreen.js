@@ -177,7 +177,11 @@ const s = StyleSheet.create({
     shadowColor: colors.doradoNeon, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.5, shadowRadius: 18,
     elevation: 12,
   },
-  logo: { width: '100%', height: '100%' },
+  // icon.png es el ícono de lanzador: emblema circular sobre baldosa turquesa con
+  // marco/esquinas NEGRAS. Al recortarlo en círculo, ese negro asomaba en las esquinas.
+  // Lo escalamos para que el recorte circular caiga dentro de la baldosa turquesa
+  // (sin tocar el emblema ni el texto). Ajustar el factor si aún asoma negro.
+  logo: { width: '100%', height: '100%', transform: [{ scale: 1.16 }] },
 
   tagline: {
     fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.medium,
