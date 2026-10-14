@@ -13,6 +13,7 @@ import { useJuego } from '../context/JuegoContext';
 import BotonGlow from '../components/BotonGlow';
 import Confeti from '../components/Confeti';
 import PishkuMascota from '../components/PishkuMascota';
+import PalabraIlustrada from '../components/PalabraIlustrada';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { programarNotificacionDiaria } from '../utils/notificaciones';
@@ -223,7 +224,7 @@ export default function RetoDiarioScreen({ navigation }) {
           <>
             <View style={s.qCard}>
               <Text style={s.qLabel}>ELIGE EL SIGNIFICADO COMPLETO DE ESTA ENTRADA</Text>
-              <Text style={s.qEmoji}>{paso.target.emoji}</Text>
+              <PalabraIlustrada palabra={paso.target} tamano={64} />
               <Text style={s.qPast}>{paso.target.p}</Text>
               <Text style={s.qFon}>Grafía: {paso.target.fon}</Text>
             </View>
@@ -244,7 +245,7 @@ export default function RetoDiarioScreen({ navigation }) {
                     disabled={bloqueado}
                     activeOpacity={0.85}
                   >
-                    <Text style={s.opEmoji}>{op.emoji}</Text>
+                    <PalabraIlustrada palabra={op} tamano={36} />
                     <Text style={s.opTxt}>{op.e}</Text>
                     {seleccion !== null && esCorr && <Text style={s.opCheck}>✓</Text>}
                     {seleccion !== null && elegida && !esCorr && <Ionicons name="close" size={22} color={colors.rojoVivo} />}
@@ -280,7 +281,7 @@ export default function RetoDiarioScreen({ navigation }) {
                     disabled={bloqueado}
                     activeOpacity={0.85}
                   >
-                    <Text style={s.emojiBig}>{op.emoji}</Text>
+                    <PalabraIlustrada palabra={op} tamano={48} />
                     {op.etiquetaDibujo && <Text style={s.emojiEtiqueta}>{op.etiquetaDibujo}</Text>}
                   </TouchableOpacity>
                 );
@@ -294,7 +295,7 @@ export default function RetoDiarioScreen({ navigation }) {
           <>
             <View style={s.qCard}>
               <Text style={s.qLabel}>ESCRIBE LA ENTRADA DE ESTA FICHA</Text>
-              <Text style={s.qEmoji}>{paso.target.emoji}</Text>
+              <PalabraIlustrada palabra={paso.target} tamano={64} />
               <Text style={s.qEsp}>{paso.target.e}</Text>
             </View>
             <View style={[

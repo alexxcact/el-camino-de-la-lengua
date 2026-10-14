@@ -13,6 +13,7 @@ import { useJuego } from '../context/JuegoContext';
 import AvatarSVG from '../components/AvatarSVG';
 import Medallon from '../components/Medallon';
 import PishkuMascota from '../components/PishkuMascota';
+import PalabraIlustrada from '../components/PalabraIlustrada';
 import Confeti from '../components/Confeti';
 import BotonGlow from '../components/BotonGlow';
 import { sonar } from '../utils/sonidos';
@@ -332,7 +333,7 @@ export default function DueloScreen({ navigation }) {
         ) : (
           <View style={s.qCard}>
             <Text style={s.qLabel}>ELIGE EL SIGNIFICADO COMPLETO DE ESTA ENTRADA</Text>
-            <Text style={s.qEmoji}>{pregunta.target.emoji}</Text>
+            <PalabraIlustrada palabra={pregunta.target} tamano={64} />
             <Text style={s.qPast}>{pregunta.target.p}</Text>
             <Text style={s.qFon}>Grafía: {pregunta.target.fon}</Text>
           </View>
@@ -355,7 +356,7 @@ export default function DueloScreen({ navigation }) {
                 disabled={!!feedback}
                 activeOpacity={0.85}
               >
-                <Text style={s.opEmoji}>{op.emoji}</Text>
+                <PalabraIlustrada palabra={op} tamano={36} />
                 <Text style={s.opTxt}>{op.e}</Text>
                 {feedback && esCorr && <Text style={s.opCheck}>✓</Text>}
                 {feedback && elegida && !esCorr && <Ionicons name="close" size={22} color={colors.coral} />}
@@ -401,7 +402,7 @@ export default function DueloScreen({ navigation }) {
               >
                 {tile.lado === 'past' ? (
                   <>
-                    <Text style={s.tileEmoji}>{tile.emoji}</Text>
+                    <PalabraIlustrada palabra={{ p: tile.txt, emoji: tile.emoji }} tamano={40} />
                     <Text style={s.tilePast}>{tile.txt}</Text>
                   </>
                 ) : (

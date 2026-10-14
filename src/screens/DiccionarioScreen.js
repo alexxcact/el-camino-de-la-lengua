@@ -13,6 +13,7 @@ import { useJuego } from '../context/JuegoContext';
 import PishkuMascota from '../components/PishkuMascota';
 import { decirPalabra } from '../utils/voz';
 import { sonar } from '../utils/sonidos';
+import PalabraIlustrada from '../components/PalabraIlustrada';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -98,7 +99,8 @@ export default function DiccionarioScreen() {
         <View style={s.rowTop}>
           <View style={{ flex: 1 }}>
             <View style={s.pastLine}>
-              <Text style={s.past}>{item.emoji} {item.p}</Text>
+              <PalabraIlustrada palabra={item} tamano={30} />
+              <Text style={s.past}>{item.p}</Text>
               <TouchableOpacity
                 style={s.audioBtn}
                 onPress={() => decirPalabra(item.p)}

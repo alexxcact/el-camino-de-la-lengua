@@ -13,6 +13,7 @@ import MedallaPasto, { MEDALLAS_INFO } from '../components/MedallaPasto';
 import AvatarSVG from '../components/AvatarSVG';
 import Medallon from '../components/Medallon';
 import { programarNotificacionDiaria, cancelarNotificaciones } from '../utils/notificaciones';
+import PalabraIlustrada from '../components/PalabraIlustrada';
 
 // Formatea una hora 0-23 a "4:00 PM"
 const formatoHora = (h) => {
@@ -47,7 +48,7 @@ export function MochilaScreen({ navigation }) {
 
       <View style={ss.detWrap}>
         <Text style={ss.detCat}>{detalle.cat}</Text>
-        <Text style={{ fontSize: 56, textAlign: 'center', marginBottom: 8 }}>{detalle.emoji}</Text>
+        <PalabraIlustrada palabra={detalle} tamano={96} style={{ alignSelf: 'center', marginBottom: 8 }} />
         <Text style={ss.detPast}>{detalle.p}</Text>
         <Text style={ss.detFon}>Grafía: {detalle.fon}</Text>
         <Text style={ss.detEsp}>{detalle.e}</Text>
@@ -120,8 +121,9 @@ export function MochilaScreen({ navigation }) {
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
         renderItem={({ item }) => (
           <TouchableOpacity style={ss.wordRow} onPress={() => setDetalle(item)}>
+            <PalabraIlustrada palabra={item} tamano={38} style={{ marginRight: 12 }} />
             <View style={{ flex: 1 }}>
-              <Text style={ss.wordPast}>{item.emoji} {item.p}</Text>
+              <Text style={ss.wordPast}>{item.p}</Text>
               <Text style={ss.wordEsp}>{item.e}</Text>
             </View>
             <View style={ss.badge}><Text style={ss.badgeTxt}>{item.cat}</Text></View>
