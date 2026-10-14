@@ -155,7 +155,7 @@ export default function EscuchaScreen({ route, navigation }) {
               <View style={[s.audioHalo, s.audioHaloLg]} />
               <View style={[s.audioHalo, s.audioHaloMd]} />
               <Animated.View style={[s.audioBtn, { transform: [{ scale: pulsoScale }] }]}>
-                <Ionicons name="volume-high" size={44} color={colors.crema} />
+                <Ionicons name="volume-high" size={44} color={colors.blanco} />
               </Animated.View>
             </View>
           </TouchableOpacity>
@@ -226,28 +226,28 @@ const s = StyleSheet.create({
   instruccion:  { color: colors.cielo, fontSize: 18, fontFamily: fonts.semibold, marginBottom: 8, textAlign: 'center' },
   audioGlowWrap:{ alignItems: 'center', justifyContent: 'center', paddingVertical: 12 },
   audioHalo:    { position: 'absolute', borderRadius: radii.pill },
-  audioHaloLg:  { width: 128, height: 128, backgroundColor: 'rgba(93,202,165,0.06)' },
-  audioHaloMd:  { width: 112, height: 112, backgroundColor: 'rgba(93,202,165,0.12)' },
+  audioHaloLg:  { width: 128, height: 128, backgroundColor: 'rgba(31,169,224,0.10)' },
+  audioHaloMd:  { width: 112, height: 112, backgroundColor: 'rgba(31,169,224,0.18)' },
   audioBtn: {
     width: 88, height: 88, borderRadius: 44,
-    backgroundColor: colors.nocheCard, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 2, borderColor: colors.turquesaClaro,
+    backgroundColor: colors.cieloVivo, alignItems: 'center', justifyContent: 'center',
+    borderWidth: 2, borderColor: colors.blanco,
   },
   audioHint: { color: colors.turquesaSuave, fontFamily: fonts.medium, fontSize: 14, marginTop: 8 },
 
   grid:   { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 12 },
   opBtn:  {
-    ...ui.card,
+    ...ui.cardClara,
     borderRadius: radii.md, padding: 14,
     width: '48%', minHeight: 128, alignItems: 'center', justifyContent: 'center',
-    marginBottom: 12, backgroundColor: colors.crema, borderColor: colors.arena, shadowOpacity: 0, elevation: 0,
+    marginBottom: 12,
   },
-  opCorrecta:   { borderColor: colors.verdeM, borderWidth: 2, backgroundColor: colors.respuestaCorrecta },
+  opCorrecta:   { borderColor: colors.selva, borderWidth: 2, backgroundColor: colors.respuestaCorrecta },
   opIncorrecta: { borderColor: colors.rojoVivo, borderWidth: 2, backgroundColor: colors.respuestaIncorrecta },
   opOff:        { opacity: 0.72 },
-  opEsp:   { fontSize: 16, lineHeight: 21, color: colors.noche, fontFamily: fonts.bold, marginTop: 6, textAlign: 'center' },
+  opEsp:   { fontSize: 16, lineHeight: 21, color: colors.textoCarta, fontFamily: fonts.bold, marginTop: 6, textAlign: 'center' },
   opEstado: { position: 'absolute', top: 5, right: 10, fontSize: 24, fontFamily: fonts.extra },
-  opEstadoCorrecto: { color: colors.verdeM },
+  opEstadoCorrecto: { color: colors.selva },
   opEstadoError: { color: colors.rojoVivo },
 
   resBg:      { flex: 1 },

@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, radii } from '../theme/ui';
 import { palabras, shuffle } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import BotonGlow from '../components/BotonGlow';
@@ -246,7 +247,7 @@ export default function RetoDiarioScreen({ navigation }) {
                     <Text style={s.opEmoji}>{op.emoji}</Text>
                     <Text style={s.opTxt}>{op.e}</Text>
                     {seleccion !== null && esCorr && <Text style={s.opCheck}>✓</Text>}
-                    {seleccion !== null && elegida && !esCorr && <Ionicons name="close" size={22} color={colors.coral} />}
+                    {seleccion !== null && elegida && !esCorr && <Ionicons name="close" size={22} color={colors.rojoVivo} />}
                   </TouchableOpacity>
                 );
               })}
@@ -304,7 +305,7 @@ export default function RetoDiarioScreen({ navigation }) {
               <TextInput
                 style={s.input}
                 placeholder="Escribe aquí..."
-                placeholderTextColor={colors.turquesaSuave}
+                placeholderTextColor={colors.textoCartaSuave}
                 value={texto}
                 onChangeText={setTexto}
                 editable={verif === null}
@@ -337,43 +338,43 @@ const s = StyleSheet.create({
   aciertosTxt: { color: colors.doradoNeon, fontSize: 13, fontFamily: fonts.bold },
   progBar:     { flexDirection: 'row', gap: 7, alignItems: 'center' },
   progDot:     { width: 18, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.18)' },
-  progDone:    { backgroundColor: colors.doradoNeon },
-  progActive:  { backgroundColor: colors.doradoNeon, width: 30, height: 8, borderRadius: 4, shadowColor: colors.doradoNeon, shadowOpacity: 0.9, shadowRadius: 7, elevation: 6 },
+  progDone:    { backgroundColor: colors.sol },
+  progActive:  { backgroundColor: colors.sol, width: 30, height: 8, borderRadius: 4, shadowColor: colors.sol, shadowOpacity: 0.9, shadowRadius: 7, elevation: 6 },
 
-  qCard:  { padding: 24, alignItems: 'center', marginBottom: 16, borderRadius: 22, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: colors.turquesa },
-  qLabel: { fontSize: 10, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 10 },
+  qCard:  { ...ui.cardClara, padding: 24, alignItems: 'center', marginBottom: 16 },
+  qLabel: { fontSize: 10, color: colors.textoCartaSuave, fontFamily: fonts.bold, letterSpacing: 3, marginBottom: 10 },
   qEmoji: { fontSize: 60, marginBottom: 8 },
-  qPast:  { fontSize: 34, fontWeight: '900', color: colors.doradoNeon, fontFamily: 'serif', letterSpacing: 1, textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 12 },
-  qFon:   { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 4 },
-  qEsp:   { fontSize: 20, color: colors.cielo, fontFamily: fonts.semibold, marginTop: 6 },
+  qPast:  { fontSize: 34, fontWeight: '900', color: colors.sol, fontFamily: 'serif', letterSpacing: 1 },
+  qFon:   { fontSize: 12, color: colors.textoCartaSuave, fontStyle: 'italic', marginTop: 4 },
+  qEsp:   { fontSize: 20, color: colors.textoCarta, fontFamily: fonts.semibold, marginTop: 6 },
 
   opciones: { gap: 10, marginBottom: 12 },
   op: {
+    ...ui.cardClara,
     flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: colors.nocheCard, paddingHorizontal: 14, minHeight: 56, borderRadius: 16,
-    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.2)',
+    paddingHorizontal: 14, minHeight: 56, borderRadius: radii.md,
   },
-  opCorrecta:   { borderColor: colors.turquesa, borderWidth: 2, backgroundColor: 'rgba(29,158,117,0.15)' },
-  opIncorrecta: { borderColor: colors.coral, borderWidth: 2, backgroundColor: 'rgba(242,120,92,0.12)' },
+  opCorrecta:   { borderColor: colors.selva, borderWidth: 2, backgroundColor: colors.respuestaCorrecta },
+  opIncorrecta: { borderColor: colors.rojoVivo, borderWidth: 2, backgroundColor: colors.respuestaIncorrecta },
   opOff:        { opacity: 0.4 },
   opEmoji: { fontSize: 26 },
-  opTxt:   { flex: 1, fontSize: 15, fontFamily: fonts.bold, color: colors.cielo },
-  opCheck: { fontSize: 22, color: colors.turquesa, fontFamily: fonts.extra },
-  opX:     { fontSize: 22, color: colors.coral, fontFamily: fonts.extra },
+  opTxt:   { flex: 1, fontSize: 15, fontFamily: fonts.bold, color: colors.textoCarta },
+  opCheck: { fontSize: 22, color: colors.selva, fontFamily: fonts.extra },
+  opX:     { fontSize: 22, color: colors.rojoVivo, fontFamily: fonts.extra },
 
   emojiGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 10 },
   emojiBtn:  {
+    ...ui.cardClara,
     width: '47%', aspectRatio: 1.4, alignItems: 'center', justifyContent: 'center',
-    backgroundColor: colors.nocheCard, borderRadius: 18, marginBottom: 10,
-    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.2)',
+    borderRadius: radii.md, marginBottom: 10,
   },
   emojiBig: { fontSize: 50 },
-  emojiEtiqueta: { fontSize: 13, color: colors.cielo, fontFamily: fonts.bold, textAlign: 'center', marginTop: 4 },
+  emojiEtiqueta: { fontSize: 13, color: colors.textoCarta, fontFamily: fonts.bold, textAlign: 'center', marginTop: 4 },
 
-  inputWrap:    { backgroundColor: colors.nocheProfundo, borderRadius: 16, borderWidth: 2, borderColor: 'rgba(93,202,165,0.3)', marginBottom: 10, height: 52, justifyContent: 'center' },
-  inputWrapOk:  { borderColor: colors.turquesa },
-  inputWrapErr: { borderColor: colors.coral },
-  input:        { paddingHorizontal: 16, fontSize: 18, color: colors.cielo, textAlign: 'center', fontFamily: fonts.bold },
+  inputWrap:    { ...ui.cardClara, borderWidth: 2, marginBottom: 10, height: 52, justifyContent: 'center' },
+  inputWrapOk:  { borderColor: colors.selva },
+  inputWrapErr: { borderColor: colors.rojoVivo },
+  input:        { paddingHorizontal: 16, fontSize: 18, color: colors.textoCarta, textAlign: 'center', fontFamily: fonts.bold },
   msgOk:  { color: colors.turquesaClaro, fontSize: 14, fontFamily: fonts.bold, textAlign: 'center', marginBottom: 10 },
   msgErr: { color: colors.coral, fontSize: 14, fontFamily: fonts.bold, textAlign: 'center', marginBottom: 10 },
 
@@ -382,9 +383,9 @@ const s = StyleSheet.create({
   resContent: { flexGrow: 1, padding: 24, justifyContent: 'center', alignItems: 'center' },
   resTit:     { fontSize: 24, fontFamily: fonts.extra, color: colors.doradoNeon, textAlign: 'center', marginTop: 18, textShadowColor: 'rgba(250,199,117,0.4)', textShadowRadius: 10 },
   resSub:     { fontSize: 14, color: colors.turquesaSuave, textAlign: 'center', marginTop: 8, lineHeight: 20 },
-  scoreCard:  { alignItems: 'center', padding: 22, marginVertical: 22, borderRadius: 22, alignSelf: 'stretch', backgroundColor: colors.nocheCard, borderWidth: 2, borderColor: colors.doradoNeon },
+  scoreCard:  { alignItems: 'center', padding: 22, marginVertical: 22, borderRadius: 22, alignSelf: 'stretch', backgroundColor: colors.nocheCard, borderWidth: 2, borderColor: colors.sol },
   scoreNum:   { fontSize: 52, fontFamily: fonts.extra, color: colors.cielo },
-  bonus:      { fontSize: 14, color: colors.doradoNeon, fontFamily: fonts.bold, marginTop: 6 },
+  bonus:      { fontSize: 14, color: colors.sol, fontFamily: fonts.bold, marginTop: 6 },
   rachaTxt:   { fontSize: 13, color: colors.turquesaSuave, fontFamily: fonts.semibold, marginTop: 8 },
 
   relojCard:  { alignItems: 'center', padding: 20, marginVertical: 22, borderRadius: 20, alignSelf: 'stretch', backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: colors.turquesa },

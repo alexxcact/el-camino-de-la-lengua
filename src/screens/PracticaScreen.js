@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { ui, acento } from '../theme/ui';
 import { palabras, mundos, categorias, shuffle } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import BotonGlow from '../components/BotonGlow';
@@ -93,12 +94,14 @@ export default function PracticaScreen({ navigation }) {
         {/* CÓMO practicar */}
         <Text style={s.seccion}>¿CÓMO?</Text>
         <View style={s.mecGrid}>
-          {MECANICAS.map(m => {
+          {MECANICAS.map((m, i) => {
             const on = mecanica === m.key;
             return (
               <TouchableOpacity key={m.key} style={[s.mecBtn, on && s.mecOn]} onPress={() => setMecanica(m.key)} activeOpacity={0.85}>
-                <Text style={s.mecEmoji}>{m.emoji}</Text>
-                <Text style={[s.mecLbl, on && { color: colors.doradoNeon }]}>{m.label}</Text>
+                <View style={[s.mecIconBox, { backgroundColor: acento(i) }]}>
+                  <Text style={s.mecEmoji}>{m.emoji}</Text>
+                </View>
+                <Text style={[s.mecLbl, on && { color: colors.sol }]}>{m.label}</Text>
               </TouchableOpacity>
             );
           })}
@@ -148,10 +151,11 @@ const s = StyleSheet.create({
   disponibles: { fontSize: 11, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 8 },
 
   mecGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  mecBtn:  { width: '31%', alignItems: 'center', paddingVertical: 14, marginBottom: 10, borderRadius: 16, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.2)' },
-  mecOn:   { borderColor: colors.doradoNeon, borderWidth: 2, backgroundColor: 'rgba(250,199,117,0.10)' },
-  mecEmoji:{ fontSize: 28 },
-  mecLbl:  { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.semibold, marginTop: 4 },
+  mecBtn:  { ...ui.cardClara, width: '31%', alignItems: 'center', paddingVertical: 14, marginBottom: 10 },
+  mecOn:   { borderColor: colors.sol, borderWidth: 2 },
+  mecIconBox: { ...ui.iconoAcento, marginBottom: 6 },
+  mecEmoji:{ fontSize: 24 },
+  mecLbl:  { fontSize: 12, color: colors.textoCarta, fontFamily: fonts.semibold, marginTop: 0 },
 
   cantRow: { flexDirection: 'row', gap: 10 },
   cantBtn: { flex: 1, alignItems: 'center', paddingVertical: 14, borderRadius: 14, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.25)' },

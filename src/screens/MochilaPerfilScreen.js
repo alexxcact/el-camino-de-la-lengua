@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
-import { ui, radii } from '../theme/ui';
+import { ui, radii, acento } from '../theme/ui';
 import { palabras, logros as todosLogros } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import HudJugador from '../components/HudJugador';
@@ -46,12 +46,6 @@ export function MochilaScreen({ navigation }) {
       </TouchableOpacity>
 
       <View style={ss.detWrap}>
-        <LinearGradient
-          colors={[colors.nocheCard, colors.noche]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
         <Text style={ss.detCat}>{detalle.cat}</Text>
         <Text style={{ fontSize: 56, textAlign: 'center', marginBottom: 8 }}>{detalle.emoji}</Text>
         <Text style={ss.detPast}>{detalle.p}</Text>
@@ -214,7 +208,7 @@ export function PerfilScreen({ navigation }) {
         <View style={ps.statsGrid}>
           {stats.map((stat, i) => (
             <View key={stat.l} style={ps.statCard}>
-              <ContadorAnimado valor={stat.n} estilo={ps.statN} duracion={800} delay={i * 100} animarEntrada />
+              <ContadorAnimado valor={stat.n} estilo={[ps.statN, { color: acento(i) }]} duracion={800} delay={i * 100} animarEntrada />
               <Text style={ps.statL}>{stat.l}</Text>
             </View>
           ))}
@@ -282,7 +276,7 @@ export function PerfilScreen({ navigation }) {
                 {on
                   ? <Text style={[ps.logroEmoji, ps.logroEmojiOn]}>{l.emoji}</Text>
                   : <Ionicons name="lock-closed" size={28} color={colors.turquesaSuave} style={ps.logroEmoji} />}
-                <Text style={[ps.logroNom, on && { color: colors.doradoNeon }]}>{l.nom}</Text>
+                <Text style={[ps.logroNom, on && { color: colors.sol }]}>{l.nom}</Text>
                 <Text style={ps.logroDesc}>{l.desc}</Text>
               </View>
             );
@@ -411,13 +405,13 @@ const ss = StyleSheet.create({
   dicLink: { fontSize: 12, color: colors.doradoNeon, fontFamily: fonts.bold },
 
   wordRow: {
-    ...ui.card,
+    ...ui.cardClara,
     padding: 14, marginBottom: 9,
     flexDirection: 'row', alignItems: 'center',
-    borderLeftWidth: 4, borderLeftColor: colors.doradoNeon,
+    borderLeftWidth: 4, borderLeftColor: colors.sol,
   },
-  wordPast: { fontSize: 19, color: colors.doradoNeon, fontFamily: fonts.bold },
-  wordEsp:  { fontSize: 13, color: colors.cielo, marginTop: 2, fontFamily: fonts.medium },
+  wordPast: { fontSize: 19, color: colors.sol, fontFamily: fonts.bold },
+  wordEsp:  { fontSize: 13, color: colors.textoCartaSuave, marginTop: 2, fontFamily: fonts.medium },
   badge:    { ...ui.chip, alignSelf: 'flex-start' },
   badgeTxt: { ...ui.chipTxt, fontSize: 10 },
 
@@ -429,16 +423,16 @@ const ss = StyleSheet.create({
   vacioBtn: { backgroundColor: colors.turquesa, borderRadius: radii.sm, paddingHorizontal: 24, paddingVertical: 14, marginTop: 22 },
   vacioBtnTxt: { color: colors.cielo, fontFamily: fonts.bold, fontSize: 15 },
 
-  detWrap: { ...ui.cardDestacada, padding: 24, marginBottom: 14, overflow: 'hidden' },
-  detCat:  { fontSize: 10, color: colors.turquesaSuave, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6, textAlign: 'center', fontFamily: fonts.bold },
-  detPast: { fontSize: 36, color: colors.doradoNeon, textAlign: 'center', fontFamily: fonts.extra, textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 12 },
-  detFon:  { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.regular, fontStyle: 'italic', textAlign: 'center', marginTop: 4 },
-  detEsp:  { fontSize: 18, color: colors.cielo, marginTop: 6, textAlign: 'center', fontFamily: fonts.semibold },
+  detWrap: { ...ui.cardClara, padding: 24, marginBottom: 14, overflow: 'hidden' },
+  detCat:  { fontSize: 10, color: colors.textoCartaSuave, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6, textAlign: 'center', fontFamily: fonts.bold },
+  detPast: { fontSize: 36, color: colors.sol, textAlign: 'center', fontFamily: fonts.extra },
+  detFon:  { fontSize: 12, color: colors.textoCartaSuave, fontFamily: fonts.regular, fontStyle: 'italic', textAlign: 'center', marginTop: 4 },
+  detEsp:  { fontSize: 18, color: colors.textoCarta, marginTop: 6, textAlign: 'center', fontFamily: fonts.semibold },
   detDiv:  { ...ui.divider, marginVertical: 12 },
-  detEj:   { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.regular, fontStyle: 'italic', textAlign: 'center' },
-  infoCard:{ ...ui.card, padding: 16 },
-  infoTit: { fontSize: 14, fontFamily: fonts.bold, color: colors.turquesaClaro, marginBottom: 8 },
-  infoTxt: { fontSize: 13, color: colors.cielo, fontFamily: fonts.regular, lineHeight: 20 },
+  detEj:   { fontSize: 12, color: colors.textoCartaSuave, fontFamily: fonts.regular, fontStyle: 'italic', textAlign: 'center' },
+  infoCard:{ ...ui.cardClara, padding: 16 },
+  infoTit: { fontSize: 14, fontFamily: fonts.bold, color: colors.textoCarta, marginBottom: 8 },
+  infoTxt: { fontSize: 13, color: colors.textoCartaSuave, fontFamily: fonts.regular, lineHeight: 20 },
 });
 
 // ─── Estilos Perfil ────────────────────────────────────────────
@@ -471,19 +465,19 @@ const ps = StyleSheet.create({
   modalSaveTxt:  { color: colors.cielo, fontFamily: fonts.extra, fontSize: 14 },
 
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 16 },
-  statCard:  { ...ui.card, width: '48%', padding: 16, alignItems: 'center', marginBottom: 12 },
-  statN:     { fontSize: 28, fontFamily: fonts.extra, color: colors.doradoNeon },
-  statL:     { fontSize: 11, color: colors.turquesaSuave, marginTop: 2, fontFamily: fonts.medium },
+  statCard:  { ...ui.cardClara, width: '48%', padding: 16, alignItems: 'center', marginBottom: 12 },
+  statN:     { fontSize: 28, fontFamily: fonts.extra, color: colors.textoCarta },
+  statL:     { fontSize: 11, color: colors.textoCartaSuave, marginTop: 2, fontFamily: fonts.medium },
 
   statsBtn:    { backgroundColor: 'rgba(250,199,117,0.12)', borderRadius: radii.md, padding: 16, marginBottom: 16, borderWidth: 1.5, borderColor: colors.doradoNeon, alignItems: 'center' },
   statsBtnTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.extra },
   statsBtnSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 3, textAlign: 'center' },
 
-  card:    { ...ui.card, padding: 16, marginBottom: 18 },
-  cardTit: { ...ui.h3, fontSize: 15 },
-  barLbl:  { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.medium },
-  barVal:  { fontSize: 11, color: colors.turquesaClaro, fontFamily: fonts.semibold },
-  barWrap: { height: 8, backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 4, overflow: 'hidden' },
+  card:    { ...ui.cardClara, padding: 16, marginBottom: 18 },
+  cardTit: { fontSize: 15, fontFamily: fonts.bold, color: colors.textoCarta },
+  barLbl:  { fontSize: 11, color: colors.textoCartaSuave, fontFamily: fonts.medium },
+  barVal:  { fontSize: 11, color: colors.textoCarta, fontFamily: fonts.semibold },
+  barWrap: { height: 8, backgroundColor: 'rgba(23,64,58,0.12)', borderRadius: 4, overflow: 'hidden' },
   barFill: { height: '100%', borderRadius: 4 },
 
   seccionPill:   { ...ui.pill, marginBottom: 12 },
@@ -499,10 +493,10 @@ const ps = StyleSheet.create({
   medModalTap:  { fontSize: 11, color: colors.turquesaSuave, marginTop: 16 },
   logrosGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   logroCard:  { width: '48%', borderRadius: radii.md, padding: 14, alignItems: 'center', marginBottom: 12 },
-  logroOn:    { backgroundColor: 'rgba(8,26,34,0.62)', borderWidth: 2, borderColor: colors.doradoNeon },
+  logroOn:    { backgroundColor: 'rgba(8,26,34,0.62)', borderWidth: 2, borderColor: colors.sol },
   logroOff:   { backgroundColor: colors.nocheProfundo, opacity: 0.5, borderWidth: 1, borderColor: 'rgba(93,202,165,0.15)' },
   logroEmoji: { fontSize: 28, marginBottom: 4 },
-  logroEmojiOn:{ textShadowColor: 'rgba(250,199,117,0.7)', textShadowRadius: 12 },
+  logroEmojiOn:{ textShadowColor: 'rgba(242,177,52,0.7)', textShadowRadius: 12 },
   logroNom:   { fontSize: 12, fontFamily: fonts.bold, color: colors.turquesaSuave, textAlign: 'center' },
   logroDesc:  { fontSize: 10, color: colors.turquesaSuave, marginTop: 2, textAlign: 'center', opacity: 0.8 },
 

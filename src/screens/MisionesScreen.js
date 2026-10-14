@@ -299,7 +299,7 @@ export function DictadoScreen({ route, navigation }) {
           <TextInput
             style={s.input}
             placeholder="Escribe aquí..."
-            placeholderTextColor={colors.gris}
+            placeholderTextColor={colors.textoCartaSuave}
             accessibilityLabel="La palabra que corresponde al significado"
             value={texto}
             onChangeText={setTexto}
@@ -352,34 +352,35 @@ const s = StyleSheet.create({
   // ─── Parejas ───
   grid:    { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   tarjeta: {
+    ...ui.cardClara,
     width: '48%', minHeight: 132,
     borderRadius: radii.md, alignItems: 'center', justifyContent: 'center',
     padding: 12, borderWidth: 2, marginBottom: 12,
   },
-  tarjetaPast:     { backgroundColor: colors.crema, borderColor: colors.arena },
-  tarjetaEsp:      { backgroundColor: colors.crema, borderColor: colors.arena },
+  tarjetaPast:     { borderColor: colors.sol },
+  tarjetaEsp:      { borderColor: colors.cieloVivo },
   tarjetaSel:      { borderColor: colors.verdeM, borderWidth: 3, transform: [{ scale: 0.96 }] },
-  tarjetaAcierto:  { borderColor: colors.verdeM, borderWidth: 3, backgroundColor: colors.respuestaCorrecta },
+  tarjetaAcierto:  { borderColor: colors.selva, borderWidth: 3, backgroundColor: colors.respuestaCorrecta },
   tarjetaError:    { borderColor: colors.rojoVivo, borderWidth: 3, backgroundColor: colors.respuestaIncorrecta },
-  tarjetaResuelta: { borderColor: colors.verdeM, backgroundColor: colors.respuestaCorrecta },
-  tarjIdioma:      { fontSize: 14, fontFamily: fonts.medium, color: colors.gris, marginBottom: 6 },
-  tarjTxt:         { fontSize: 17, lineHeight: 23, marginTop: 6, fontFamily: fonts.semibold, color: colors.noche, textAlign: 'center' },
+  tarjetaResuelta: { borderColor: colors.selva, backgroundColor: colors.respuestaCorrecta },
+  tarjIdioma:      { fontSize: 14, fontFamily: fonts.medium, color: colors.textoCartaSuave, marginBottom: 6 },
+  tarjTxt:         { fontSize: 17, lineHeight: 23, marginTop: 6, fontFamily: fonts.semibold, color: colors.textoCarta, textAlign: 'center' },
   tarjTxtPast:     { color: colors.verdeM, fontSize: 18, fontFamily: fonts.extra },
   tarjEstado:      { position: 'absolute', top: 3, right: 8, fontSize: 20, fontFamily: fonts.extra },
-  tarjEstadoOk:    { color: colors.verdeM },
+  tarjEstadoOk:    { color: colors.selva },
   tarjEstadoErr:   { color: colors.rojoVivo },
 
   // ─── Dictado ───
-  qCard:  { backgroundColor: colors.crema, borderRadius: radii.lg, padding: 18, alignItems: 'center', marginBottom: 16, borderWidth: 1, borderColor: colors.arena },
-  qLabel: { color: colors.gris, fontSize: 15, fontFamily: fonts.semibold, marginBottom: 10, textAlign: 'center' },
-  qEsp:   { fontSize: 30, fontFamily: fonts.extra, color: colors.noche, textAlign: 'center', marginTop: 6 },
-  qCat:   { fontSize: 14, color: colors.gris, fontFamily: fonts.medium, marginTop: 4 },
+  qCard:  { ...ui.cardClara, padding: 18, alignItems: 'center', marginBottom: 16 },
+  qLabel: { color: colors.textoCartaSuave, fontSize: 15, fontFamily: fonts.semibold, marginBottom: 10, textAlign: 'center' },
+  qEsp:   { fontSize: 30, fontFamily: fonts.extra, color: colors.textoCarta, textAlign: 'center', marginTop: 6 },
+  qCat:   { fontSize: 14, color: colors.textoCartaSuave, fontFamily: fonts.medium, marginTop: 4 },
 
-  inputWrap:     { backgroundColor: colors.crema, borderRadius: radii.md, borderWidth: 2, borderColor: colors.arena, marginBottom: 12, minHeight: 56, justifyContent: 'center' },
+  inputWrap:     { ...ui.cardClara, borderRadius: radii.md, borderWidth: 2, marginBottom: 12, minHeight: 56, justifyContent: 'center' },
   inputWrapFoco: { borderColor: colors.turquesaClaro },
-  inputWrapOk:   { borderColor: colors.verdeM, backgroundColor: colors.respuestaCorrecta },
-  inputWrapErr:  { borderColor: colors.coral },
-  input:         { paddingHorizontal: 16, paddingVertical: 12, fontSize: 20, color: colors.noche, textAlign: 'center', fontFamily: fonts.bold },
+  inputWrapOk:   { borderColor: colors.selva, backgroundColor: colors.respuestaCorrecta },
+  inputWrapErr:  { borderColor: colors.rojoVivo, backgroundColor: colors.respuestaIncorrecta },
+  input:         { paddingHorizontal: 16, paddingVertical: 12, fontSize: 20, color: colors.textoCarta, textAlign: 'center', fontFamily: fonts.bold },
 
   msgOk:  { color: colors.turquesaClaro, fontSize: 14, fontFamily: fonts.bold, textAlign: 'center', marginBottom: 10 },
   msgErr: { color: colors.coral, fontSize: 14, fontFamily: fonts.bold, textAlign: 'center', marginBottom: 10 },

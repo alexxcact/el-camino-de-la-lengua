@@ -85,11 +85,11 @@ export default function MundoScreen({ route, navigation }) {
   }, [mostrarFelicitacion]);
 
   const misiones = [
-    { id: `quiz-${mundoId}`,    tipo: 'quiz', titulo: 'Quiz de palabras', desc: 'Elige la traducción correcta', pantalla: 'Quiz', params: { mundoId } },
-    { id: `parejas-${mundoId}`, tipo: 'parejas', titulo: 'Une las parejas', desc: 'Conecta palabra y significado', pantalla: 'Parejas', params: { mundoId } },
-    { id: `dictado-${mundoId}`, tipo: 'dictado', titulo: 'Dictado cultural', desc: 'Escribe la palabra del vocabulario', pantalla: 'Dictado', params: { mundoId } },
-    { id: `escucha-${mundoId}`, tipo: 'escucha', titulo: 'Escucha y elige', desc: 'Reconoce la palabra que suena', pantalla: 'Escucha', params: { mundoId } },
-    { id: `memoria-${mundoId}`, tipo: 'memoria', titulo: 'Memoria andina', desc: 'Encuentra las parejas de cartas', pantalla: 'Memoria', params: { mundoId } },
+    { id: `quiz-${mundoId}`,    tipo: 'quiz', color: colors.sol,       titulo: 'Quiz de palabras', desc: 'Elige la traducción correcta', pantalla: 'Quiz', params: { mundoId } },
+    { id: `parejas-${mundoId}`, tipo: 'parejas', color: colors.cieloVivo, titulo: 'Une las parejas', desc: 'Conecta palabra y significado', pantalla: 'Parejas', params: { mundoId } },
+    { id: `dictado-${mundoId}`, tipo: 'dictado', color: colors.selva,    titulo: 'Dictado cultural', desc: 'Escribe la palabra del vocabulario', pantalla: 'Dictado', params: { mundoId } },
+    { id: `escucha-${mundoId}`, tipo: 'escucha', color: colors.turquesa, titulo: 'Escucha y elige', desc: 'Reconoce la palabra que suena', pantalla: 'Escucha', params: { mundoId } },
+    { id: `memoria-${mundoId}`, tipo: 'memoria', color: colors.coral,    titulo: 'Memoria andina', desc: 'Encuentra las parejas de cartas', pantalla: 'Memoria', params: { mundoId } },
   ];
 
   const todasCompletadas  = misiones.every(m => estado.misionesCompletadas.has(m.id));
@@ -158,13 +158,13 @@ export default function MundoScreen({ route, navigation }) {
         )}
 
         <Text style={est.seccionTitulo}>Aprende primero</Text>
-        <TouchableOpacity accessibilityRole="button" style={[est.card, est.cardLeccion]} onPress={() => setVistaActiva('leccion')} activeOpacity={0.85}>
-          <View style={[est.iconBox, est.iconBoxLeccion]}><IconoActividad tipo="leccion" color={colors.verdeM} /></View>
+        <TouchableOpacity accessibilityRole="button" style={est.card} onPress={() => setVistaActiva('leccion')} activeOpacity={0.85}>
+          <View style={[est.iconBox, { backgroundColor: colors.verdeVivo }]}><IconoActividad tipo="leccion" color="#fff" /></View>
           <View style={{ flex: 1 }}>
-            <Text style={[est.cardTit, est.cardTitLeccion]}>Aprender las palabras</Text>
-            <Text style={[est.cardSub, est.cardSubLeccion]}>{mundo.palabrasIds.length} palabras de este mundo</Text>
+            <Text style={est.cardTit}>Aprender las palabras</Text>
+            <Text style={est.cardSub}>{mundo.palabrasIds.length} palabras de este mundo</Text>
           </View>
-          <Text style={[est.chevron, est.cardTitLeccion]}>›</Text>
+          <Text style={[est.chevron, { color: colors.verdeVivo }]}>›</Text>
         </TouchableOpacity>
 
         <View style={est.seccionHeader}>
@@ -185,14 +185,14 @@ export default function MundoScreen({ route, navigation }) {
               activeOpacity={0.85}
               style={[est.card, comp && est.cardDone]}
             >
-              <View style={[est.iconBox, comp && est.iconBoxDone]}><IconoActividad tipo={m.tipo} color={comp ? colors.doradoNeon : colors.turquesaSuave} /></View>
+              <View style={[est.iconBox, { backgroundColor: m.color }, comp && est.iconBoxDone]}><IconoActividad tipo={m.tipo} color="#fff" /></View>
               <View style={{ flex: 1 }}>
                 <Text style={est.cardTit}>{m.titulo}</Text>
                 <Text style={est.cardSub}>{m.desc}</Text>
               </View>
               {comp
                 ? <Text style={est.check}>✓</Text>
-                : <Text style={est.chevron}>›</Text>}
+                : <Text style={[est.chevron, { color: m.color }]}>›</Text>}
             </TouchableOpacity>
           );
         })}
@@ -260,8 +260,8 @@ export default function MundoScreen({ route, navigation }) {
 const ls = StyleSheet.create({
   wrap:    { flexGrow: 1, padding: 16, paddingBottom: 28, width: '100%', maxWidth: 620, alignSelf: 'center' },
   card:    {
-    borderRadius: radii.lg, padding: 20, alignItems: 'center', marginBottom: 14,
-    backgroundColor: colors.crema, borderWidth: 1, borderColor: colors.arena,
+    ...ui.cardClara,
+    padding: 20, alignItems: 'center', marginBottom: 14,
   },
   ilustracion: { marginTop: 12, marginBottom: 8 },
   past:    { fontSize: 36, color: colors.verdeM, fontFamily: fonts.extra, textAlign: 'center' },
@@ -294,21 +294,17 @@ const est = StyleSheet.create({
   historiaTxt: { color: colors.turquesaSuave, fontSize: 14, fontFamily: fonts.bold },
 
   card: {
-    ...ui.card,
+    ...ui.cardClara,
     flexDirection: 'row', alignItems: 'center', gap: 12,
-    padding: 14, marginBottom: 10, shadowOpacity: 0, elevation: 0,
+    padding: 14, marginBottom: 10,
   },
-  cardLeccion: { backgroundColor: colors.crema, borderColor: colors.arena },
-  cardTitLeccion: { color: colors.noche },
-  cardSubLeccion: { color: colors.gris },
-  cardDone:   { borderColor: 'rgba(250,199,117,0.6)' },
-  iconBox:    { width: 44, height: 48, borderRadius: 12, backgroundColor: colors.nocheProfundo, alignItems: 'center', justifyContent: 'center' },
-  iconBoxLeccion: { backgroundColor: 'rgba(45,90,22,0.08)' },
-  iconBoxDone:{ backgroundColor: 'rgba(250,199,117,0.18)' },
-  cardTit:    { ...ui.h3, fontSize: 17, lineHeight: 22 },
-  cardSub:    { ...ui.sub, fontSize: 14, lineHeight: 20, marginTop: 3 },
-  chevron:    { fontSize: 24, color: colors.turquesaClaro, paddingHorizontal: 6 },
-  check:      { fontSize: 26, color: colors.doradoNeon, fontFamily: fonts.extra, paddingHorizontal: 6 },
+  cardDone:   { borderColor: 'rgba(242,177,52,0.75)', borderWidth: 1.5 },
+  iconBox:    { width: 48, height: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  iconBoxDone:{ opacity: 0.5 },
+  cardTit:    { ...ui.cardH, fontSize: 17, lineHeight: 22 },
+  cardSub:    { ...ui.cardSubC, fontSize: 14, lineHeight: 20, marginTop: 3 },
+  chevron:    { fontSize: 24, color: colors.textoCartaSuave, paddingHorizontal: 6, fontFamily: fonts.bold },
+  check:      { fontSize: 26, color: colors.sol, fontFamily: fonts.extra, paddingHorizontal: 6 },
 
   progTxt:  { fontSize: 14, color: colors.turquesaSuave, marginBottom: 10, fontFamily: fonts.semibold },
   progBar:  { height: 6, backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 4, overflow: 'hidden', marginBottom: 14 },

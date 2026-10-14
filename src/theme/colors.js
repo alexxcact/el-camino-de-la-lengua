@@ -62,4 +62,17 @@ export const colors = {
   gradAurora:   ['#0B1F2A', '#0F6E56', '#1D9E75'],     // Fondos hero
   gradXP:       ['#FAC775', '#EF9F27'],                 // Barras de XP
   gradVictoria: ['#1D9E75', '#FAC775'],                 // Celebraciones
+
+  // === FUSIÓN ANDINA LUMINOSA (Híbrido) ===
+  // Tarjetas blancas limpias + acentos vivos y alegres (inspirado en apps infantiles),
+  // SOBRE el fondo noche atmosférico que ya es el sello de la app.
+  cartaClara:      '#FFFFFF',   // tarjeta blanca de contenido
+  cartaClaraBorde: '#E7EEF1',   // borde tenue de la tarjeta clara
+  textoCarta:      '#17403A',   // texto principal sobre tarjeta clara
+  textoCartaSuave: '#5B756E',   // texto secundario sobre tarjeta clara
+  sol:             '#F2B134',   // dorado vivo (barras / acentos)
+  cieloVivo:       '#1FA9E0',   // azul cielo alegre
+  selva:           '#3BB24A',   // verde vivo
+  lila:            '#C98BC0',   // acento extra
+  // (turquesa #1D9E75 y coral #F2785C ya existen y entran en la rotación)
 };

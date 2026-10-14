@@ -107,30 +107,34 @@ export default function EstadisticasScreen() {
 
         {/* Progreso por mundo */}
         <Text style={s.seccion}>POR MUNDO</Text>
-        {porMundo.map(m => (
-          <View key={m.id} style={s.barRow}>
-            <View style={s.barRowTop}>
-              <Text style={s.barRowLbl}>{m.emoji} {m.titulo}</Text>
-              <Text style={s.barRowVal}>{m.sabe}/{m.total}</Text>
+        <View style={s.listaCard}>
+          {porMundo.map(m => (
+            <View key={m.id} style={s.barRow}>
+              <View style={s.barRowTop}>
+                <Text style={s.barRowLbl}>{m.emoji} {m.titulo}</Text>
+                <Text style={s.barRowVal}>{m.sabe}/{m.total}</Text>
+              </View>
+              <View style={s.barWrap}>
+                <View style={[s.barFill, { width: `${m.pct}%`, backgroundColor: m.color }]} />
+              </View>
             </View>
-            <View style={s.barWrap}>
-              <View style={[s.barFill, { width: `${m.pct}%`, backgroundColor: m.color }]} />
-            </View>
-          </View>
-        ))}
+          ))}
+        </View>
 
         {/* Progreso por categoría */}
         <Text style={s.seccion}>POR CATEGORÍA</Text>
-        {porCategoria.map(c => (
-          <View key={c.cat} style={s.catRow}>
-            <Text style={s.catLbl} numberOfLines={1}>{c.cat}</Text>
-            <View style={[s.barWrap, { flex: 1, marginHorizontal: 10 }]}>
-              <LinearGradient colors={colors.gradVictoria} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-                style={[s.barFill, { width: `${Math.round((c.sabe / c.total) * 100)}%` }]} />
+        <View style={s.listaCard}>
+          {porCategoria.map(c => (
+            <View key={c.cat} style={s.catRow}>
+              <Text style={s.catLbl} numberOfLines={1}>{c.cat}</Text>
+              <View style={[s.barWrap, { flex: 1, marginHorizontal: 10 }]}>
+                <LinearGradient colors={colors.gradVictoria} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                  style={[s.barFill, { width: `${Math.round((c.sabe / c.total) * 100)}%` }]} />
+              </View>
+              <Text style={s.catVal}>{c.sabe}/{c.total}</Text>
             </View>
-            <Text style={s.catVal}>{c.sabe}/{c.total}</Text>
-          </View>
-        ))}
+          ))}
+        </View>
 
         {/* Calendario de racha */}
         <Text style={s.seccion}>🔥 CALENDARIO (últimas 5 semanas)</Text>
@@ -166,36 +170,37 @@ const s = StyleSheet.create({
   seccion: { ...ui.pill, ...ui.pillTxt, overflow: 'hidden', marginTop: 20, marginBottom: 10 },
 
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  card: { ...ui.card, width: '48%', borderRadius: radii.md, padding: 14, alignItems: 'center', marginBottom: 12 },
-  cardNum: { fontSize: 28, fontFamily: fonts.extra, color: colors.doradoNeon },
-  cardLbl: { fontSize: 11, color: colors.turquesaSuave, marginTop: 2, fontFamily: fonts.medium, textAlign: 'center' },
+  card: { ...ui.cardClara, width: '48%', borderRadius: radii.md, padding: 14, alignItems: 'center', marginBottom: 12 },
+  cardNum: { fontSize: 28, fontFamily: fonts.extra, color: colors.sol },
+  cardLbl: { fontSize: 11, color: colors.textoCartaSuave, marginTop: 2, fontFamily: fonts.medium, textAlign: 'center' },
 
-  bigBarCard: { ...ui.cardDestacada, padding: 16, marginTop: 4 },
+  bigBarCard: { ...ui.cardClara, padding: 16, marginTop: 4 },
   bigBarTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  bigBarLbl: { fontSize: 14, color: colors.cielo, fontFamily: fonts.bold },
-  bigBarPct: { fontSize: 18, color: colors.doradoNeon, fontFamily: fonts.extra },
-  bigBarSub: { fontSize: 11, color: colors.turquesaSuave, marginTop: 6, fontFamily: fonts.medium },
+  bigBarLbl: { fontSize: 14, color: colors.textoCarta, fontFamily: fonts.bold },
+  bigBarPct: { fontSize: 18, color: colors.sol, fontFamily: fonts.extra },
+  bigBarSub: { fontSize: 11, color: colors.textoCartaSuave, marginTop: 6, fontFamily: fonts.medium },
 
+  listaCard: { ...ui.cardClara, padding: 14, marginBottom: 4 },
   barRow: { marginBottom: 12 },
   barRowTop: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
-  barRowLbl: { fontSize: 13, color: colors.cielo, fontFamily: fonts.semibold },
-  barRowVal: { fontSize: 12, color: colors.turquesaClaro, fontFamily: fonts.semibold },
+  barRowLbl: { fontSize: 13, color: colors.textoCarta, fontFamily: fonts.semibold },
+  barRowVal: { fontSize: 12, color: colors.textoCartaSuave, fontFamily: fonts.semibold },
 
-  barWrap: { height: 9, backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 5, overflow: 'hidden' },
+  barWrap: { height: 9, backgroundColor: 'rgba(23,64,58,0.10)', borderRadius: 5, overflow: 'hidden' },
   barFill: { height: '100%', borderRadius: 5 },
 
   catRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 9 },
-  catLbl: { fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.medium, width: 92 },
-  catVal: { fontSize: 11, color: colors.turquesaClaro, fontFamily: fonts.semibold, width: 38, textAlign: 'right' },
+  catLbl: { fontSize: 12, color: colors.textoCarta, fontFamily: fonts.medium, width: 92 },
+  catVal: { fontSize: 11, color: colors.textoCartaSuave, fontFamily: fonts.semibold, width: 38, textAlign: 'right' },
 
-  calCard: { ...ui.card, padding: 14 },
+  calCard: { ...ui.cardClara, padding: 14 },
   calFila: { flexDirection: 'row', gap: 6, marginBottom: 6 },
   calDia: { flex: 1, aspectRatio: 1, borderRadius: 5 },
-  calOn:  { backgroundColor: colors.doradoNeon },
-  calOff: { backgroundColor: colors.nocheProfundo, borderWidth: 1, borderColor: 'rgba(93,202,165,0.15)' },
+  calOn:  { backgroundColor: colors.sol },
+  calOff: { backgroundColor: '#EDF1F0', borderWidth: 1, borderColor: colors.cartaClaraBorde },
   calLeyenda: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8 },
   calDot: { width: 12, height: 12, borderRadius: 4 },
-  calLeyTxt: { fontSize: 10, color: colors.turquesaSuave, fontFamily: fonts.medium, marginRight: 8 },
+  calLeyTxt: { fontSize: 10, color: colors.textoCartaSuave, fontFamily: fonts.medium, marginRight: 8 },
 
   shareBtn: { marginTop: 22, flexDirection: 'row', justifyContent: 'center', gap: 8, backgroundColor: 'rgba(250,199,117,0.14)', borderRadius: radii.md, paddingVertical: 14, alignItems: 'center', borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.5)' },
   shareTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.bold },
