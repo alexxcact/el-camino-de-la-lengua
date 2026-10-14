@@ -10,6 +10,7 @@ function representar(palabra) {
         __esModule: true,
         default: 'Svg',
         Circle: 'Circle', Ellipse: 'Ellipse', G: 'G', Line: 'Line', Path: 'Path',
+        Rect: 'Rect', Polygon: 'Polygon', Polyline: 'Polyline', Defs: 'Defs', ClipPath: 'ClipPath',
       },
     },
   }).tree;
@@ -25,14 +26,22 @@ test('reasignar un ID conserva la ilustración del término y no hereda el dibuj
   assert.notEqual(JSON.stringify(frailejon), JSON.stringify(sol));
 });
 
-test('las entradas nuevas sin dibujo propio muestran su emoji aunque reutilicen un ID ilustrado', () => {
+test('una palabra sin dibujo propio cae a su emoji', () => {
+  const desconocida = representar({ id: 999, p: 'PalabraSinDibujo', emoji: '🔤' });
+  assert.equal(buscarNodo(desconocida, n => n.type === 'Svg'), undefined);
+  assert.equal(buscarNodo(desconocida, n => n.type === 'Text').props.children[0], '🔤');
+});
+
+test('las entradas del corpus tienen ilustración propia y no muestran emoji', () => {
   for (const palabra of [
     { id: 6, p: 'Put', emoji: '🌋' },
     { id: 9, p: 'Pepe', emoji: '🌕' },
     { id: 55, p: 'Canchape', emoji: '🥣' },
+    { id: 61, p: 'Cual', emoji: '💧' },
+    { id: 74, p: 'Cusumbe', emoji: '🐾' },
   ]) {
-    const arbol = representar(palabra);
-    assert.equal(buscarNodo(arbol, n => n.type === 'Svg'), undefined);
-    assert.equal(buscarNodo(arbol, n => n.type === 'Text').props.children[0], palabra.emoji);
+    const nodo = representar(palabra);
+    assert.ok(buscarNodo(nodo, n => n.type === 'Svg'), `${palabra.p} debería tener dibujo`);
+    assert.equal(buscarNodo(nodo, n => n.type === 'Text'), undefined);
   }
 });
