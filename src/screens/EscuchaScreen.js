@@ -26,7 +26,7 @@ const RONDAS = 5;
 export default function EscuchaScreen({ route, navigation }) {
   const { mundoId, palabrasPractica, modoPractica = false, nPreguntas } = route.params || {};
   const mundo = mundoId ? mundos.find(m => m.id === mundoId) : null;
-  const { estado, ganarPuntos, completarMision, verificarLogros, completarPractica } = useJuego();
+  const { estado, ganarPuntos, completarMision, verificarLogros, completarPractica, registrarFallo, quitarFallo } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
 
   const premiar = (n) => ganarPuntos(modoPractica ? Math.max(1, Math.round(n / 2)) : n);
@@ -78,8 +78,8 @@ export default function EscuchaScreen({ route, navigation }) {
     if (seleccion !== null) return;
     setSeleccion(op.id);
     const acerto = op.id === ronda.palabra.id;
-    if (acerto) { setAciertos(a => a + 1); premiar(8); setFlash(true); sonar.acierto(); vibrar.suave(); }
-    else { sonar.error(); vibrar.error(); }
+    if (acerto) { setAciertos(a => a + 1); premiar(8); setFlash(true); quitarFallo(ronda.palabra.id); sonar.acierto(); vibrar.suave(); }
+    else { registrarFallo(ronda.palabra.id); sonar.error(); vibrar.error(); }
     timeoutRef.current = setTimeout(() => {
       if (idx + 1 < rondas.length) {
         setIdx(idx + 1);

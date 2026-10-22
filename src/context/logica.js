@@ -45,6 +45,8 @@ export const estadoInicial = {
   avatar: { piel: 0, ropa: 0, sombrero: 0, accesorio: 0 },
   avatarDesbloqueados: { ropa: [0], sombrero: [0], accesorio: [0] },
   avatarPersonalizado: false, // si ya guardó el avatar al menos una vez
+  onboardingVisto: false,  // si ya vio el tutorial de "cómo jugar" en el Mapa (primitivo)
+  palabrasFalladas: [],    // [ids] de palabras erradas en quiz/escucha, para el Repaso (array, merge a default)
 };
 
 export const niveles = [
@@ -134,6 +136,7 @@ export function hidratarEstado(parsed) {
     logrosDesbloqueados: new Set(p.logrosDesbloqueados || []),
     diasActivos:       Array.isArray(p.diasActivos)       ? p.diasActivos       : [],
     cinematicasVistas: Array.isArray(p.cinematicasVistas) ? p.cinematicasVistas : [],
+    palabrasFalladas:  Array.isArray(p.palabrasFalladas)  ? p.palabrasFalladas  : [],
     // merge profundo del avatar (objetos planos) para usuarios sin estos campos
     avatar: { ...estadoInicial.avatar, ...(p.avatar || {}) },
     avatarDesbloqueados: {

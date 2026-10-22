@@ -5,16 +5,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { ui, radii } from '../theme/ui';
-import { mundos, CINEMATICAS } from '../data/datos';
+import { mundos, CINEMATICAS, palabras } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import HudJugador from '../components/HudJugador';
 import SenderoMapa from '../components/SenderoMapa';
 import TarjetaPalabraDia from '../components/TarjetaPalabraDia';
+import Onboarding from '../components/Onboarding';
 
 export default function MapaScreen({ navigation }) {
-  const { estado, getPalabraDelDia, retoDiarioDisponible, verificarDesbloqueoAvatar, toastAtuendo, setToastAtuendo } = useJuego();
+  const { estado, cargado, getPalabraDelDia, retoDiarioDisponible, verificarDesbloqueoAvatar, toastAtuendo, setToastAtuendo, marcarOnboardingVisto } = useJuego();
 
   const nombre = estado.nombreJugador || 'Caminante';
+  // Palabras marcadas como falladas (para el Repaso), mapeadas a objetos del corpus.
+  const falladas = (estado.palabrasFalladas || []).map(id => palabras.find(p => p.id === id)).filter(Boolean);
   const hora = new Date().getHours();
   const saludo = hora >= 5 && hora < 12 ? '¡Buenos días' : hora >= 12 && hora < 18 ? '¡Buenas tardes' : '¡Buenas noches';
 
@@ -78,6 +81,22 @@ export default function MapaScreen({ navigation }) {
               retoCompletado={!retoDiarioDisponible()}
               onReto={() => navigation.navigate('RetoDiario')}
             />
+            {falladas.length > 0 && (
+              <TouchableOpacity
+                style={[s.atajoBtn, s.atajoRepaso]}
+                onPress={() => navigation.navigate('Quiz', { palabrasPractica: falladas, modoPractica: true, modoRepaso: true, nPreguntas: Math.min(falladas.length, 8) })}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel={`Repaso de ${falladas.length} palabras que fallaste`}
+              >
+                <View style={[s.atajoIcono, s.atajoIconoRepaso]}><Ionicons name="refresh" size={24} color={colors.sol} /></View>
+                <View style={s.atajoContenido}>
+                  <Text style={s.atajoTitulo}>Repaso</Text>
+                  <Text style={s.atajoSub}>Vuelve a las palabras que fallaste ({falladas.length})</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color={colors.sol} />
+              </TouchableOpacity>
+            )}
             <TouchableOpacity style={s.atajoBtn} onPress={() => navigation.navigate('Practica')} activeOpacity={0.85} accessibilityRole="button">
               <View style={s.atajoIcono}><Ionicons name="leaf-outline" size={25} color={colors.turquesaSuave} /></View>
               <View style={s.atajoContenido}>
@@ -105,6 +124,11 @@ export default function MapaScreen({ navigation }) {
           <Text style={s.toastSub}>Míralo en Mi avatar (Progreso)</Text>
         </View>
       )}
+
+      {/* Tutorial de bienvenida (una sola vez, tras dar el nombre) */}
+      {cargado && estado.nombreJugador && !estado.onboardingVisto && (
+        <Onboarding nombre={nombre} onTerminar={marcarOnboardingVisto} />
+      )}
     </View>
   );
 }
@@ -129,6 +153,8 @@ const s = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 12,
   },
   atajoUltimo: { marginBottom: 16 },
+  atajoRepaso: { borderColor: 'rgba(242,177,52,0.5)' },
+  atajoIconoRepaso: { backgroundColor: 'rgba(242,177,52,0.14)' },
   atajoIcono: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(159,225,203,0.08)' },
   atajoContenido: { flex: 1, minWidth: 0 },
   atajoTitulo: { color: colors.cielo, fontSize: 16, fontFamily: fonts.extra },

@@ -93,6 +93,29 @@ export function JuegoProvider({ children }) {
     actualizarEstado(prev => prev.finalVisto ? prev : { ...prev, finalVisto: true });
   }, [actualizarEstado]);
 
+  // Marca el tutorial del Mapa como visto (una sola vez). Primitivo, no toca Sets.
+  const marcarOnboardingVisto = useCallback(() => {
+    actualizarEstado(prev => prev.onboardingVisto ? prev : { ...prev, onboardingVisto: true });
+  }, [actualizarEstado]);
+
+  // Registra una palabra errada (para el Repaso). Array deduplicado, con tope.
+  const registrarFallo = useCallback((id) => {
+    actualizarEstado(prev => {
+      const falladas = prev.palabrasFalladas || [];
+      if (falladas.includes(id)) return prev;
+      return { ...prev, palabrasFalladas: [...falladas, id].slice(-40) };
+    });
+  }, [actualizarEstado]);
+
+  // Quita una palabra del Repaso cuando se acierta (se "domina").
+  const quitarFallo = useCallback((id) => {
+    actualizarEstado(prev => {
+      const falladas = prev.palabrasFalladas || [];
+      if (!falladas.includes(id)) return prev;
+      return { ...prev, palabrasFalladas: falladas.filter(x => x !== id) };
+    });
+  }, [actualizarEstado]);
+
   // ── Palabra del Día + Reto Diario ──
 
   // Devuelve la palabra del día. Si ya se asignó hoy, devuelve la guardada (estable
@@ -287,6 +310,7 @@ export function JuegoProvider({ children }) {
       cambiarNotificaciones, guardarHoraNotificacion, marcarMemoriaPerfecta,
       guardarAvatar, verificarDesbloqueoAvatar, registrarAperturaDiccionario,
       completarPractica, registrarDuelo, marcarCinematicaVista,
+      marcarOnboardingVisto, registrarFallo, quitarFallo,
     }}>
       {children}
     </JuegoContext.Provider>

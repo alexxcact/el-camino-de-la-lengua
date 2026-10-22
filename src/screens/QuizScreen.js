@@ -20,7 +20,7 @@ import { sesionAprobada } from '../utils/ejercicios';
 export default function QuizScreen({ route, navigation }) {
   const { mundoId, palabrasPractica, modoPractica = false, nPreguntas } = route.params || {};
   const mundo = mundoId ? mundos.find(m => m.id === mundoId) : null;
-  const { estado, ganarPuntos, completarMision, sumarQuiz, verificarLogros, completarPractica } = useJuego();
+  const { estado, ganarPuntos, completarMision, sumarQuiz, verificarLogros, completarPractica, registrarFallo, quitarFallo } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
 
   // En práctica, mitad de puntos por acierto (la historia sigue siendo la vía oficial)
@@ -56,8 +56,10 @@ export default function QuizScreen({ route, navigation }) {
       setAciertos(a => a + 1);
       premiar(10);
       setFlashAcierto(true);
+      quitarFallo(pregunta.palabra.id);   // palabra dominada: sale del Repaso
       sonar.acierto(); vibrar.suave();
     } else {
+      registrarFallo(pregunta.palabra.id); // palabra errada: entra al Repaso
       sonar.error(); vibrar.error();
     }
     setTimeout(() => {
