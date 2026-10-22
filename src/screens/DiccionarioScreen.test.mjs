@@ -47,12 +47,12 @@ test('buscar capuli encuentra Capulí y desplegar la entrada muestra su document
   assert.equal(texto(fila(capuli.id)).includes('Fuente:'), false);
   fila(capuli.id).props.onPress();
   const expandida = fila(capuli.id);
-  for (const contenido of [
-    `Fuente: ${capuli.fuente}`, capuli.nota, 'Validación documental pendiente.',
-  ]) {
+  for (const contenido of [`Fuente: ${capuli.fuente}`, capuli.nota]) {
     assert.ok(buscarNodo(expandida, n => n.type === 'Text' && texto(n) === contenido), contenido);
   }
-  assert.equal(capuli.respaldo, 'pendiente_validacion');
+  // Capulí quedó documentado con el libro: muestra Fuente y nota, sin el aviso de pendiente.
+  assert.equal(capuli.respaldo, 'documentado');
+  assert.equal(buscarNodo(expandida, n => n.type === 'Text' && texto(n) === 'Validación documental pendiente.'), undefined);
   app.unmount();
 });
 

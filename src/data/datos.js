@@ -62,312 +62,312 @@ export const palabras = [
 
   // MUNDO 1 — Pud · Las Alturas
   {
-    id: 1, p: "Zon", e: "Frailejón", cat: "Naturaleza", fon: "zon", ej: "Observa la forma del frailejón y recuerda la entrada Zon.", emoji: "🌿", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 1, p: "Zon", e: "Frailejón", cat: "Naturaleza", fon: "zon", ej: "Zon: la raíz se asocia a 'poder, noble, espiritual'; el frailejón (Espeletia grandiflora) figura en esta sección.", emoji: "🌿", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, pp. 81–88; frailejón: Paz y Miño, 1940, p. 173", nota: "Asignación nombre–planta aproximada por el formato del libro."
   },
   {
-    id: 2, p: "Ina", e: "Viento", cat: "Naturaleza", fon: "ina", ej: "Ina acompaña el recorrido por los paisajes donde sentimos el viento.", emoji: "🌬️", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 2, p: "Ina", e: "Viento", cat: "Naturaleza", fon: "ina", ej: "Ina: raíz 'viento'.", emoji: "🌬️", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Jijón y Caamaño, 1943, p. 227; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual)", nota: "Coincide en ambos libros."
   },
   {
-    id: 3, p: "Chill", e: "Cielo", cat: "Naturaleza", fon: "chill", ej: "Mira hacia el cielo para recordar el significado de Chill.", emoji: "🌌", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 3, p: "Chill", e: "Cielo", cat: "Naturaleza", fon: "chill", ej: "Chill: sufijo/prefijo 'cielo'.", emoji: "🌌", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Nicolás Abasolo Narváez; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual)", nota: "Coincide."
   },
   {
-    id: 4, p: "Chil", e: "Frío / helado", cat: "Naturaleza", fon: "chil", ej: "Chil permite repasar la idea de frío o helado en las alturas.", emoji: "❄️", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 4, p: "Chil", e: "Frío / helado", cat: "Naturaleza", fon: "chil", ej: "Chil: 'frío' o 'helado' (variante 'chi').", emoji: "❄️", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Jijón y Caamaño", nota: "Coincide."
   },
   {
-    id: 5, p: "Pud", e: "Cerro / altura", cat: "Territorio", fon: "pud", ej: "Pud representa las alturas del territorio.", emoji: "⛰️", mundo: 1,
-    tipo: "raiz", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Entrada relacionada con cerro y altura. Referencia sugerida: Lengua de los Pastos; falta cotejar edición y página."
+    id: 5, p: "Pud", e: "Cerro / altura", cat: "Territorio", fon: "pud", ej: "Pud: sufijo 'cerro, altura'.", emoji: "⛰️", mundo: 1,
+    tipo: "raiz", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, 1923: 27; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('el Pud… monte o altura')", nota: "Coincide en ambos libros."
   },
   {
-    id: 6, p: "Put", e: "Volcán / altura", cat: "Territorio", fon: "put", ej: "Put se relaciona con el volcán y la altura en este recorrido.", emoji: "🌋", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 6, p: "Put", e: "Volcán / altura", cat: "Territorio", fon: "put", ej: "Put: prefijo 'volcán, altura'.", emoji: "🌋", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · José Rafael Sañudo", nota: "Coincide."
   },
   {
-    id: 7, p: "Pa", e: "Sol", cat: "Naturaleza", fon: "pa", ej: "Pa se relaciona con el sol dentro de este vocabulario.", emoji: "☀️", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 7, p: "Pa", e: "Sol", cat: "Naturaleza", fon: "pa", ej: "Pa: prefijo 'sol'.", emoji: "☀️", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) (raíz awá pit) · AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('PA – SOL')", nota: "En la lista pasto–español del Aukusan 'Pa' figura además como 'hablar'."
   },
   {
-    id: 8, p: "Pe", e: "Luna / media luna", cat: "Naturaleza", fon: "pe", ej: "Pe se presenta con los significados de luna y media luna.", emoji: "🌙", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 8, p: "Pe", e: "Luna / media luna", cat: "Naturaleza", fon: "pe", ej: "Pe: sufijo/prefijo 'luna, media luna'.", emoji: "🌙", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Jijón y Caamaño, 1941, p. 131", nota: "Coincide."
   },
   {
-    id: 9, p: "Pepe", e: "Luna llena", cat: "Naturaleza", fon: "pepe", ej: "Pepe es la entrada para repasar la luna llena.", emoji: "🌕", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 9, p: "Pepe", e: "Luna llena", cat: "Naturaleza", fon: "pepe", ej: "Pepe: 'gran luna' o 'luna llena'.", emoji: "🌕", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Taller Lenguas Madres, Ipiales, 2015", nota: "Coincide."
   },
   {
-    id: 10, p: "Pingal", e: "Arco iris", cat: "Naturaleza", fon: "pingal", ej: "Los colores del arco iris ayudan a recordar Pingal.", emoji: "🌈", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 10, p: "Pingal", e: "Arco iris", cat: "Naturaleza", fon: "pingal", ej: "Pingal: 'arco iris'.", emoji: "🌈", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Nicolás Abasolo, 1999; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual)", nota: "Coincide."
   },
   {
-    id: 11, p: "Pue", e: "Redondo / círculo", cat: "Formas", fon: "pue", ej: "Un círculo dibujado en papel ayuda a repasar Pue.", emoji: "⭕", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 11, p: "Pue", e: "Redondo / círculo", cat: "Formas", fon: "pue", ej: "Pue: 'redondo, círculo'; también 'grano, semilla'.", emoji: "⭕", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Paz y Miño, 1940: 166–173; símbolos sagrados (Aldemar Ruano; L. I. Muñoz Cordero)", nota: "La variante 'Pued' = símbolo 'redondo/círculo'."
   },
   {
-    id: 12, p: "Tuta", e: "Espiral / centro", cat: "Formas", fon: "tuta", ej: "Tuta se relaciona con la espiral y el centro.", emoji: "🌀", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 12, p: "Tuta", e: "Espiral / centro", cat: "Formas", fon: "tuta", ej: "Tuta: 'la espiral', 'el centro'; el cosmos o universo.", emoji: "🌀", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Símbolos sagrados: Taita Efrén Tarapués; L. I. Muñoz Cordero", nota: "En quechua/muisca 'tuta' = noche/oscuridad."
   },
   {
-    id: 13, p: "Punch", e: "Blanco", cat: "Colores", fon: "punch", ej: "Una muestra de color blanco ayuda a recordar Punch.", emoji: "⚪", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 13, p: "Punch", e: "Blanco", cat: "Colores", fon: "punch", ej: "Punch: 'blanco' (variante 'puch').", emoji: "⚪", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Nicolás Abasolo, 1999; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('Puch')", nota: "Coincide."
   },
   {
-    id: 14, p: "Pulan", e: "Amarillo", cat: "Colores", fon: "pulan", ej: "Una muestra de color amarillo ayuda a recordar Pulan.", emoji: "🟡", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 14, p: "Pulan", e: "Amarillo", cat: "Colores", fon: "pulan", ej: "Pulan: 'amarillo' (variante 'palan').", emoji: "🟡", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Nicolás Abasolo, 1999; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('Palan')", nota: "Coincide."
   },
   {
-    id: 15, p: "Cuanda", e: "Rojo", cat: "Colores", fon: "cuanda", ej: "Una muestra de color rojo ayuda a recordar Cuanda.", emoji: "🔴", mundo: 1,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 15, p: "Cuanda", e: "Rojo", cat: "Colores", fon: "cuanda", ej: "Cuanda: 'rojo' (variante 'launda').", emoji: "🔴", mundo: 1,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, 1947, p. 17; Taller Lenguas Madres, Cumbal, 2015; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('Launda')", nota: "Atribución de columna aproximada por la extracción del PDF."
   },
 
   // MUNDO 2 — Piar · La Tierra que Alimenta
   {
-    id: 16, p: "Piar", e: "Maíz", cat: "Alimentos", fon: "piar", ej: "Piar acompaña el recorrido dedicado al maíz y los alimentos.", emoji: "🌽", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 16, p: "Piar", e: "Maíz", cat: "Alimentos", fon: "piar", ej: "Piar: sustantivo 'maíz' (idioma de Muellamués).", emoji: "🌽", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Tomás Hidalgo, 1913: 41; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('Piar es maíz en Muellamués')", nota: "También registrado 'piar' = 'humo' (Jijón y Caamaño, 1919, p. 343)."
   },
   {
-    id: 17, p: "Piaran", e: "Desgranar maíz", cat: "Acciones", fon: "piaran", ej: "Piaran se relaciona con la acción de desgranar maíz.", emoji: "🌽", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 17, p: "Piaran", e: "Desgranar maíz", cat: "Acciones", fon: "piaran", ej: "Piaran: de 'piar' (maíz) + 'an' (bajar/abajo).", emoji: "🌽", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, pp. 81, 87", nota: "Coincide."
   },
   {
-    id: 18, p: "Turma", e: "Papa", cat: "Alimentos", fon: "turma", ej: "Turma permite repasar el nombre de la papa.", emoji: "🥔", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 18, p: "Turma", e: "Papa", cat: "Alimentos", fon: "turma", ej: "Turma: de 'to' (tierra/monte) + 'ma' (final): la papa del final de la tierra.", emoji: "🥔", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, pp. 87–88", nota: "Asignación de columna aproximada por la extracción del PDF."
   },
   {
-    id: 19, p: "Yacuara", e: "Rama o planta de papa", cat: "Plantas", fon: "yacuara", ej: "Yacuara se presenta junto a la rama o planta de papa.", emoji: "🌱", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 19, p: "Yacuara", e: "Rama de la papa", cat: "Plantas", fon: "yacuara", ej: "Yacuara: 'rama de la papa' (de la casa, seca o verde).", emoji: "🌱", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Javier H. Cuacialpud, Taller Lenguas Madres, 2015", nota: "El libro precisa 'rama de la papa', no 'planta'."
   },
   {
-    id: 20, p: "Caguara", e: "Variedad de papa", cat: "Alimentos", fon: "caguara", ej: "Caguara se relaciona con una variedad de papa.", emoji: "🥔", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 20, p: "Caguara", e: "Bejuco del gran poder", cat: "Plantas", fon: "caguara", ej: "Caguara: de 'ca/gua' (grande, poder) + 'te' (bejuco): bejuco del gran poder.", emoji: "🌿", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 81", nota: "Corrige el significado previo ('variedad de papa'), no documentado. Conviene revisar categoría e ilustración."
   },
   {
-    id: 21, p: "Puli", e: "Fruto", cat: "Alimentos", fon: "puli", ej: "Puli se usa en este listado para repasar la idea de fruto.", emoji: "🍒", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 21, p: "Puli", e: "Fruto", cat: "Alimentos", fon: "puli", ej: "Puli: sustantivo 'fruto'.", emoji: "🍒", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · versión oral de Javier H. Cuacialpud, 2015", nota: "Coincide."
   },
   {
-    id: 22, p: "Capulí", e: "Gran fruto", cat: "Alimentos", fon: "capulí", ej: "Capulí aparece en el listado con el significado de gran fruto.", emoji: "🍒", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 22, p: "Capulí", e: "Gran fruto", cat: "Alimentos", fon: "capulí", ej: "Capulí: de 'ca' (grande) + 'pulí' (fruto); también árbol del tamaño del cerezo.", emoji: "🍒", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, pp. 81–82; Grijalba, 1947, pp. 215–216", nota: "Coincide."
   },
   {
-    id: 23, p: "Cun", e: "Yuca", cat: "Alimentos", fon: "cun", ej: "Cun acompaña el repaso de alimentos como la yuca.", emoji: "🍠", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 23, p: "Cun", e: "Yuca", cat: "Alimentos", fon: "cun", ej: "Cun: 'yuca'.", emoji: "🍠", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · tabla de etimologías (Ascuntar)", nota: "En el glosario de afijos 'cun' figura además como 'grande' (awá pit)."
   },
   {
-    id: 24, p: "Cuat", e: "Comer", cat: "Acciones", fon: "cuat", ej: "Cuat se relaciona con la acción de comer.", emoji: "🍽️", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 24, p: "Cuat", e: "Comer", cat: "Acciones", fon: "cuat", ej: "Cuat: verbo 'comer, alimentar'.", emoji: "🍽️", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · tabla de etimologías (Pupiales); Taller Lenguas Madres, Ipiales, 2015", nota: "En el Aukusan, 'cuat' se asocia a 'hombre/pertenencia' (Cuatín)."
   },
   {
-    id: 25, p: "Yan", e: "Sal", cat: "Alimentos", fon: "yan", ej: "Yan es la entrada asociada a la sal.", emoji: "🧂", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 25, p: "Yan", e: "Sal", cat: "Alimentos", fon: "yan", ej: "Yan: 'sal'.", emoji: "🧂", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · tablas (Yanalá, Yanascual); AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('YAN – SAL')", nota: "Polisemia documentada: 'yan' también 'casa' / 'planta o alimento de la casa'."
   },
   {
-    id: 26, p: "Yamata", e: "Rica sal", cat: "Alimentos", fon: "yamata", ej: "Yamata aparece en el listado con el significado de rica sal.", emoji: "🧂", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 26, p: "Yamata", e: "Rica sal", cat: "Alimentos", fon: "yamata", ej: "Yamata: de 'yan/yam' (sal) + 'ta' (alto, valioso).", emoji: "🧂", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, pp. 87–88", nota: "Asignación de columna aproximada."
   },
   {
-    id: 27, p: "Yaguacha", e: "Alimento de la casa grande", cat: "Alimentos", fon: "yaguacha", ej: "Yaguacha se presenta como alimento de la casa grande.", emoji: "🍲", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 27, p: "Yaguacha", e: "Alimento de la casa grande", cat: "Alimentos", fon: "yaguacha", ej: "Yaguacha: de 'ya/yal/yar' (casa) + 'gua' (grande) + 'cha' (alimento, sabroso).", emoji: "🍲", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, pp. 87–88", nota: "Coincide."
   },
   {
-    id: 28, p: "Tarta", e: "Planta valiosa", cat: "Plantas", fon: "tarta", ej: "Tarta se relaciona con una planta valiosa.", emoji: "🌿", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 28, p: "Tarta", e: "Planta valiosa", cat: "Plantas", fon: "tarta", ej: "Tarta: de 'tar' (planta/árbol) + 'ta' (alto, valioso).", emoji: "🌿", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, pp. 87–88", nota: "Asignación de columna aproximada."
   },
   {
-    id: 29, p: "Tar", e: "Planta / árbol", cat: "Plantas", fon: "tar", ej: "Tar permite repasar las ideas de planta y árbol.", emoji: "🌳", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 29, p: "Tar", e: "Planta / árbol", cat: "Plantas", fon: "tar", ej: "Tar: 'planta', 'árbol'.", emoji: "🌳", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Paz y Miño, 1940, p. 163; González Suárez, 1908; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('TAR… plantas nativas')", nota: "Coincide."
   },
   {
-    id: 30, p: "Poyo", e: "Lugar para guardar papa-semilla", cat: "Lugares", fon: "poyo", ej: "Poyo se relaciona con el lugar para guardar papa-semilla.", emoji: "🏠", mundo: 2,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 30, p: "Poyo", e: "Sitio para guardar la papa-semilla", cat: "Lugares", fon: "poyo", ej: "Poyo: de 'po' (redondo) + 'yo' (resguardo): sitio donde se guardan las papas-semilla para sembrarlas.", emoji: "🏠", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Humberto J. Cuacialpud, Males (Córdoba), p. 97", nota: "Coincide."
   },
 
   // MUNDO 3 — Paskal · La Fuerza de la Comunidad
   {
-    id: 31, p: "Pas", e: "Familia", cat: "Comunidad", fon: "pas", ej: "Pas se relaciona con la familia dentro de este vocabulario.", emoji: "👪", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 31, p: "Pas", e: "Familia", cat: "Comunidad", fon: "pas", ej: "Pas: sustantivo 'familia'.", emoji: "👪", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba y Paz y Miño, 1940, pp. 163, 173; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('PAS – Familia')", nota: "En topónimos también 'pueblo'."
   },
   {
-    id: 32, p: "Cal", e: "Trabajo / fuerza", cat: "Comunidad", fon: "cal", ej: "Cal reúne las ideas de trabajo y fuerza.", emoji: "💪", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 32, p: "Cal", e: "Trabajo / fuerza", cat: "Comunidad", fon: "cal", ej: "Cal: 'trabajo, fuerza' ('cuán grandioso es trabajar').", emoji: "💪", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Aquiles Pérez, 1980: 13; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('CAL – trabajar')", nota: "Coincide."
   },
   {
-    id: 33, p: "Paskal", e: "Trabajo comunitario de las familias", cat: "Comunidad", fon: "paskal", ej: "Paskal se relaciona con el trabajo comunitario de las familias.", emoji: "🤝", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 33, p: "Paskal", e: "Trabajo comunitario (minga)", cat: "Comunidad", fon: "paskal", ej: "Paskal: de 'pas' (familia) + 'cal' (trabajo): trabajo comunitario pasto, la minga.", emoji: "🤝", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) · nota lingüística", nota: "No figura en el vocabulario de la ANH; documentado en el Aukusan."
   },
   {
-    id: 34, p: "Gua", e: "Hermano / hermana", cat: "Comunidad", fon: "gua", ej: "Gua permite repasar los significados de hermano y hermana.", emoji: "🧑‍🤝‍🧑", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 34, p: "Gua", e: "Hermano / hermana", cat: "Comunidad", fon: "gua", ej: "Gua: 'hermano/hermana'; también 'grande, bueno, hermoso'.", emoji: "🧑‍🤝‍🧑", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Nicolás Abasolo, 1999; Grijalba, 1940", nota: "Coincide."
   },
   {
-    id: 35, p: "Au", e: "Voz / grito", cat: "Comunidad", fon: "au", ej: "Au se relaciona con la voz y el grito.", emoji: "🗣️", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 35, p: "Au", e: "Voz / grito", cat: "Comunidad", fon: "au", ej: "Au: onomatopeya 'voz, grito'.", emoji: "🗣️", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · versión oral de Aldemar Ruano, 2015; L. I. Muñoz, 2015", nota: "Coincide."
   },
   {
-    id: 36, p: "Car", e: "Traer / cargar", cat: "Acciones", fon: "car", ej: "Car permite repasar las acciones de traer y cargar.", emoji: "📦", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 36, p: "Car", e: "Traer / cargar", cat: "Acciones", fon: "car", ej: "Car: verbo 'traer'.", emoji: "📦", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · tabla de etimologías (Teguacar)", nota: "En el glosario, 'traer/cargar' se documenta sobre todo en 'cual/cuar' y 'mai/mar/mal'."
   },
   {
-    id: 37, p: "Mal", e: "Ir", cat: "Acciones", fon: "mal", ej: "Mal se presenta con el significado de ir.", emoji: "🚶", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 37, p: "Mal", e: "Ir", cat: "Acciones", fon: "mal", ej: "Mal: verbo 'ir'; también 'traer/cargar' (mai/mar/mal).", emoji: "🚶", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Nicolás Abasolo Narváez, 1999 ('Río de los viajes')", nota: "Coincide."
   },
   {
-    id: 38, p: "Que", e: "Hacer / crear", cat: "Acciones", fon: "que", ej: "Que se relaciona con las acciones de hacer y crear.", emoji: "🛠️", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 38, p: "Que", e: "Hacer / crear", cat: "Acciones", fon: "que", ej: "Que: verbo 'hacer'; en etimologías 'crear, tejer, fundar'.", emoji: "🛠️", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Jijón y Caamaño, 1919, p. 358", nota: "Coincide."
   },
   {
-    id: 39, p: "Quer", e: "Pueblo / tierra / lugar", cat: "Territorio", fon: "quer", ej: "Quer reúne las ideas de pueblo, tierra y lugar.", emoji: "🏘️", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 39, p: "Quer", e: "Pueblo / tierra / lugar", cat: "Territorio", fon: "quer", ej: "Quer: 'pueblo, tierra, sitio, lugar, llano'.", emoji: "🏘️", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Paz y Miño, 1940, pp. 163–173", nota: "Coincide."
   },
   {
-    id: 40, p: "Guanga", e: "Telar de mano", cat: "Tejido", fon: "guanga", ej: "Guanga se relaciona con el telar de mano.", emoji: "🧵", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 40, p: "Guanga", e: "Telar de mano", cat: "Tejido", fon: "guanga", ej: "Guanga (Huanga): el cuadro de los cuatro maderos principales del telar de mano.", emoji: "🧵", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Objetos de labor; Grijalba, 1947, p. 222", nota: "El libro define la guanga como el armazón del telar de mano."
   },
   {
-    id: 41, p: "Guango", e: "Atado / copo", cat: "Tejido", fon: "guango", ej: "Guango se presenta con los significados de atado y copo.", emoji: "🧶", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 41, p: "Guango", e: "Atado / copo de lana", cat: "Tejido", fon: "guango", ej: "Guango (Huango): copo de lana o algodón escarmentado; haz o atado de algo.", emoji: "🧶", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, 1947, p. 222", nota: "Coincide."
   },
   {
-    id: 42, p: "Cuenda", e: "Hilo / lana", cat: "Tejido", fon: "cuenda", ej: "Cuenda permite repasar el hilo y la lana.", emoji: "🧶", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 42, p: "Cuenda", e: "Hilo / lana", cat: "Tejido", fon: "cuenda", ej: "Cuenda: de 'cue' (hilo, lana); el cordón de hebras que sujeta la madeja al lavarla.", emoji: "🧶", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, p. 216", nota: "Coincide en la raíz; la cuenda es el cordón para amarrar la madeja."
   },
   {
-    id: 43, p: "Quinchil", e: "Elemento del telar", cat: "Tejido", fon: "quinchil", ej: "Quinchil aparece como un elemento del telar.", emoji: "🧵", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 43, p: "Quinchil", e: "Instrumento del telar", cat: "Tejido", fon: "quinchil", ej: "Quinchil: de 'que/qui' (hacer, tejer): instrumento para acabar y pulir el tejido.", emoji: "🧵", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Objetos de labor", nota: "Columna de significado aproximada por la extracción."
   },
   {
-    id: 44, p: "Chindé", e: "Cesta de bejuco o lana", cat: "Tejido", fon: "chindé", ej: "Chindé se relaciona con una cesta de bejuco o lana.", emoji: "🧺", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 44, p: "Chindé", e: "Cesta de bejuco o lana", cat: "Tejido", fon: "chindé", ej: "Chindé: cesta de bejuco o lana (en el Carchi, 'Chendé'); de 'chi' (alto) + 'te' (bejuco).", emoji: "🧺", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, pp. 36, 219", nota: "Coincide."
   },
   {
-    id: 45, p: "Hopa", e: "Saludo al llegar de visita", cat: "Comunidad", fon: "hopa", ej: "Hopa se presenta como saludo al llegar de visita.", emoji: "👋", mundo: 3,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 45, p: "Hopa", e: "Saludo de llegada a la visita", cat: "Comunidad", fon: "hopa", ej: "Hopa: saludo al llegar de visita ('¡hópa casero!', en Ospina).", emoji: "👋", mundo: 3,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Humberto J. Cuacialpud, Males (Córdoba)", nota: "Coincide."
   },
 
   // MUNDO 4 — In · El Fuego del Hogar
   {
-    id: 46, p: "In", e: "Fuego / candela / tulpa", cat: "Hogar", fon: "in", ej: "In se relaciona con el fuego, la candela y la tulpa.", emoji: "🔥", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 46, p: "In", e: "Fuego / candela / tulpa", cat: "Hogar", fon: "in", ej: "In: 'fuego, candela, tulpa'; también 'calor, cocina'.", emoji: "🔥", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · idioma de Muellamués, S. E. Ortiz, 1965, p. 59; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('In – Fuego')", nota: "Coincide."
   },
   {
-    id: 47, p: "Chu", e: "Leña", cat: "Hogar", fon: "chu", ej: "Chu es la entrada asociada a la leña.", emoji: "🪵", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 47, p: "Chu", e: "Leña", cat: "Hogar", fon: "chu", ej: "Chu: sustantivo 'leña' (chu/cho).", emoji: "🪵", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · glosario de afijos; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('Chu – Leña')", nota: "Coincide."
   },
   {
-    id: 48, p: "Chula", e: "Haz de leña", cat: "Hogar", fon: "chula", ej: "Chula se presenta con el significado de haz de leña.", emoji: "🪵", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 48, p: "Chula", e: "Haz de leña", cat: "Hogar", fon: "chula", ej: "Chula: de 'chu' (leña) + 'la' (ahí): hacecillo o guango de leña.", emoji: "🪵", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, p. 221", nota: "En el Aukusan 'Chula' figura como 'manto de mujer'; el hacecillo documentado es de trigo o cebada."
   },
   {
-    id: 49, p: "Chular", e: "Hacer haces de leña", cat: "Acciones", fon: "chular", ej: "Chular se relaciona con hacer haces de leña.", emoji: "🪵", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 49, p: "Chular", e: "Hacer haces de leña", cat: "Acciones", fon: "chular", ej: "Chular: hacer chulas, formar hacecillos (documentado como espigar trigo/cebada).", emoji: "🪵", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, p. 221", nota: "Coincide por etimología."
   },
   {
-    id: 50, p: "Imbuera", e: "Unión del fuego", cat: "Hogar", fon: "imbuera", ej: "Imbuera aparece en el listado como unión del fuego.", emoji: "🔥", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 50, p: "Imbuera", e: "Unión del fuego", cat: "Hogar", fon: "imbuera", ej: "Imbuera: de 'in/im' (fuego) + 'buera' (unir).", emoji: "🔥", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, p. 225", nota: "El objeto documentado es la pared lateral de las casas pajizas."
   },
   {
-    id: 51, p: "Tacín", e: "Fuego de cama / abrigo", cat: "Hogar", fon: "tacín", ej: "Tacín se presenta con los significados de fuego de cama y abrigo.", emoji: "🛏️", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 51, p: "Tacín", e: "Fuego de cama / abrigo", cat: "Hogar", fon: "tacín", ej: "Tacín: el libro registra el nombre pero no una traducción; raíz 'cha' (valioso).", emoji: "🛏️", mundo: 4,
+    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Sin respaldo documental verificado: el nombre aparece en el libro sin traducción.", nota: "Significado 'fuego de cama/abrigo' no documentado; pendiente de validación comunitaria."
   },
   {
-    id: 52, p: "Chapil", e: "Bebida sabrosa", cat: "Alimentos", fon: "chapil", ej: "Chapil se relaciona con una bebida sabrosa.", emoji: "🥤", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 52, p: "Chapil", e: "Bebida sabrosa", cat: "Alimentos", fon: "chapil", ej: "Chapil: de 'cha' (sabroso) + 'pi' (bebida, agua).", emoji: "🥤", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Comidas, p. 94; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) (bebidas sagradas)", nota: "En el Aukusan es una bebida sagrada."
   },
   {
-    id: 53, p: "Chicha", e: "Bebida tradicional", cat: "Alimentos", fon: "chicha", ej: "Chicha se presenta como una bebida tradicional.", emoji: "🥤", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 53, p: "Chicha", e: "Bebida tradicional", cat: "Alimentos", fon: "chicha", ej: "Chicha: bebida sagrada (de maíz/caña); raíz 'cha' (fuerza, energía).", emoji: "🥤", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) (bebidas sagradas); Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) (raíz 'cha')", nota: "El vocabulario de la ANH registra la raíz pero no traduce 'chicha'."
   },
   {
-    id: 54, p: "Chara", e: "Sopa de cebada", cat: "Alimentos", fon: "chara", ej: "Chara se relaciona con la sopa de cebada.", emoji: "🥣", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 54, p: "Chara", e: "Sopa de cebada", cat: "Alimentos", fon: "chara", ej: "Chara: colada de arroz de cebada preparada en el Carchi; raíz 'cha' (sabroso).", emoji: "🥣", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Comidas; Grijalba, p. 218", nota: "Coincide."
   },
   {
-    id: 55, p: "Canchape", e: "Bebida o alimento", cat: "Alimentos", fon: "canchape", ej: "Canchape aparece como bebida o alimento.", emoji: "🍵", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 55, p: "Canchape", e: "Bebida o alimento", cat: "Alimentos", fon: "canchape", ej: "Canchape: de 'ca/gua' (grande, noble): bebida o alimento para agradar al noble.", emoji: "🍵", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Comidas, p. 94", nota: "Coincide."
   },
   {
-    id: 56, p: "Guamuca", e: "Bebida de ofrenda / poder", cat: "Alimentos", fon: "guamuca", ej: "Guamuca se presenta como bebida de ofrenda o poder.", emoji: "🍵", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 56, p: "Guamuca", e: "Planta sagrada de ofrenda", cat: "Alimentos", fon: "guamuca", ej: "Guamuca: planta sagrada; su pepa sirve para limpiar y fumigar; usada en ofrendas.", emoji: "🍵", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, pp. 85–86 (Octaviano Cuarán); AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual)", nota: "El vocabulario la describe como planta; el Aukusan la agrupa entre bebidas sagradas. Revisar categoría."
   },
   {
-    id: 57, p: "Guanto", e: "Planta poderosa", cat: "Plantas", fon: "guanto", ej: "Guanto aparece en este vocabulario como planta poderosa.", emoji: "🌿", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 57, p: "Guanto", e: "Planta poderosa", cat: "Plantas", fon: "guanto", ej: "Guanto: planta de poder ('gran regalo de poder, por esto revela y puede mirar'); floripondio.", emoji: "🌿", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, pp. 85–86 (Octaviano Cuarán)", nota: "Coincide."
   },
   {
-    id: 58, p: "Chuma", e: "Final de la leña", cat: "Hogar", fon: "chuma", ej: "Chuma se presenta con el significado de final de la leña.", emoji: "🪵", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 58, p: "Chuma", e: "Final de la leña", cat: "Hogar", fon: "chuma", ej: "Chuma: de 'chu' (leña) + 'ma' (final).", emoji: "🪵", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Comidas/Otros, p. 95", nota: "Atribución de columna aproximada."
   },
   {
-    id: 59, p: "Pilche", e: "Vasija para beber", cat: "Hogar", fon: "pilche", ej: "Pilche se relaciona con una vasija para beber.", emoji: "🥣", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 59, p: "Pilche", e: "Vasija para beber", cat: "Hogar", fon: "pilche", ej: "Pilche: vasija semiesférica (corteza de coco u otro fruto) que reemplaza al vaso; de 'pi' (agua) + 'che' (espuma).", emoji: "🥣", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, p. 229", nota: "Coincide."
   },
   {
-    id: 60, p: "Cumba", e: "Techo con respiradero", cat: "Hogar", fon: "cumba", ej: "Cumba se presenta como techo con respiradero.", emoji: "🏠", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 60, p: "Cumba", e: "Techo con respiradero", cat: "Hogar", fon: "cumba", ej: "Cumba: techo con respiradero, remate de casa de paja; haz de paja para el remate.", emoji: "🏠", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Arteaga, 1910, p. 53; Grijalba, 1947, p. 25", nota: "Coincide."
   },
 
   // MUNDO 5 — Cuasmal · El Camino del Agua
   {
-    id: 61, p: "Cual", e: "Agua / río", cat: "Agua", fon: "cual", ej: "Cual se relaciona con el agua y el río.", emoji: "💧", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 61, p: "Cual", e: "Agua / río", cat: "Agua", fon: "cual", ej: "Cual: 'agua, río, quebrada, húmeda'; verbo 'bañar, mojar'.", emoji: "💧", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · tablas de etimologías", nota: "En el glosario de afijos 'cual' figura como raíz homófona 'traer'."
   },
   {
-    id: 62, p: "Cuar", e: "Agua / río / quebrada", cat: "Agua", fon: "cuar", ej: "Cuar reúne los significados de agua, río y quebrada.", emoji: "🏞️", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 62, p: "Cuar", e: "Agua / río / quebrada", cat: "Agua", fon: "cuar", ej: "Cuar: 'agua, río, quebrada'; también 'rana'.", emoji: "🏞️", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · tablas de etimologías", nota: "Coincide."
   },
   {
-    id: 63, p: "Fuel", e: "Quebrada / agua", cat: "Agua", fon: "fuel", ej: "Fuel se relaciona con la quebrada y el agua.", emoji: "🏞️", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 63, p: "Fuel", e: "Quebrada / agua", cat: "Agua", fon: "fuel", ej: "Fuel: 'quebrada, agua' (fuel/guel).", emoji: "🏞️", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Jijón y Caamaño, 1940; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('FUEL – AGUA')", nota: "Coincide exactamente en ambos libros."
   },
   {
-    id: 64, p: "Pi", e: "Agua / líquido / río", cat: "Agua", fon: "pi", ej: "Pi reúne las ideas de agua, líquido y río.", emoji: "💧", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 64, p: "Pi", e: "Agua / río / líquido", cat: "Agua", fon: "pi", ej: "Pi: 'agua, río, líquido' (pi/pis/bi); también 'bebida'.", emoji: "💧", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) (raíz awá pit); Jijón y Caamaño, 1919: 344; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('Pi – Agua, río, líquido')", nota: "Coincide."
   },
   {
-    id: 65, p: "Es", e: "Agua / río / lugar", cat: "Agua", fon: "es", ej: "Es aparece en el listado con los significados de agua, río y lugar.", emoji: "💧", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 65, p: "Es", e: "Agua / río / lugar", cat: "Agua", fon: "es", ej: "Es: 'agua, río, pueblo, lugar'.", emoji: "💧", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Paz y Miño, 1940, p. 173", nota: "Coincide."
   },
   {
-    id: 66, p: "Cuas", e: "Agua / planta de agua", cat: "Agua", fon: "cuas", ej: "Cuas se relaciona con el agua y la planta de agua.", emoji: "🌿", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 66, p: "Cuas", e: "Agua / planta de agua", cat: "Agua", fon: "cuas", ej: "Cuas: 'agua, planta de agua, madera roja, río, quebrada, manantial'.", emoji: "🌿", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Taller Lenguas Madres, Ipiales, 2015; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual)", nota: "En el Aukusan, 'Cuas' también es una planta y un pueblo (Cuaspud, 'colina de agua')."
   },
   {
-    id: 67, p: "Gualte", e: "Bejuco de agua", cat: "Plantas", fon: "gualte", ej: "Gualte se presenta como bejuco de agua.", emoji: "🌿", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 67, p: "Gualte", e: "Bejuco de agua", cat: "Plantas", fon: "gualte", ej: "Gualte: de 'gual' (agua) + 'te' (bejuco): bejuco de agua.", emoji: "🌿", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 86", nota: "Asignación de columna aproximada; verificar en el PDF."
   },
   {
-    id: 68, p: "Gualguán", e: "Poder del agua", cat: "Agua", fon: "gualguán", ej: "Gualguán se presenta con el significado de poder del agua.", emoji: "🌊", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 68, p: "Gualguán", e: "Poder del agua", cat: "Agua", fon: "gualguán", ej: "Gualguán: de 'gual' (agua) + 'guan' (poder).", emoji: "🌊", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 86", nota: "Asignación de columna aproximada; verificar en el PDF."
   },
   {
-    id: 69, p: "Guapil", e: "Planta del agua grande", cat: "Plantas", fon: "guapil", ej: "Guapil se relaciona con una planta del agua grande.", emoji: "🌱", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 69, p: "Guapil", e: "Planta del agua grande", cat: "Plantas", fon: "guapil", ej: "Guapil: de 'gua' (grande) + 'pi' (agua): planta del agua grande.", emoji: "🌱", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 87", nota: "Coincide."
   },
   {
-    id: 70, p: "Cuarris", e: "Planta del sitio del agua", cat: "Plantas", fon: "cuarris", ej: "Cuarris aparece como una planta del sitio del agua.", emoji: "🌱", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 70, p: "Cuarris", e: "Planta que va hacia el Sol", cat: "Plantas", fon: "cuarris", ej: "Cuarris: de 'cuar' (agua/río): '(planta que) va hacia el Sol'.", emoji: "🌱", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 87", nota: "Corrige el significado previo ('planta del sitio del agua'), no documentado."
   },
   {
-    id: 71, p: "Pipisiqui", e: "Fruto que hace agua", cat: "Alimentos", fon: "pipisiqui", ej: "Pipisiqui se presenta con el significado de fruto que hace agua.", emoji: "🍒", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 71, p: "Pipisiqui", e: "Fruto que hace agua", cat: "Alimentos", fon: "pipisiqui", ej: "Pipisiqui: de 'pi' (agua): '(fruto que) hace agua'; designa una papa de la provincia de los Pastos.", emoji: "🍒", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 88; Grijalba, 1947, p. 105", nota: "El libro precisa que designa una papa."
   },
   {
-    id: 72, p: "Chichacuas", e: "Animal asociado al agua", cat: "Animales", fon: "chichacuas", ej: "Chichacuas se presenta como animal asociado al agua.", emoji: "🐾", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 72, p: "Chichacuas", e: "Animal de agua de lo alto", cat: "Animales", fon: "chichacuas", ej: "Chichacuas: '(animal) agradable de agua de lo alto'; al picar produce escozor.", emoji: "🐾", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnozoónimos, p. 89; Grijalba, p. 222", nota: "Coincide (animal + agua)."
   },
   {
-    id: 73, p: "Cuatín", e: "Animal del fuego y agua", cat: "Animales", fon: "cuatín", ej: "Cuatín se relaciona con un animal del fuego y agua.", emoji: "🐾", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 73, p: "Cuatín", e: "El hombre de la tierra", cat: "Comunidad", fon: "cuatín", ej: "Cuatín: apellido/cacique pasto; en el Aukusan, 'el hombre de la tierra' (cuat, 'hombre').", emoji: "🧑🏽", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) · nota lingüística; Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, 1947, pp. 18, 20", nota: "Corrige el significado previo ('animal del fuego y agua'); documentado como nombre/apellido. Revisar categoría e ilustración."
   },
   {
-    id: 74, p: "Cusumbe", e: "Animal viejo del agua", cat: "Animales", fon: "cusumbe", ej: "Cusumbe se presenta como animal viejo del agua.", emoji: "🐾", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 74, p: "Cusumbe", e: "Animal viejo del agua", cat: "Animales", fon: "cusumbe", ej: "Cusumbe: roedor mayor que el conejo que daña las sementeras; de 'cu' (animal). También apellido en el Carchi.", emoji: "🐾", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnozoónimos, p. 90; Grijalba, pp. 26, 217", nota: "Asignación de columna aproximada; verificar en el PDF."
   },
   {
-    id: 75, p: "Cuasmal", e: "Ir del agua / río", cat: "Agua", fon: "cuasmal", ej: "Cuasmal se presenta con el significado de ir del agua o río.", emoji: "🌊", mundo: 5,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Listado de vocabulario aportado para esta actualización", nota: "Significado transcrito del listado aportado; pendiente de cotejo documental. El ejemplo es un contexto en español y la grafía de apoyo no acredita pronunciación."
+    id: 75, p: "Cuasmal", e: "Ir del agua / río", cat: "Agua", fon: "cuasmal", ej: "Cuasmal: de 'cuas' (agua) + 'mal' (ir): 'ir del agua'; como topónimo, el río Cuasmal.", emoji: "🌊", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etimologías, p. 91; AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) ('CUAS – Agua, MAL – Ir')", nota: "Coincide en ambos libros."
   },
 ];
 
@@ -390,8 +390,8 @@ export const frases = [
   { id: 6, past: "Turma", esp: "Papa", ctx: "Turma es la entrada para la papa entre las palabras de los alimentos.", cat: "Alimentos", mundo: 2 },
   { id: 7, past: "Cuat", esp: "Comer", ctx: "Cuat se relaciona con la acción de comer.", cat: "Acciones", mundo: 2 },
   { id: 8, past: "Pas", esp: "Familia", ctx: "Pas se relaciona con la familia en el vocabulario de la comunidad.", cat: "Comunidad", mundo: 3 },
-  { id: 9, past: "Paskal", esp: "Trabajo comunitario de las familias", ctx: "Paskal presenta el trabajo comunitario de las familias.", cat: "Comunidad", mundo: 3 },
-  { id: 10, past: "Hopa", esp: "Saludo al llegar de visita", ctx: "Hopa se relaciona con el saludo al llegar de visita y con el encuentro entre personas.", cat: "Comunidad", mundo: 3 },
+  { id: 9, past: "Paskal", esp: "Trabajo comunitario (minga)", ctx: "Paskal presenta el trabajo comunitario de las familias.", cat: "Comunidad", mundo: 3 },
+  { id: 10, past: "Hopa", esp: "Saludo de llegada a la visita", ctx: "Hopa se relaciona con el saludo al llegar de visita y con el encuentro entre personas.", cat: "Comunidad", mundo: 3 },
   { id: 11, past: "In", esp: "Fuego / candela / tulpa", ctx: "In reúne las referencias al fuego, la candela y la tulpa en este vocabulario.", cat: "Hogar", mundo: 4 },
   { id: 12, past: "Chu", esp: "Leña", ctx: "Chu nombra la leña en el recorrido por el hogar.", cat: "Hogar", mundo: 4 },
   { id: 13, past: "Pilche", esp: "Vasija para beber", ctx: "Pilche se relaciona con una vasija para beber.", cat: "Hogar", mundo: 4 },

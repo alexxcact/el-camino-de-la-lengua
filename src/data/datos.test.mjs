@@ -23,8 +23,8 @@ const listadoSolicitado = `
 16|Piar|Maíz
 17|Piaran|Desgranar maíz
 18|Turma|Papa
-19|Yacuara|Rama o planta de papa
-20|Caguara|Variedad de papa
+19|Yacuara|Rama de la papa
+20|Caguara|Bejuco del gran poder
 21|Puli|Fruto
 22|Capulí|Gran fruto
 23|Cun|Yuca
@@ -34,10 +34,10 @@ const listadoSolicitado = `
 27|Yaguacha|Alimento de la casa grande
 28|Tarta|Planta valiosa
 29|Tar|Planta / árbol
-30|Poyo|Lugar para guardar papa-semilla
+30|Poyo|Sitio para guardar la papa-semilla
 31|Pas|Familia
 32|Cal|Trabajo / fuerza
-33|Paskal|Trabajo comunitario de las familias
+33|Paskal|Trabajo comunitario (minga)
 34|Gua|Hermano / hermana
 35|Au|Voz / grito
 36|Car|Traer / cargar
@@ -45,11 +45,11 @@ const listadoSolicitado = `
 38|Que|Hacer / crear
 39|Quer|Pueblo / tierra / lugar
 40|Guanga|Telar de mano
-41|Guango|Atado / copo
+41|Guango|Atado / copo de lana
 42|Cuenda|Hilo / lana
-43|Quinchil|Elemento del telar
+43|Quinchil|Instrumento del telar
 44|Chindé|Cesta de bejuco o lana
-45|Hopa|Saludo al llegar de visita
+45|Hopa|Saludo de llegada a la visita
 46|In|Fuego / candela / tulpa
 47|Chu|Leña
 48|Chula|Haz de leña
@@ -60,7 +60,7 @@ const listadoSolicitado = `
 53|Chicha|Bebida tradicional
 54|Chara|Sopa de cebada
 55|Canchape|Bebida o alimento
-56|Guamuca|Bebida de ofrenda / poder
+56|Guamuca|Planta sagrada de ofrenda
 57|Guanto|Planta poderosa
 58|Chuma|Final de la leña
 59|Pilche|Vasija para beber
@@ -68,16 +68,16 @@ const listadoSolicitado = `
 61|Cual|Agua / río
 62|Cuar|Agua / río / quebrada
 63|Fuel|Quebrada / agua
-64|Pi|Agua / líquido / río
+64|Pi|Agua / río / líquido
 65|Es|Agua / río / lugar
 66|Cuas|Agua / planta de agua
 67|Gualte|Bejuco de agua
 68|Gualguán|Poder del agua
 69|Guapil|Planta del agua grande
-70|Cuarris|Planta del sitio del agua
+70|Cuarris|Planta que va hacia el Sol
 71|Pipisiqui|Fruto que hace agua
-72|Chichacuas|Animal asociado al agua
-73|Cuatín|Animal del fuego y agua
+72|Chichacuas|Animal de agua de lo alto
+73|Cuatín|El hombre de la tierra
 74|Cusumbe|Animal viejo del agua
 75|Cuasmal|Ir del agua / río
 `.trim().split('\n').map(fila => {
@@ -140,8 +140,8 @@ test('cada entrada conserva el esquema del juego y declara el respaldo sin inven
       assert.ok(palabra[campo].trim().length > 0);
     }
     assert.equal(palabra.fon, palabra.p.toLocaleLowerCase('es'));
-    assert.equal(palabra.respaldo, 'pendiente_validacion');
-    assert.match(palabra.fuente, /listado/i);
+    assert.ok(['documentado', 'pendiente_validacion'].includes(palabra.respaldo), `${palabra.id}: respaldo`);
+    assert.match(palabra.fuente, /Lengua de los Pastos|AUKUSAN|Sin respaldo/, `${palabra.id}: fuente`);
     assert.ok(palabra.ej.includes(palabra.p));
     assert.ok(!palabra.ej.includes('='));
   }
