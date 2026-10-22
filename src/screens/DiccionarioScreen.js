@@ -123,9 +123,7 @@ export default function DiccionarioScreen() {
           <View style={s.expand}>
             <Text style={s.fon}>Grafía: {item.fon} · Voz sintética de práctica</Text>
             <Text style={s.ej}>{item.ej}</Text>
-            <Text style={s.documentacion}>Tipo: {item.tipo === 'raiz' ? 'Raíz' : 'Entrada de vocabulario'}</Text>
             <Text style={s.documentacion}>Fuente: {item.fuente}</Text>
-            <Text style={s.documentacion}>{item.nota}</Text>
             {item.respaldo === 'pendiente_validacion' && (
               <Text style={s.documentacion}>Validación documental pendiente.</Text>
             )}

@@ -58,7 +58,6 @@ export function MochilaScreen({ navigation }) {
 
       <View style={ss.infoCard}>
         <Text style={ss.infoTit}>Sobre esta entrada</Text>
-        <Text style={ss.infoTxt}>{detalle.nota}</Text>
         <Text style={ss.infoTxt}>Fuente: {detalle.fuente}</Text>
         {detalle.respaldo === 'pendiente_validacion' && (
           <Text style={ss.infoTxt}>Validación documental pendiente.</Text>
