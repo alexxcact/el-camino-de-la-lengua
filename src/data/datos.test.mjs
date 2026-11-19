@@ -24,7 +24,7 @@ const listadoSolicitado = `
 17|Piaran|Desgranar maíz
 18|Turma|Papa
 19|Yacuara|Rama de la papa
-20|Caguara|Bejuco del gran poder
+20|Caguara|Papa de gran poder
 21|Puli|Fruto
 22|Capulí|Gran fruto
 23|Cun|Yuca
@@ -74,10 +74,10 @@ const listadoSolicitado = `
 67|Gualte|Bejuco de agua
 68|Gualguán|Poder del agua
 69|Guapil|Planta del agua grande
-70|Cuarris|Planta que va hacia el Sol
+70|Cuarris|Planta del sitio del agua
 71|Pipisiqui|Fruto que hace agua
 72|Chichacuas|Animal de agua de lo alto
-73|Cuatín|El hombre de la tierra
+73|Cuatín|Animal del fuego y del agua
 74|Cusumbe|Animal viejo del agua
 75|Cuasmal|Ir del agua / río
 `.trim().split('\n').map(fila => {

@@ -3,8 +3,9 @@
 // Vocabulario, mundos y narrativa del pueblo Pasto - Resguardo de Muellamués
 //
 // Corpus: listado de 75 entradas aportado para esta actualización.
-// La referencia sugerida «Lengua de los Pastos» no incluye edición ni páginas.
-// El cotejo documental y la revisión cultural siguen pendientes; no se atribuye
+// Cotejado con «Lengua de los Pastos» (Academia Nariñense de Historia, 2015) y
+// «AUKUSAN» (Cabildo del Gran Tescual), con página en cada entrada.
+// La revisión cultural con la comunidad sigue pendiente; no se atribuye
 // este contenido a una organización ni se presenta como validación comunitaria.
 // ─────────────────────────────────────────────────────────────
 
@@ -136,12 +137,12 @@ export const palabras = [
     tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, pp. 87–88", nota: "Asignación de columna aproximada por la extracción del PDF."
   },
   {
-    id: 19, p: "Yacuara", e: "Rama de la papa", cat: "Plantas", fon: "yacuara", ej: "Yacuara: 'rama de la papa' (de la casa, seca o verde).", emoji: "🌱", mundo: 2,
-    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Javier H. Cuacialpud, Taller Lenguas Madres, 2015", nota: "El libro precisa 'rama de la papa', no 'planta'."
+    id: 19, p: "Yacuara", e: "Rama de la papa", cat: "Plantas", fon: "yacuara", ej: "Yacuara: 'rama de la papa' de la casa, seca o verde; voz propia de la antigua provincia de los Pastos.", emoji: "🌱", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 88; H. Javier Cuacialpud, Taller Ipiales, 2015; Grijalva, 1947, p. 105", nota: "El libro precisa 'rama de la papa de la casa' y anota que la voz pertenece exclusivamente a la antigua provincia de los Pastos."
   },
   {
-    id: 20, p: "Caguara", e: "Bejuco del gran poder", cat: "Plantas", fon: "caguara", ej: "Caguara: de 'ca/gua' (grande, poder) + 'te' (bejuco): bejuco del gran poder.", emoji: "🌿", mundo: 2,
-    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 81", nota: "Corrige el significado previo ('variedad de papa'), no documentado. Conviene revisar categoría e ilustración."
+    id: 20, p: "Caguara", e: "Papa de gran poder", cat: "Alimentos", fon: "caguara", ej: "Caguara: de 'ca/cua' (grande) + 'cuan/guan' (poder): (papa de) gran poder, una variedad de papa.", emoji: "🥔", mundo: 2,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 82; Grijalba, p. 216", nota: "Nombre con que se distingue una especie de papa en el Carchi."
   },
   {
     id: 21, p: "Puli", e: "Fruto", cat: "Alimentos", fon: "puli", ej: "Puli: sustantivo 'fruto'.", emoji: "🍒", mundo: 2,
@@ -157,7 +158,7 @@ export const palabras = [
   },
   {
     id: 24, p: "Cuat", e: "Comer", cat: "Acciones", fon: "cuat", ej: "Cuat: verbo 'comer, alimentar'.", emoji: "🍽️", mundo: 2,
-    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · tabla de etimologías (Pupiales); Taller Lenguas Madres, Ipiales, 2015", nota: "En el Aukusan, 'cuat' se asocia a 'hombre/pertenencia' (Cuatín)."
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · tabla de etimologías (Pupiales); Taller Lenguas Madres, Ipiales, 2015", nota: "En el Aukusan, 'cuat' se asocia también a 'hombre/pertenencia'."
   },
   {
     id: 25, p: "Yan", e: "Sal", cat: "Alimentos", fon: "yan", ej: "Yan: 'sal'.", emoji: "🧂", mundo: 2,
@@ -268,8 +269,8 @@ export const palabras = [
     tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, p. 225", nota: "El objeto documentado es la pared lateral de las casas pajizas."
   },
   {
-    id: 51, p: "Tacín", e: "Fuego de cama / abrigo", cat: "Hogar", fon: "tacín", ej: "Tacín: el libro registra el nombre pero no una traducción; raíz 'cha' (valioso).", emoji: "🛏️", mundo: 4,
-    tipo: "entrada", respaldo: "pendiente_validacion", fuente: "Sin respaldo documental verificado: el nombre aparece en el libro sin traducción.", nota: "Significado 'fuego de cama/abrigo' no documentado; pendiente de validación comunitaria."
+    id: 51, p: "Tacín", e: "Fuego de cama / abrigo", cat: "Hogar", fon: "tacín", ej: "Tacín: de 'ta' (tener) + 'in' (fuego, abrigar): fuego de cama, tener abrigo.", emoji: "🛏️", mundo: 4,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Otros (vestido, comidas, vivienda...), p. 96; Grijalba, p. 233", nota: "Grijalba lo registra también como el nido de las aves y una almohadilla de corteza de plátano."
   },
   {
     id: 52, p: "Chapil", e: "Bebida sabrosa", cat: "Alimentos", fon: "chapil", ej: "Chapil: de 'cha' (sabroso) + 'pi' (bebida, agua).", emoji: "🥤", mundo: 4,
@@ -346,24 +347,24 @@ export const palabras = [
     tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 87", nota: "Coincide."
   },
   {
-    id: 70, p: "Cuarris", e: "Planta que va hacia el Sol", cat: "Plantas", fon: "cuarris", ej: "Cuarris: de 'cuar' (agua/río): '(planta que) va hacia el Sol'.", emoji: "🌱", mundo: 5,
-    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 87", nota: "Corrige el significado previo ('planta del sitio del agua'), no documentado."
+    id: 70, p: "Cuarris", e: "Planta del sitio del agua", cat: "Plantas", fon: "cuarris", ej: "Cuarris: de 'cuar' (agua, río) + 'es' (lugar): (planta del) sitio del agua.", emoji: "🌱", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 87", nota: "Significado tomado de la tabla de plantas del libro."
   },
   {
-    id: 71, p: "Pipisiqui", e: "Fruto que hace agua", cat: "Alimentos", fon: "pipisiqui", ej: "Pipisiqui: de 'pi' (agua): '(fruto que) hace agua'; designa una papa de la provincia de los Pastos.", emoji: "🍒", mundo: 5,
-    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 88; Grijalba, 1947, p. 105", nota: "El libro precisa que designa una papa."
+    id: 71, p: "Pipisiqui", e: "Fruto que hace agua", cat: "Alimentos", fon: "pipisiqui", ej: "Pipisiqui: de 'pi' (agua) repetido para dar énfasis + 'qui' (hacer): (fruto que) hace agua.", emoji: "🍒", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnofitónimos, p. 88", nota: "La repetición de 'pi' da énfasis a la idea de agua, según el libro."
   },
   {
-    id: 72, p: "Chichacuas", e: "Animal de agua de lo alto", cat: "Animales", fon: "chichacuas", ej: "Chichacuas: '(animal) agradable de agua de lo alto'; al picar produce escozor.", emoji: "🐾", mundo: 5,
-    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnozoónimos, p. 89; Grijalba, p. 222", nota: "Coincide (animal + agua)."
+    id: 72, p: "Chichacuas", e: "Animal de agua de lo alto", cat: "Animales", fon: "chichacuas", ej: "Chichacuas: de 'chi' (cielo), 'cha' (agradable) y 'cuas' (agua): (animal) agradable de agua de lo alto.", emoji: "🐾", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnozoónimos, p. 89", nota: "Significado tomado de la tabla de animales del libro."
   },
   {
-    id: 73, p: "Cuatín", e: "El hombre de la tierra", cat: "Comunidad", fon: "cuatín", ej: "Cuatín: apellido/cacique pasto; en el Aukusan, 'el hombre de la tierra' (cuat, 'hombre').", emoji: "🧑🏽", mundo: 5,
-    tipo: "entrada", respaldo: "documentado", fuente: "AUKUSAN – Nuestra Palabra Sagrada (Cabildo Indígena del Gran Tescual) · nota lingüística; Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Grijalba, 1947, pp. 18, 20", nota: "Corrige el significado previo ('animal del fuego y agua'); documentado como nombre/apellido. Revisar categoría e ilustración."
+    id: 73, p: "Cuatín", e: "Animal del fuego y del agua", cat: "Animales", fon: "cuatín", ej: "Cuatín: de 'cual' (agua) + 'in' (fuego): (animal del) fuego y del agua, un roedor. También es apellido pasto.", emoji: "🐭", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnozoónimos, p. 90; apellido, p. 70 (Grijalva, 1947, pp. 20-21)", nota: "Cuatín fue apellido de un curaca de Tusa (1592). El Aukusan propone otra lectura: 'el hombre de la tierra'."
   },
   {
-    id: 74, p: "Cusumbe", e: "Animal viejo del agua", cat: "Animales", fon: "cusumbe", ej: "Cusumbe: roedor mayor que el conejo que daña las sementeras; de 'cu' (animal). También apellido en el Carchi.", emoji: "🐾", mundo: 5,
-    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnozoónimos, p. 90; Grijalba, pp. 26, 217", nota: "Asignación de columna aproximada; verificar en el PDF."
+    id: 74, p: "Cusumbe", e: "Animal viejo del agua", cat: "Animales", fon: "cusumbe", ej: "Cusumbe: de 'cu' (animal) + 'un' (viejo) + 'pi' (agua): animal viejo del agua.", emoji: "🐾", mundo: 5,
+    tipo: "entrada", respaldo: "documentado", fuente: "Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas (Academia Nariñense de Historia, 2015) · Etnozoónimos, p. 90", nota: "Significado tomado de la tabla de animales del libro."
   },
   {
     id: 75, p: "Cuasmal", e: "Ir del agua / río", cat: "Agua", fon: "cuasmal", ej: "Cuasmal: de 'cuas' (agua) + 'mal' (ir): 'ir del agua'; como topónimo, el río Cuasmal.", emoji: "🌊", mundo: 5,
