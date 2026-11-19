@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,9 +16,11 @@ import IconoActividad from '../components/IconoActividad';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { sesionAprobada } from '../utils/ejercicios';
+import { ANFITRIONES } from '../data/personajesUtil';
+import { reaccionPara, cierreSinAprobar } from '../data/reacciones';
 
 export default function QuizScreen({ route, navigation }) {
-  const { mundoId, palabrasPractica, modoPractica = false, nPreguntas } = route.params || {};
+  const { mundoId, palabrasPractica, modoPractica = false, nPreguntas, modoRepaso = false } = route.params || {};
   const mundo = mundoId ? mundos.find(m => m.id === mundoId) : null;
   const { estado, ganarPuntos, completarMision, sumarQuiz, verificarLogros, completarPractica, registrarFallo, quitarFallo } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
@@ -35,6 +37,18 @@ export default function QuizScreen({ route, navigation }) {
   const [aciertos, setAciertos] = useState(0);
   const [fin, setFin] = useState(false);
   const [flashAcierto, setFlashAcierto] = useState(false);
+  // Reacciones de los personajes (todos los hooks antes de cualquier return temprano)
+  const [reaccion, setReaccion] = useState(null);
+  const fallosSeguidosRef = useRef(0);
+  const ultimaLineaRef = useRef(null);
+  const falladasSesionRef = useRef([]);
+  const dominadaMostradaRef = useRef(false);
+  const pulsoRef = useRef(0);
+  const lineaCierre = useMemo(() => {
+    if (!fin || preguntas.length === 0) return null;
+    if (sesionAprobada(aciertos, preguntas.length)) return null;
+    return cierreSinAprobar(falladasSesionRef.current, nombre);
+  }, [fin]);
 
   useEffect(() => {
     const nuevas = shuffle(palabrasMundo).slice(0, nPreguntas || 5).map(p => {
@@ -52,6 +66,25 @@ export default function QuizScreen({ route, navigation }) {
     if (seleccion !== null) return;
     setSeleccion(op.id);
     const acerto = op.id === pregunta.palabra.id;
+    const palabraId = pregunta.palabra.id;
+    const estabaFallada = (estado.palabrasFalladas || []).includes(palabraId);
+    if (acerto) fallosSeguidosRef.current = 0;
+    else {
+      fallosSeguidosRef.current += 1;
+      if (!falladasSesionRef.current.includes(palabraId)) falladasSesionRef.current.push(palabraId);
+    }
+    const linea = reaccionPara({
+      acerto, palabraId, estabaFallada,
+      fallosSeguidos: fallosSeguidosRef.current,
+      permitirDominada: !modoRepaso || !dominadaMostradaRef.current,
+      ultima: ultimaLineaRef.current,
+    });
+    if (linea) {
+      if (linea.momento === 'dominada') dominadaMostradaRef.current = true;
+      ultimaLineaRef.current = linea.id;
+      pulsoRef.current += 1;
+      setReaccion({ ...linea, pulso: pulsoRef.current });
+    }
     if (acerto) {
       setAciertos(a => a + 1);
       premiar(10);
@@ -97,8 +130,8 @@ export default function QuizScreen({ route, navigation }) {
         />
         <ScrollView contentContainerStyle={s.resultContent}>
           {exito
-            ? <PishkuMascota celebrando tamano={96} />
-            : <Acompanante personaje="chutun" mensaje="Ji ji ji... el olvido aún es fuerte. ¡Inténtalo de nuevo!" lado="izq" />}
+            ? <PishkuMascota celebrando tamano={96} personaje={ANFITRIONES.quiz} momento="fin_exito" ctx={{ nombre }} />
+            : <Acompanante personaje={lineaCierre ? lineaCierre.personaje : 'taita-rimay'} animo={lineaCierre ? lineaCierre.animo : 'pensativo'} mensaje={lineaCierre ? lineaCierre.texto : ''} lado="izq" />}
 
           <Text style={s.resultTit}>{exito ? `¡Muy bien, ${nombre}!` : `Sigue intentando, ${nombre}`}</Text>
 
@@ -122,14 +155,18 @@ export default function QuizScreen({ route, navigation }) {
   }
 
   // ─── Pregunta ───
-  const personajeAyuda = seleccion === null
-    ? 'pishku'
-    : (seleccion === pregunta.palabra.id ? 'pishku' : 'chutun');
-  const mensajePersonaje = seleccion === null
-    ? '¡Elige la traducción correcta! Yo volaré con cada palabra que recuperes.'
-    : (seleccion === pregunta.palabra.id
-        ? `¡Perfecto! "${pregunta.palabra.p}" significa "${pregunta.palabra.e}"`
-        : `¡Ji ji ji! La correcta era "${pregunta.palabra.e}"`);
+  const mostrarReaccion = seleccion !== null && reaccion;
+  const personajeAyuda = mostrarReaccion
+    ? reaccion.personaje
+    : (seleccion === null || seleccion === pregunta.palabra.id ? 'pishku' : 'chutun');
+  const animoAyuda = mostrarReaccion ? reaccion.animo : 'neutral';
+  const mensajePersonaje = mostrarReaccion
+    ? reaccion.texto
+    : (seleccion === null
+        ? '¡Elige la traducción correcta! Yo volaré con cada palabra que recuperes.'
+        : (seleccion === pregunta.palabra.id
+            ? `¡Perfecto! "${pregunta.palabra.p}" significa "${pregunta.palabra.e}"`
+            : `La correcta era "${pregunta.palabra.e}"`));
 
   return (
     <View style={s.bg}>
@@ -189,7 +226,13 @@ export default function QuizScreen({ route, navigation }) {
           })}
         </View>
 
-        <Acompanante personaje={personajeAyuda} mensaje={mensajePersonaje} lado="izq" />
+        <Acompanante
+          personaje={personajeAyuda}
+          animo={animoAyuda}
+          pulso={mostrarReaccion ? reaccion.pulso : 0}
+          mensaje={mensajePersonaje}
+          lado="izq"
+        />
       </ScrollView>
 
       {/* Micro-confeti al acertar */}

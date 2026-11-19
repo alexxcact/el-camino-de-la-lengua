@@ -85,3 +85,35 @@ test('medir de nuevo conserva la selección y las seis parejas pueden completars
   assert.ok(buscarNodo(app.tree, n => n.props.texto === '← Volver al mundo'));
   app.unmount();
 });
+
+test('la tejedora se queda pensativa con dos cartas sin pareja y presenta el resultado', () => {
+  const { app, medir, cartas } = memoria();
+  medir(332);
+  const acompanante = () => buscarNodo(app.tree, n => n.type === 'Acompanante');
+  assert.equal(acompanante().props.animo, 'neutral');
+
+  const grupos = [...new Set(cartas().map(n => n.props.carta.grupo))];
+  const deGrupo = g => cartas().filter(n => n.props.carta.grupo === g);
+  deGrupo(grupos[0])[0].props.onPress();
+  deGrupo(grupos[1])[0].props.onPress();
+  assert.equal(acompanante().props.animo, 'pensativo');
+  assert.equal(acompanante().props.pulso, 1);
+
+  let segundo = 1;
+  const avanzar = () => { app.setTime(new Date(2026, 8, 5, 12, 0, segundo++)); app.fireTimers(); };
+  avanzar(); // vence el bloqueo y se voltean
+  assert.equal(acompanante().props.animo, 'neutral');
+
+  grupos.forEach(g => {
+    const [a, b] = deGrupo(g);
+    a.props.onPress();
+    cartas().find(n => n.props.carta.key === b.props.carta.key).props.onPress();
+    assert.notEqual(acompanante()?.props.animo, 'pensativo'); // pareja correcta
+    avanzar();
+  });
+  const mascota = buscarNodo(app.tree, n => n.type === 'PishkuMascota');
+  assert.ok(mascota, 'al terminar se muestra la mascota del resultado');
+  assert.equal(mascota.props.personaje, 'uma');
+  assert.equal(mascota.props.momento, 'fin_exito');
+  app.unmount();
+});

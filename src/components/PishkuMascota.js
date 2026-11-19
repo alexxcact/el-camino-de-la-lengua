@@ -1,8 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, Animated } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { useJuego } from '../context/JuegoContext';
+import PersonajeVivo from './PersonajeVivo';
+import { elegirLinea } from '../data/dialogos';
+import { idPersonaje } from '../data/personajesUtil';
 
 const frasesCon = (n) => [
   `¡Pío, ${n}! ¡Una palabra más viva!`,
@@ -12,47 +15,28 @@ const frasesCon = (n) => [
 ];
 
 /**
- * Ave mensajera, la mascota que celebra los logros.
+ * Mascota que celebra los logros (por defecto el Ave mensajera).
  * Props:
- *  celebrando bool   — dispara el salto y muestra el globo (default true)
+ *  celebrando bool   — gesto feliz y muestra el globo (default true)
  *  mensaje    string — texto fijo del globo (si no, frase aleatoria)
- *  tamano     número — diámetro del círculo (default 96)
+ *  tamano     número — altura de la figura del personaje (default 96)
+ *  personaje  string — id del personaje (default 'pishku')
+ *  momento    string — si llega, el globo sale de elegirLinea({ personaje, momento, ctx })
+ *  ctx        objeto — tokens para la línea ({nombre} se completa solo)
  */
-export default function PishkuMascota({ celebrando = true, mensaje, tamano = 96 }) {
+export default function PishkuMascota({ celebrando = true, mensaje, tamano = 96, personaje = 'pishku', momento, ctx }) {
   const { estado } = useJuego();
-  const sway = useRef(new Animated.Value(0)).current;
-  const salto = useRef(new Animated.Value(0)).current;
+  const id = idPersonaje(personaje);
+  const nombre = estado.nombreJugador || 'Caminante';
   const [frase] = useState(() => {
+    if (momento) {
+      const linea = elegirLinea({ personaje: id, momento, ctx: { nombre, ...(ctx || {}) } });
+      if (linea && linea.texto) return linea.texto;
+    }
     if (mensaje) return mensaje;
-    const fr = frasesCon(estado.nombreJugador || 'Caminante');
+    const fr = frasesCon(nombre);
     return fr[Math.floor(Math.random() * fr.length)];
   });
-
-  // Balanceo idle continuo
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(sway, { toValue: 1, duration: 1500, useNativeDriver: true }),
-        Animated.timing(sway, { toValue: -1, duration: 1500, useNativeDriver: true }),
-      ])
-    );
-    loop.start();
-    return () => loop.stop();
-  }, []);
-
-  // Salto al celebrar
-  useEffect(() => {
-    if (!celebrando) return;
-    const anim = Animated.sequence([
-      Animated.timing(salto, { toValue: 1, duration: 320, useNativeDriver: true }),
-      Animated.spring(salto, { toValue: 0, friction: 4, useNativeDriver: true }),
-    ]);
-    anim.start();
-    return () => anim.stop();
-  }, [celebrando]);
-
-  const rotate = sway.interpolate({ inputRange: [-1, 1], outputRange: ['-3deg', '3deg'] });
-  const translateY = salto.interpolate({ inputRange: [0, 1], outputRange: [0, -22] });
 
   return (
     <View style={s.wrap}>
@@ -62,26 +46,25 @@ export default function PishkuMascota({ celebrando = true, mensaje, tamano = 96 
           <View style={s.bubbleTail} />
         </View>
       )}
-      <Animated.View style={{ transform: [{ translateY }, { rotate }] }}>
-        <Image
-          source={require('../../assets/images/personajes/pishku.jpg')}
-          style={[s.img, { width: tamano, height: tamano, borderRadius: tamano / 2 }]}
-        />
-      </Animated.View>
+      <PersonajeVivo
+        personaje={id}
+        animo={celebrando ? 'feliz' : 'neutral'}
+        tamano={tamano}
+        style={{ marginTop: -Math.round(tamano * 0.06) }}
+      />
     </View>
   );
 }
 
 const s = StyleSheet.create({
   wrap: { alignItems: 'center' },
-  img: { borderWidth: 3, borderColor: colors.doradoNeon },
   bubble: {
     backgroundColor: colors.cielo,
     borderRadius: 16,
     paddingHorizontal: 14,
     paddingVertical: 9,
-    marginBottom: 10,
-    maxWidth: 220,
+    marginBottom: 8,
+    maxWidth: 240,
     shadowColor: colors.doradoNeon,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
@@ -91,9 +74,9 @@ const s = StyleSheet.create({
   bubbleTxt: { color: colors.noche, fontSize: 14, fontFamily: fonts.bold, textAlign: 'center' },
   bubbleTail: {
     position: 'absolute',
-    bottom: -7, alignSelf: 'center',
+    bottom: -10, alignSelf: 'center',
     width: 0, height: 0,
-    borderLeftWidth: 8, borderRightWidth: 8, borderTopWidth: 8,
+    borderLeftWidth: 9, borderRightWidth: 9, borderTopWidth: 11,
     borderLeftColor: 'transparent', borderRightColor: 'transparent',
     borderTopColor: colors.cielo,
   },

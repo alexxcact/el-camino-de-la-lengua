@@ -11,19 +11,26 @@ import ReveladoColor from '../components/ReveladoColor';
 import Confeti from '../components/Confeti';
 import ContadorAnimado from '../components/ContadorAnimado';
 import MedallaPasto from '../components/MedallaPasto';
-import Medallon from '../components/Medallon';
+import PersonajeVivo from '../components/PersonajeVivo';
 import { sonar } from '../utils/sonidos';
 import { volverAlTerritorio } from '../utils/navegacion';
+import { cajaFigura } from '../data/personajesUtil';
 
 const { width: W } = Dimensions.get('window');
 
+// Los cinco personajes, de pie sobre el mismo suelo (Kinti al centro, más grande).
+// `alto` es la altura de referencia de cada figura (PersonajeVivo aplica la escala
+// propia: Pishku y Chutun salen más pequeños). La fila mide ~345 dp con estas
+// alturas; en pantallas más estrechas se escala para que nunca salte de línea.
 const RETRATOS = [
-  { img: require('../../assets/images/personajes/taita_rimay.jpg'), color: '#8B4513', size: 64 },
-  { img: require('../../assets/images/personajes/uma.jpg'),         color: '#7A1515', size: 64 },
-  { img: require('../../assets/images/personajes/kinti.jpg'),       color: '#C49010', size: 92 },
-  { img: require('../../assets/images/personajes/pishku.jpg'),      color: '#1A3A5C', size: 64 },
-  { img: require('../../assets/images/personajes/chutun.jpg'),      color: '#2D5A16', size: 64 },
+  { personaje: 'taita-rimay', alto: 80 },
+  { personaje: 'uma',         alto: 60 },
+  { personaje: 'kinti',       alto: 120 },
+  { personaje: 'pishku',      alto: 70 },
+  { personaje: 'chutun',      alto: 87 },
 ];
+const ANCHO_FILA = 345;
+const FACTOR_FILA = Math.min(1, (W - 48) / ANCHO_FILA);
 
 export default function FinalScreen({ navigation }) {
   const { estado, marcarFinalVisto } = useJuego();
@@ -123,11 +130,19 @@ export default function FinalScreen({ navigation }) {
         <View style={s.centro}>
           <Text style={s.faseTit}>El territorio agradece</Text>
           <View style={s.retratos}>
-            {RETRATOS.map((p, i) => (
-              <Animated.View key={i} style={{ transform: [{ scale: persAnim[i] }] }}>
-                <Medallon source={p.img} size={p.size} ring={p.color} halo={false} />
-              </Animated.View>
-            ))}
+            {RETRATOS.map((p, i) => {
+              const tam = Math.round(p.alto * FACTOR_FILA);
+              // Se recupera parte del margen lateral de la caja (12% de la figura).
+              const solape = Math.round(cajaFigura(p.personaje, tam).figAlto * 0.12);
+              return (
+                <Animated.View
+                  key={p.personaje}
+                  style={{ marginHorizontal: -solape, transform: [{ scale: persAnim[i] }] }}
+                >
+                  <PersonajeVivo personaje={p.personaje} tamano={tam} entrada={false} />
+                </Animated.View>
+              );
+            })}
           </View>
         </View>
       )}
@@ -151,7 +166,7 @@ export default function FinalScreen({ navigation }) {
       {/* Fase 4 — cierre con estadísticas */}
       {fase === 4 && (
         <View style={s.centro}>
-          <Medallon source={require('../../assets/images/personajes/kinti.jpg')} size={110} style={s.cierreFoco} />
+          <PersonajeVivo personaje="kinti" animo="feliz" tamano={150} style={s.cierreFoco} />
           <Text style={s.cierreTit}>¡Camino completo, {nombre}!</Text>
 
           <View style={s.statsRow}>
@@ -205,7 +220,7 @@ const s = StyleSheet.create({
 
   centro:  { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   faseTit: { color: colors.doradoNeon, fontSize: 18, fontFamily: fonts.extra, marginBottom: 28, letterSpacing: 1 },
-  retratos:{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, flexWrap: 'wrap' },
+  retratos:{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center' },
 
   msgCard: { ...ui.cardDestacada, padding: 28 },
   msgPill: { ...ui.pill, alignSelf: 'center', marginBottom: 16 },

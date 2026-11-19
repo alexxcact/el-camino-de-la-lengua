@@ -98,6 +98,12 @@ export function JuegoProvider({ children }) {
     actualizarEstado(prev => prev.onboardingVisto ? prev : { ...prev, onboardingVisto: true });
   }, [actualizarEstado]);
 
+  // Marca que hoy ya se mostró el saludo diario del Mapa. Primitivo, no toca Sets.
+  const marcarSaludoHoy = useCallback(() => {
+    const hoy = fechaHoy();
+    actualizarEstado(prev => prev.ultimoSaludoFecha === hoy ? prev : { ...prev, ultimoSaludoFecha: hoy });
+  }, [actualizarEstado]);
+
   // Registra una palabra errada (para el Repaso). Array deduplicado, con tope.
   const registrarFallo = useCallback((id) => {
     actualizarEstado(prev => {
@@ -310,7 +316,7 @@ export function JuegoProvider({ children }) {
       cambiarNotificaciones, guardarHoraNotificacion, marcarMemoriaPerfecta,
       guardarAvatar, verificarDesbloqueoAvatar, registrarAperturaDiccionario,
       completarPractica, registrarDuelo, marcarCinematicaVista,
-      marcarOnboardingVisto, registrarFallo, quitarFallo,
+      marcarOnboardingVisto, marcarSaludoHoy, registrarFallo, quitarFallo,
     }}>
       {children}
     </JuegoContext.Provider>

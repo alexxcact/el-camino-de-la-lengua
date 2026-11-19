@@ -5,6 +5,7 @@ import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { ui } from '../theme/ui';
 import { palabras, mundos, shuffle } from '../data/datos';
+import { ANFITRIONES } from '../data/personajesUtil';
 import { useJuego } from '../context/JuegoContext';
 import Acompanante from '../components/Acompanante';
 import BotonGlow from '../components/BotonGlow';
@@ -167,6 +168,10 @@ export default function MemoriaScreen({ route, navigation }) {
     setFin(true);
   };
 
+  // Dos cartas boca arriba que no forman pareja: la tejedora se queda pensativa.
+  const fallando = volteadas.length === 2
+    && cartas[volteadas[0]]?.grupo !== cartas[volteadas[1]]?.grupo;
+
   if (cartas.length === 0) return <View style={s.bg} />;
 
   // ─── Resultado ───
@@ -176,17 +181,19 @@ export default function MemoriaScreen({ route, navigation }) {
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
         <ScrollView contentContainerStyle={s.resContent}>
-          <PishkuMascota celebrando tamano={96} />
+          <PishkuMascota
+            celebrando
+            tamano={96}
+            personaje={ANFITRIONES.memoria}
+            momento="fin_exito"
+            ctx={{ nombre }}
+          />
           <Text style={s.resTit}>{perfecto ? `¡Memoria perfecta, ${nombre}!` : `¡Muy bien, ${nombre}!`}</Text>
           <View style={s.scoreCard}>
             <Text style={s.scoreNum}>{intentos}</Text>
             <Text style={s.scoreLbl}>intentos</Text>
             {perfecto && <Text style={s.perfectoTxt}>¡Sin errores!</Text>}
           </View>
-          <Acompanante
-            personaje="uma"
-            mensaje={`${nombre}, tu memoria guarda las palabras como la tierra guarda las semillas.`}
-          />
           <BotonGlow texto={modoPractica ? '← Volver a practicar' : '← Volver al mundo'} onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
         <Confeti activo cantidad={30} />
@@ -235,6 +242,8 @@ export default function MemoriaScreen({ route, navigation }) {
         <View style={{ marginTop: 14 }}>
           <Acompanante
             personaje="uma"
+            animo={fallando ? 'pensativo' : 'neutral'}
+            pulso={fallando ? intentos : 0}
             mensaje="Voltea dos cartas y une cada palabra con su dibujo. Las parejas encontradas quedan marcadas."
           />
         </View>

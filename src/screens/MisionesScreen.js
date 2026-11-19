@@ -6,8 +6,11 @@ import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { ui, radii } from '../theme/ui';
 import { palabras, mundos, shuffle } from '../data/datos';
+import { ANFITRIONES } from '../data/personajesUtil';
+import { elegirLinea } from '../data/dialogos';
 import { useJuego } from '../context/JuegoContext';
 import Acompanante from '../components/Acompanante';
+import PishkuMascota from '../components/PishkuMascota';
 import BotonGlow from '../components/BotonGlow';
 import Confeti from '../components/Confeti';
 import PalabraIlustrada from '../components/PalabraIlustrada';
@@ -102,15 +105,18 @@ export function ParejasScreen({ route, navigation }) {
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
         <ScrollView contentContainerStyle={s.resContent}>
+          <PishkuMascota
+            celebrando
+            tamano={96}
+            personaje={ANFITRIONES.parejas}
+            momento="fin_exito"
+            ctx={{ nombre }}
+          />
           <Text style={s.resTit}>¡Muy bien, {nombre}!</Text>
           <View style={s.resScoreCard}>
-            <Text style={s.resSub}>{intentos} intentos</Text>
+            <Text style={s.resSub}>{intentos} {intentos === 1 ? 'intento' : 'intentos'}</Text>
           </View>
           <View style={{ height: 20 }} />
-          <Acompanante
-            personaje="uma"
-            mensaje={`Bien hecho, ${nombre}. Has unido las palabras con sus significados, como hilos que forman un tejido.`}
-          />
           <BotonGlow texto={modoPractica ? '← Volver a practicar' : '← Volver al mundo'} onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
         <Confeti activo cantidad={28} />
@@ -172,6 +178,8 @@ export function ParejasScreen({ route, navigation }) {
         <View style={{ marginTop: 12 }}>
           <Acompanante
             personaje="uma"
+            animo={erroneas.length > 0 ? 'pensativo' : 'neutral'}
+            pulso={erroneas.length > 0 ? intentos : 0}
             mensaje="Busca el significado completo de cada ficha. Si aciertas, ambas cartas se unen en el tejido."
           />
         </View>
@@ -201,6 +209,8 @@ export function DictadoScreen({ route, navigation }) {
   const [aciertos, setAciertos] = useState(0);
   const [fin, setFin] = useState(false);
   const [foco, setFoco] = useState(false);
+  // Semilla fija por sesión: la línea de cierre no cambia entre renders.
+  const [semillaCierre] = useState(() => Math.floor(Math.random() * 1000));
 
   const pal = listaDict[idx];
 
@@ -240,6 +250,9 @@ export function DictadoScreen({ route, navigation }) {
 
   if (fin) {
     const exito = sesionAprobada(aciertos, listaDict.length);
+    const lineaFallo = exito ? null : elegirLinea({
+      personaje: ANFITRIONES.dictado, momento: 'fin_fallo', ctx: { nombre }, semilla: semillaCierre,
+    });
     return (
       <View style={s.resBg}>
         <LinearGradient
@@ -247,17 +260,27 @@ export function DictadoScreen({ route, navigation }) {
           style={StyleSheet.absoluteFill}
         />
         <ScrollView contentContainerStyle={s.resContent}>
+          {exito && (
+            <PishkuMascota
+              celebrando
+              tamano={96}
+              personaje={ANFITRIONES.dictado}
+              momento="fin_exito"
+              ctx={{ nombre }}
+            />
+          )}
           <Text style={s.resTit}>{exito ? `¡Muy bien, ${nombre}!` : `Sigue intentando, ${nombre}`}</Text>
           <View style={s.resScoreCard}>
             <Text style={s.resSub}>{aciertos} / {listaDict.length}</Text>
           </View>
           <View style={{ height: 20 }} />
-          <Acompanante
-            personaje="taita_rimay"
-            mensaje={exito
-              ? `Las palabras que escribes son piedras del camino, ${nombre}. Cada letra trae de regreso una memoria.`
-              : 'No te desanimes. Cada intento es un paso más en el camino de la lengua.'}
-          />
+          {!exito && (
+            <Acompanante
+              personaje="taita_rimay"
+              animo="pensativo"
+              mensaje={lineaFallo?.texto || 'No te desanimes. Cada intento es un paso más en el camino de la lengua.'}
+            />
+          )}
           <BotonGlow texto={modoPractica ? '← Volver a practicar' : '← Volver al mundo'} onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
         {exito && <Confeti activo cantidad={28} />}
@@ -325,6 +348,7 @@ export function DictadoScreen({ route, navigation }) {
         <View style={{ marginTop: 14 }}>
           <Acompanante
             personaje="taita_rimay"
+            animo="neutral"
             mensaje={verif === null
               ? `Recuerda el significado completo de la ficha: "${pal.e}". ¿Cuál es la entrada?`
               : verif === 'ok' ? '¡Muy bien!' : 'No te preocupes. Prueba la siguiente.'}

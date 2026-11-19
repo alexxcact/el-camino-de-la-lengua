@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, StyleSheet, Animated, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,7 +7,7 @@ import { fonts } from '../theme/fonts';
 import { ui, radii } from '../theme/ui';
 import { useJuego } from '../context/JuegoContext';
 import BotonGlow from '../components/BotonGlow';
-import Medallon from '../components/Medallon';
+import PersonajeVivo from '../components/PersonajeVivo';
 
 // Mismo formateo que guardarNombre, para mostrar el nombre correcto en la respuesta
 const formatNombre = (raw) => {
@@ -24,21 +24,8 @@ export default function NombreScreen({ navigation }) {
   const [fase, setFase] = useState('pregunta');   // 'pregunta' | 'respuesta'
   const [nombreFinal, setNombreFinal] = useState('');
 
-  const pulso   = useRef(new Animated.Value(0)).current;   // glow del avatar
   const respFade = useRef(new Animated.Value(0)).current;  // aparición de la respuesta
   const salto   = useRef(new Animated.Value(0)).current;   // salto del guía al responder
-
-  // Glow suave continuo del avatar
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulso, { toValue: 1, duration: 1600, useNativeDriver: true }),
-        Animated.timing(pulso, { toValue: 0, duration: 1600, useNativeDriver: true }),
-      ])
-    );
-    loop.start();
-    return () => loop.stop();
-  }, []);
 
   const confirmar = async (raw) => {
     const disp = formatNombre(raw);
@@ -64,8 +51,6 @@ export default function NombreScreen({ navigation }) {
     setTimeout(() => navigation.replace(destino), 2200);
   };
 
-  const escala = pulso.interpolate({ inputRange: [0, 1], outputRange: [1, 1.04] });
-  const brillo = pulso.interpolate({ inputRange: [0, 1], outputRange: [0.35, 0.85] });
   const saltoY = salto.interpolate({ inputRange: [0, 1], outputRange: [0, -18] });
   const valido = texto.trim().length >= 2;
 
@@ -74,11 +59,9 @@ export default function NombreScreen({ navigation }) {
       <LinearGradient colors={colors.gradAurora} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
       <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 
-        {/* Avatar del guía con glow */}
-        <Animated.View style={[s.avatarWrap, { transform: [{ translateY: saltoY }, { scale: escala }] }]}>
-          <View style={s.haloExt} />
-          <Animated.View style={[s.glowRing, { opacity: brillo }]} />
-          <Medallon source={require('../../assets/images/personajes/taita_rimay.jpg')} size={140} halo={false} />
+        {/* El guía, de pie (figura recortada, sin aro); salta al confirmar el nombre */}
+        <Animated.View style={[s.avatarWrap, { transform: [{ translateY: saltoY }] }]}>
+          <PersonajeVivo personaje="taita-rimay" tamano={170} />
         </Animated.View>
         <View style={s.nombrePill}>
           <Text style={s.nombrePillTxt}>El guía</Text>
@@ -148,15 +131,7 @@ const s = StyleSheet.create({
   content: { flexGrow: 1, justifyContent: 'center', alignItems: 'center', padding: 24, gap: 4 },
 
   avatarWrap: { alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
-  haloExt: {
-    position: 'absolute', width: 196, height: 196, borderRadius: 98,
-    backgroundColor: ui.haloTurquesa,
-  },
-  glowRing: {
-    position: 'absolute', width: 156, height: 156, borderRadius: 78,
-    backgroundColor: colors.doradoNeon,
-  },
-  nombrePill:    { ...ui.pill, alignSelf: 'center', marginTop: 12, marginBottom: 14 },
+  nombrePill:    { ...ui.pill, alignSelf: 'center', marginTop: 0, marginBottom: 14 },
   nombrePillTxt: { ...ui.pillTxt, textTransform: 'uppercase' },
 
   bubble: {

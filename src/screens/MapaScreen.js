@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,13 +7,16 @@ import { fonts } from '../theme/fonts';
 import { ui, radii } from '../theme/ui';
 import { mundos, CINEMATICAS, palabras } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
+import { fechaHoy, seedFecha, rachaVigente } from '../context/logica';
+import { elegirSaludo } from '../data/reacciones';
 import HudJugador from '../components/HudJugador';
 import SenderoMapa from '../components/SenderoMapa';
 import TarjetaPalabraDia from '../components/TarjetaPalabraDia';
 import Onboarding from '../components/Onboarding';
+import SaludoDiario from '../components/SaludoDiario';
 
 export default function MapaScreen({ navigation }) {
-  const { estado, cargado, getPalabraDelDia, retoDiarioDisponible, verificarDesbloqueoAvatar, toastAtuendo, setToastAtuendo, marcarOnboardingVisto } = useJuego();
+  const { estado, cargado, getPalabraDelDia, retoDiarioDisponible, verificarDesbloqueoAvatar, toastAtuendo, setToastAtuendo, marcarOnboardingVisto, marcarSaludoHoy } = useJuego();
 
   const nombre = estado.nombreJugador || 'Caminante';
   // Palabras marcadas como falladas (para el Repaso), mapeadas a objetos del corpus.
@@ -42,6 +45,49 @@ export default function MapaScreen({ navigation }) {
   useEffect(() => {
     setPalabraDia(getPalabraDelDia());
   }, [estado.ultimaSesion, estado.palabraDiaFecha, estado.palabrasVistas]);
+
+  // ── Saludo diario de un personaje (como máximo una vez al día) ──
+  // Nunca en el mismo montaje en que se mostró el Onboarding, ni si hay una
+  // navegación a la cinemática Final pendiente.
+  const mostrarOnboarding = !!(cargado && estado.nombreJugador && !estado.onboardingVisto);
+  const hoy = fechaHoy();
+  // Fecha en que este montaje mostró el Onboarding (se registra en un efecto, no en
+  // render). Al cambiar de día, el saludo vuelve a ser posible aunque el tab siga montado.
+  const onboardingFechaRef = useRef(null);
+  useEffect(() => {
+    if (mostrarOnboarding) onboardingFechaRef.current = hoy;
+  }, [mostrarOnboarding, hoy]);
+  const finalPendiente = estado.mundosCompletados.size === 5 && !estado.finalVisto;
+  const saludoPosible = !!(cargado && estado.nombreJugador && estado.onboardingVisto)
+    && estado.ultimoSaludoFecha !== hoy && !finalPendiente
+    && !mostrarOnboarding && onboardingFechaRef.current !== hoy;
+
+  // La elección se fija por fecha (semilla por fecha, sin azar): solo se recalcula
+  // si cambia el día, si el saludo deja de ser posible o cambia la palabra del día.
+  const saludoDia = useMemo(() => {
+    if (!saludoPosible || !palabraDia) return null;
+    return elegirSaludo({
+      nFalladas: falladas.length,
+      racha: rachaVigente(estado),
+      diasActivos: estado.diasActivos || [],
+      hoy,
+      palabraDiaId: palabraDia.id,
+      nombre,
+      retoDisponible: retoDiarioDisponible(),
+      semilla: seedFecha(hoy),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hoy, saludoPosible, palabraDia?.id]);
+
+  const abrirRepaso = () => navigation.navigate('Quiz', { palabrasPractica: falladas, modoPractica: true, modoRepaso: true, nPreguntas: Math.min(falladas.length, 8) });
+
+  const cerrarSaludo = () => marcarSaludoHoy();
+  const accionSaludo = () => {
+    const accion = saludoDia?.accion;
+    marcarSaludoHoy();
+    if (accion === 'repaso' && falladas.length > 0) abrirRepaso();
+    else if (accion === 'reto') navigation.navigate('RetoDiario');
+  };
 
   // Entra a un mundo: la PRIMERA vez muestra su cinemática de entrada; luego, directo.
   // (El auto-completar y el paso de mundoId quedan igual: solo se interpone la cinemática.)
@@ -84,7 +130,7 @@ export default function MapaScreen({ navigation }) {
             {falladas.length > 0 && (
               <TouchableOpacity
                 style={[s.atajoBtn, s.atajoRepaso]}
-                onPress={() => navigation.navigate('Quiz', { palabrasPractica: falladas, modoPractica: true, modoRepaso: true, nPreguntas: Math.min(falladas.length, 8) })}
+                onPress={abrirRepaso}
                 activeOpacity={0.85}
                 accessibilityRole="button"
                 accessibilityLabel={`Repaso de ${falladas.length} palabras que fallaste`}
@@ -126,8 +172,20 @@ export default function MapaScreen({ navigation }) {
       )}
 
       {/* Tutorial de bienvenida (una sola vez, tras dar el nombre) */}
-      {cargado && estado.nombreJugador && !estado.onboardingVisto && (
+      {mostrarOnboarding && (
         <Onboarding nombre={nombre} onTerminar={marcarOnboardingVisto} />
+      )}
+
+      {/* Saludo diario de un personaje (una vez al día, nunca junto al Onboarding) */}
+      {saludoDia && (
+        <SaludoDiario
+          personaje={saludoDia.linea.personaje}
+          animo={saludoDia.linea.animo}
+          texto={saludoDia.linea.texto}
+          accionTexto={saludoDia.accionTexto}
+          onAccion={saludoDia.accion ? accionSaludo : undefined}
+          onCerrar={cerrarSaludo}
+        />
       )}
     </View>
   );

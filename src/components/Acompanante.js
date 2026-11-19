@@ -1,83 +1,118 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Image, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import { colors } from '../theme/colors';
 import Glass from './Glass';
-import { personajes } from '../data/datos';
+import PersonajeVivo from './PersonajeVivo';
+import FiguraMini from './FiguraMini';
+import { datosPersonaje, idPersonaje } from '../data/personajesUtil';
 
-const PERSONAJES = {
-  kinti:       { img: require('../../assets/images/personajes/kinti.jpg'), id: 'kinti' },
-  uma:         { img: require('../../assets/images/personajes/uma.jpg'), id: 'uma' },
-  taita_rimay: { img: require('../../assets/images/personajes/taita_rimay.jpg'), id: 'taita-rimay' },
-  pishku:      { img: require('../../assets/images/personajes/pishku.jpg'), id: 'pishku' },
-  chutun:      { img: require('../../assets/images/personajes/chutun.jpg'), id: 'chutun' },
-};
+// Altura de la figura de pie junto al bocadillo.
+const ALTO_FIGURA = 100;
+// Relleno opaco del bocadillo (la colita se superpone al borde sin dobles transparencias).
+const FONDO_GLOBO = '#0E2730';
+const BORDE_GLOBO = 'rgba(250,199,117,0.55)';
 
-export default function Acompanante({ personaje = 'pishku', mensaje = '', lado = 'izq', compacto = false }) {
-  const retrato = PERSONAJES[personaje] || PERSONAJES.pishku;
-  const datos = personajes.find(p => p.id === retrato.id);
-  const p = { img: retrato.img, nom: datos.nombre, color: datos.color };
+/**
+ * Personaje que acompaña de pie, al costado, con un bocadillo de cómic.
+ * Props:
+ *  personaje  id ('taita-rimay') o clave de asset ('taita_rimay'); default 'pishku'
+ *  mensaje    texto del globo
+ *  lado       'izq' | 'der' (dónde queda el personaje; la colita apunta hacia él)
+ *  compacto   versión pequeña: busto sin animación junto al texto
+ *  animo      (opcional) neutral | feliz | pensativo | sorprendido | travieso
+ *  pulso      (opcional) número; al cambiar re-dispara el gesto del personaje
+ */
+export default function Acompanante({
+  personaje = 'pishku', mensaje = '', lado = 'izq', compacto = false,
+  animo = 'neutral', pulso = 0,
+}) {
+  const id = idPersonaje(personaje);
+  const datos = datosPersonaje(id) || datosPersonaje('pishku');
+  const nom = datos ? datos.nombre : '';
+  const color = datos ? datos.color : colors.doradoBrillo;
   const fadeIn = useRef(new Animated.Value(0)).current;
-  const bounce = useRef(new Animated.Value(0)).current;
 
+  // El globo aparece suave cada vez que cambia el personaje o el mensaje.
   useEffect(() => {
-    Animated.timing(fadeIn, { toValue: 1, duration: 500, useNativeDriver: true }).start();
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(bounce, { toValue: 1, duration: 1200, useNativeDriver: true }),
-        Animated.timing(bounce, { toValue: 0, duration: 1200, useNativeDriver: true }),
-      ])
-    ).start();
-  }, [personaje]);
-
-  const translateY = bounce.interpolate({ inputRange: [0, 1], outputRange: [0, -3] });
+    fadeIn.setValue(0);
+    const anim = Animated.timing(fadeIn, { toValue: 1, duration: 400, useNativeDriver: true });
+    anim.start();
+    return () => anim.stop();
+  }, [id, mensaje]);
 
   if (compacto) {
     return (
       <View style={s.compactWrap}>
-        <Image source={p.img} style={s.compactImg} />
+        <FiguraMini personaje={id} ancho={44} alto={52} sombra={false} />
         <Glass tipo="claro" intensidad={55} style={s.compactGlass}>
-          <Text style={[s.compactNom, { color: p.color }]}>{p.nom}</Text>
+          <Text style={[s.compactNom, { color }]}>{nom}</Text>
           <Text style={s.compactMsg}>{mensaje}</Text>
         </Glass>
       </View>
     );
   }
 
+  const der = lado === 'der';
+
   return (
-    <Animated.View style={[
-      s.wrap,
-      lado === 'der' && { flexDirection: 'row-reverse' },
-      { opacity: fadeIn, transform: [{ translateY }] },
-    ]}>
-      <View style={[s.avatarFrame, { borderColor: p.color, shadowColor: p.color }]}>
-        <Image source={p.img} style={s.avatar} />
-      </View>
-      <Glass tipo="oscuro" intensidad={65} bordeBrillante style={s.bubble}>
-        <Text style={[s.nombre, { color: colors.doradoBrillo }]}>{p.nom}</Text>
-        <Text style={s.mensaje}>{mensaje}</Text>
-      </Glass>
-    </Animated.View>
+    <View style={[s.wrap, der && s.wrapDer]}>
+      <PersonajeVivo
+        key={id}
+        personaje={id}
+        animo={animo}
+        pulso={pulso}
+        tamano={ALTO_FIGURA}
+        style={s.figura}
+      />
+      <Animated.View style={[s.bubbleWrap, der ? s.bubbleWrapDer : s.bubbleWrapIzq, { opacity: fadeIn }]}>
+        <View style={s.bubble}>
+          <Text style={s.nombre}>{nom}</Text>
+          <Text style={s.mensaje} accessibilityLiveRegion="polite">{mensaje}</Text>
+        </View>
+        {/* Colita del bocadillo: borde + relleno, apuntando al personaje */}
+        <View style={[s.colaBorde, der ? s.colaBordeDer : s.colaBordeIzq]} />
+        <View style={[s.colaRelleno, der ? s.colaRellenoDer : s.colaRellenoIzq]} />
+      </Animated.View>
+    </View>
   );
 }
 
+const COLA_ABAJO = 18;
+
 const s = StyleSheet.create({
-  wrap:         { flexDirection: 'row', alignItems: 'center', gap: 10, marginVertical: 10 },
+  // Alineado abajo: el personaje se apoya en la fila; el globo queda a la altura del hombro.
+  wrap:         { flexDirection: 'row', alignItems: 'flex-end', marginVertical: 6 },
+  wrapDer:      { flexDirection: 'row-reverse' },
+  // La caja de PersonajeVivo deja un margen para decoraciones; se recupera en parte.
+  figura:       { marginHorizontal: -8 },
 
-  avatarFrame:  {
-    width: 64, height: 64, borderRadius: 32,
-    borderWidth: 3, overflow: 'hidden',
-    backgroundColor: colors.blanco,
-    shadowOpacity: 0.5, shadowRadius: 8, shadowOffset: { width: 0, height: 0 },
-    elevation: 6,
+  bubbleWrap:   { flex: 1, marginBottom: 26 },
+  bubbleWrapIzq:{ marginLeft: 12 },
+  bubbleWrapDer:{ marginRight: 12 },
+  bubble:       {
+    paddingVertical: 10, paddingHorizontal: 13, borderRadius: 16,
+    borderWidth: 1.5, borderColor: BORDE_GLOBO, backgroundColor: FONDO_GLOBO,
   },
-  avatar:       { width: '100%', height: '100%' },
-
-  bubble:       { flex: 1, padding: 12, borderRadius: 14 },
-  nombre:       { fontSize: 11, fontWeight: '900', letterSpacing: 1, marginBottom: 3 },
+  nombre:       { color: colors.doradoBrillo, fontSize: 11, fontWeight: '900', letterSpacing: 1, marginBottom: 3 },
   mensaje:      { color: colors.crema, fontSize: 13, lineHeight: 18, fontStyle: 'italic' },
 
-  compactWrap:  { flexDirection: 'row', alignItems: 'center', gap: 8, marginVertical: 6 },
-  compactImg:   { width: 36, height: 36, borderRadius: 18, borderWidth: 2, borderColor: colors.doradoBrillo },
+  // Triángulos con bordes: el de borde asoma 1.5 px alrededor del de relleno.
+  colaBorde:    {
+    position: 'absolute', bottom: COLA_ABAJO, width: 0, height: 0,
+    borderTopWidth: 9, borderBottomWidth: 9,
+    borderTopColor: 'transparent', borderBottomColor: 'transparent',
+  },
+  colaBordeIzq: { left: -12, borderRightWidth: 13, borderRightColor: BORDE_GLOBO },
+  colaBordeDer: { right: -12, borderLeftWidth: 13, borderLeftColor: BORDE_GLOBO },
+  colaRelleno:  {
+    position: 'absolute', bottom: COLA_ABAJO + 2, width: 0, height: 0,
+    borderTopWidth: 7, borderBottomWidth: 7,
+    borderTopColor: 'transparent', borderBottomColor: 'transparent',
+  },
+  colaRellenoIzq: { left: -8.5, borderRightWidth: 10.5, borderRightColor: FONDO_GLOBO },
+  colaRellenoDer: { right: -8.5, borderLeftWidth: 10.5, borderLeftColor: FONDO_GLOBO },
+
+  compactWrap:  { flexDirection: 'row', alignItems: 'flex-end', gap: 6, marginVertical: 6 },
   compactGlass: { flex: 1, padding: 8, borderRadius: 10 },
   compactNom:   { fontSize: 10, fontWeight: '900', letterSpacing: 1, marginBottom: 2 },
   compactMsg:   { fontSize: 11, color: colors.crema, fontStyle: 'italic', lineHeight: 15 },

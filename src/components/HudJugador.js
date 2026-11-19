@@ -1,11 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { useJuego } from '../context/JuegoContext';
 import ContadorAnimado from './ContadorAnimado';
 import AvatarSVG from './AvatarSVG';
+import RetratoMini from './RetratosPersonaje';
 
 // Mismos umbrales de nivel que el JuegoContext (para la barra de XP del HUD)
 const NIVELES = [0, 10, 20, 30, 50];
@@ -82,7 +83,7 @@ export default function HudJugador({ expandido = false }) {
             ? <AvatarSVG avatar={estado.avatar} tamano={50} conFondo />
             : <View style={s.avatarInicial}><Text style={s.inicialTxt}>{inicial}</Text></View>}
         </View>
-        <Image source={require('../../assets/images/personajes/kinti.jpg')} style={s.kintiBadge} />
+        <RetratoMini personaje="kinti" size={28} style={s.kintiBadge} />
       </View>
 
       {/* Nombre + barra XP + chips */}
@@ -142,9 +143,8 @@ const s = StyleSheet.create({
   },
   inicialTxt: { fontSize: 24, color: colors.cielo, fontFamily: fonts.extra, marginTop: -1 },
   kintiBadge: {
-    position: 'absolute', bottom: -3, right: -3,
-    width: 24, height: 24, borderRadius: 12,
-    borderWidth: 2, borderColor: colors.nocheHeader,
+    // Busto recortado de Kinti asomado a la esquina del avatar (sin círculo).
+    position: 'absolute', bottom: -6, right: -10,
   },
 
   center: { flex: 1 },

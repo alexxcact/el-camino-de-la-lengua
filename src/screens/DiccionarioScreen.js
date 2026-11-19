@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList,
   ScrollView, LayoutAnimation, Platform, UIManager,
@@ -24,13 +24,20 @@ const norm = (s) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,
 
 const CATS = categorias.filter(c => c !== 'Todas');
 
+// Comparadores de cada orden (compartidos por la lista y el salto a una palabra)
+const COMPARADORES = {
+  past:  (a, b) => a.p.localeCompare(b.p, 'es'),
+  esp:   (a, b) => a.e.localeCompare(b.e, 'es'),
+  mundo: (a, b) => a.mundo - b.mundo || a.p.localeCompare(b.p, 'es'),
+};
+
 const ORDENES = [
   { key: 'past',  label: 'A-Z palabra' },
   { key: 'esp',   label: 'A-Z significado' },
   { key: 'mundo', label: 'Por mundo' },
 ];
 
-export default function DiccionarioScreen() {
+export default function DiccionarioScreen({ route, navigation } = {}) {
   const { estado, registrarAperturaDiccionario, verificarLogros } = useJuego();
 
   const [busqueda, setBusqueda] = useState('');
@@ -39,6 +46,56 @@ export default function DiccionarioScreen() {
   const [orden, setOrden] = useState('past');
   const [expandido, setExpandido] = useState(null);
   const [filtrosAbiertos, setFiltrosAbiertos] = useState(false);
+  const listaRef = useRef(null);
+  const timersRef = useRef([]);
+  const reintentosRef = useRef(0);
+
+  const palabraIdParam = route?.params?.palabraId;
+
+  // Llegar con una palabra (p.ej. desde Personajes): limpia búsqueda y filtros,
+  // expande su ficha y la lleva a la vista. Luego consume el parámetro.
+  useEffect(() => {
+    if (palabraIdParam == null) return undefined;
+    const id = Number(palabraIdParam);
+    const palabra = palabras.find(w => w.id === id);
+    if (palabra) {
+      setBusqueda('');
+      setMundosSel(new Set());
+      setCatsSel(new Set());
+      setFiltrosAbiertos(false);
+      setExpandido(id);
+      // Sin filtros la lista es el corpus completo en el orden actual.
+      const index = [...palabras].sort(COMPARADORES[orden]).findIndex(w => w.id === id);
+      if (index >= 0) {
+        reintentosRef.current = 0;
+        const t = setTimeout(() => {
+          listaRef.current?.scrollToIndex?.({ index, animated: true, viewPosition: 0.1 });
+        }, 120);
+        timersRef.current.push(t);
+      }
+    }
+    navigation?.setParams?.({ palabraId: undefined });
+    return undefined;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [palabraIdParam]);
+
+  // Limpia los saltos pendientes al desmontar.
+  useEffect(() => () => {
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+  }, []);
+
+  // Respaldo cuando la fila aún no está medida: acerca por promedio y reintenta.
+  const alFallarScroll = (info) => {
+    const index = info?.index ?? 0;
+    listaRef.current?.scrollToOffset?.({ offset: (info?.averageItemLength || 0) * index, animated: true });
+    if (reintentosRef.current >= 3) return;
+    reintentosRef.current += 1;
+    const t = setTimeout(() => {
+      listaRef.current?.scrollToIndex?.({ index, animated: true, viewPosition: 0.1 });
+    }, 250);
+    timersRef.current.push(t);
+  };
 
   // Cuenta una "apertura" cada vez que se enfoca el diccionario (logro Consultor)
   useFocusEffect(
@@ -76,12 +133,7 @@ export default function DiccionarioScreen() {
       const okC = catsSel.size === 0 || catsSel.has(p.cat);
       return okQ && okM && okC;
     });
-    const cmp = {
-      past:  (a, b) => a.p.localeCompare(b.p, 'es'),
-      esp:   (a, b) => a.e.localeCompare(b.e, 'es'),
-      mundo: (a, b) => a.mundo - b.mundo || a.p.localeCompare(b.p, 'es'),
-    }[orden];
-    return [...r].sort(cmp);
+    return [...r].sort(COMPARADORES[orden]);
   }, [busqueda, mundosSel, catsSel, orden]);
 
   const expandir = (id) => {
@@ -228,12 +280,14 @@ export default function DiccionarioScreen() {
       )}
 
       <FlatList
+        ref={listaRef}
         style={s.lista}
         data={lista}
         keyExtractor={i => String(i.id)}
         renderItem={renderItem}
         contentContainerStyle={{ paddingHorizontal: 14, paddingBottom: 24, paddingTop: 4 }}
         keyboardShouldPersistTaps="handled"
+        onScrollToIndexFailed={alFallarScroll}
         ListEmptyComponent={
           <View style={s.vacio}>
             <PishkuMascota celebrando={false} tamano={72} />

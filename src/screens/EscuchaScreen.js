@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,6 +17,8 @@ import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { decirPalabra, detenerVoz } from '../utils/voz';
 import { distinguirDibujos, sesionAprobada } from '../utils/ejercicios';
+import { ANFITRIONES } from '../data/personajesUtil';
+import { reaccionPara, cierreSinAprobar } from '../data/reacciones';
 
 const RONDAS = 5;
 
@@ -24,7 +26,7 @@ const RONDAS = 5;
 // ESCUCHA Y ELIGE — ejercicio con lectura sintética y dibujos
 // ══════════════════════════════════════════════════════════
 export default function EscuchaScreen({ route, navigation }) {
-  const { mundoId, palabrasPractica, modoPractica = false, nPreguntas } = route.params || {};
+  const { mundoId, palabrasPractica, modoPractica = false, nPreguntas, modoRepaso = false } = route.params || {};
   const mundo = mundoId ? mundos.find(m => m.id === mundoId) : null;
   const { estado, ganarPuntos, completarMision, verificarLogros, completarPractica, registrarFallo, quitarFallo } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
@@ -41,6 +43,18 @@ export default function EscuchaScreen({ route, navigation }) {
   const [flash, setFlash] = useState(false);
   const timeoutRef = useRef(null);
   const pulso = useRef(new Animated.Value(0)).current;
+  // Reacciones de los personajes (todos los hooks antes de cualquier return temprano)
+  const [reaccion, setReaccion] = useState(null);
+  const fallosSeguidosRef = useRef(0);
+  const ultimaLineaRef = useRef(null);
+  const falladasSesionRef = useRef([]);
+  const dominadaMostradaRef = useRef(false);
+  const pulsoReaccionRef = useRef(0);
+  const lineaCierre = useMemo(() => {
+    if (!fin || rondas.length === 0) return null;
+    if (sesionAprobada(aciertos, rondas.length)) return null;
+    return cierreSinAprobar(falladasSesionRef.current, nombre);
+  }, [fin]);
 
   useEffect(() => {
     const nuevas = shuffle(palabrasMundo).slice(0, nPreguntas || RONDAS).map(p => {
@@ -78,6 +92,25 @@ export default function EscuchaScreen({ route, navigation }) {
     if (seleccion !== null) return;
     setSeleccion(op.id);
     const acerto = op.id === ronda.palabra.id;
+    const palabraId = ronda.palabra.id;
+    const estabaFallada = (estado.palabrasFalladas || []).includes(palabraId);
+    if (acerto) fallosSeguidosRef.current = 0;
+    else {
+      fallosSeguidosRef.current += 1;
+      if (!falladasSesionRef.current.includes(palabraId)) falladasSesionRef.current.push(palabraId);
+    }
+    const linea = reaccionPara({
+      acerto, palabraId, estabaFallada,
+      fallosSeguidos: fallosSeguidosRef.current,
+      permitirDominada: !modoRepaso || !dominadaMostradaRef.current,
+      ultima: ultimaLineaRef.current,
+    });
+    if (linea) {
+      if (linea.momento === 'dominada') dominadaMostradaRef.current = true;
+      ultimaLineaRef.current = linea.id;
+      pulsoReaccionRef.current += 1;
+      setReaccion({ ...linea, pulso: pulsoReaccionRef.current });
+    }
     if (acerto) { setAciertos(a => a + 1); premiar(8); setFlash(true); quitarFallo(ronda.palabra.id); sonar.acierto(); vibrar.suave(); }
     else { registrarFallo(ronda.palabra.id); sonar.error(); vibrar.error(); }
     timeoutRef.current = setTimeout(() => {
@@ -111,8 +144,8 @@ export default function EscuchaScreen({ route, navigation }) {
         <LinearGradient colors={exito ? colors.gradAurora : ['#0B1F2A', '#0E2730', '#11353F']} style={StyleSheet.absoluteFill} />
         <ScrollView contentContainerStyle={s.resContent}>
           {exito
-            ? <PishkuMascota celebrando tamano={96} />
-            : <Acompanante personaje="pishku" mensaje="Sigue practicando. Relaciona la palabra que escuchas con su significado." lado="izq" />}
+            ? <PishkuMascota celebrando tamano={96} personaje={ANFITRIONES.escucha} momento="fin_exito" ctx={{ nombre }} />
+            : <Acompanante personaje={lineaCierre ? lineaCierre.personaje : 'taita-rimay'} animo={lineaCierre ? lineaCierre.animo : 'pensativo'} mensaje={lineaCierre ? lineaCierre.texto : ''} lado="izq" />}
           <Text style={s.resTit}>{exito ? `¡Buen oído, ${nombre}!` : `Sigue escuchando, ${nombre}`}</Text>
           <View style={s.scoreCard}>
             <Text style={s.scoreNum}>{aciertos} / {rondas.length}</Text>
@@ -125,6 +158,7 @@ export default function EscuchaScreen({ route, navigation }) {
     );
   }
 
+  const mostrarReaccion = seleccion !== null && reaccion;
   const pulsoScale = pulso.interpolate({ inputRange: [0, 1], outputRange: [1, 1.08] });
 
   return (
@@ -193,12 +227,16 @@ export default function EscuchaScreen({ route, navigation }) {
         </View>
 
         <Acompanante
-          personaje="pishku"
-          mensaje={seleccion === null
-            ? '¡Pío! Usa el dibujo y su etiqueta para reconocer el significado completo de la ficha.'
-            : (seleccion === ronda.palabra.id
-                ? `¡Eso es! "${ronda.palabra.p}" = "${ronda.palabra.e}"`
-                : `Era "${ronda.palabra.p}" = "${ronda.palabra.e}". ¡La próxima la oirás mejor!`)}
+          personaje={mostrarReaccion ? reaccion.personaje : 'pishku'}
+          animo={mostrarReaccion ? reaccion.animo : 'neutral'}
+          pulso={mostrarReaccion ? reaccion.pulso : 0}
+          mensaje={mostrarReaccion
+            ? reaccion.texto
+            : (seleccion === null
+                ? '¡Pío! Usa el dibujo y su etiqueta para reconocer el significado completo de la ficha.'
+                : (seleccion === ronda.palabra.id
+                    ? `¡Eso es! "${ronda.palabra.p}" = "${ronda.palabra.e}"`
+                    : `Era "${ronda.palabra.p}" = "${ronda.palabra.e}". ¡La próxima la oirás mejor!`))}
           lado="izq"
         />
       </ScrollView>

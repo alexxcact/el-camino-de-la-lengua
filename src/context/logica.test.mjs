@@ -18,6 +18,7 @@ import {
   MAX_DIAS_ACTIVOS,
   agregarDiaActivo,
   aplicarSesion,
+  rachaVigente,
   serializarEstado,
   hidratarEstado,
 } from './logica.js';
@@ -98,6 +99,16 @@ test('hidratarEstado corrige diasActivos/cinematicasVistas si no son arrays', ()
   const e = hidratarEstado({ diasActivos: 'corrupto', cinematicasVistas: null });
   assert.deepEqual(e.diasActivos, []);
   assert.deepEqual(e.cinematicasVistas, []);
+});
+
+test('ultimoSaludoFecha hidrata a null en partidas viejas y se conserva en round-trip', () => {
+  assert.equal(estadoInicial.ultimoSaludoFecha, null);
+  const viejo = hidratarEstado({ nombreJugador: 'Ana', puntos: 10, palabrasVistas: [1, 2] });
+  assert.equal(viejo.ultimoSaludoFecha, null);
+  const e = hidratarEstado(null);
+  e.ultimoSaludoFecha = '2026-11-18';
+  const vuelta = hidratarEstado(JSON.parse(JSON.stringify(serializarEstado(e))));
+  assert.equal(vuelta.ultimoSaludoFecha, '2026-11-18');
 });
 
 test('hidratarEstado hace merge profundo del avatar (mantiene lo guardado, completa lo faltante)', () => {
@@ -243,4 +254,13 @@ test('logro "El Camino Completo" y "Taita de la Lengua" con progreso máximo', (
   e.palabrasVistas = new Set(Array.from({ length: 75 }, (_, i) => i + 1));
   assert.equal(logros.find(l => l.id === 'camino-completo').cond(e), true);
   assert.equal(logros.find(l => l.id === 'taita-lengua').cond(e), true);
+});
+
+test('rachaVigente: vale hoy y ayer; a los 3 días ya es 0', () => {
+  const hace3 = (() => { const d = new Date(); d.setDate(d.getDate() - 3); return fechaISO(d); })();
+  assert.equal(rachaVigente({ racha: 4, ultimaSesion: fechaHoy() }), 4);
+  assert.equal(rachaVigente({ racha: 4, ultimaSesion: fechaAyer() }), 4);
+  assert.equal(rachaVigente({ racha: 4, ultimaSesion: hace3 }), 0);
+  assert.equal(rachaVigente({ racha: 4, ultimaSesion: null }), 0);
+  assert.equal(rachaVigente(null), 0);
 });

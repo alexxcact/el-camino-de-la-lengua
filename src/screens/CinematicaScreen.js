@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
@@ -8,18 +8,35 @@ import { CINEMATICAS, personajes } from '../data/datos';
 import { imgMundoColor } from '../data/imagenes';
 import { useJuego } from '../context/JuegoContext';
 import { sonar } from '../utils/sonidos';
+import { vibrar } from '../utils/feedback';
+import { significadoDe } from '../data/personajesUtil';
+import PersonajeVivo from '../components/PersonajeVivo';
+import ChapaPalabra from '../components/ChapaPalabra';
 
 const { width, height } = Dimensions.get('window');
 
-const RETRATOS = {
-  taita_rimay: require('../../assets/images/personajes/taita_rimay.jpg'),
-  uma:         require('../../assets/images/personajes/uma.jpg'),
-  pishku:      require('../../assets/images/personajes/pishku.jpg'),
-  chutun:      require('../../assets/images/personajes/chutun.jpg'),
-  kinti:       require('../../assets/images/personajes/kinti.jpg'),
-};
-
 const VEL_ESCRITURA = 28; // ms por carácter (máquina de escribir suave)
+// Cuánto se mantiene "sorprendido" tras escribir una palabra: cubre el gesto de
+// PersonajeVivo (400 ms), su pausa (700 ms) y el fundido de la decoración (400 ms).
+const REACCION_MS = 1500;
+// Altura de la figura del personaje, de pie en la parte baja de la escena.
+const TAM_FIGURA = Math.round(Math.max(160, Math.min(210, height * 0.27)));
+
+const PARTIR_PALABRAS = /([A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)/;
+
+// Posiciones (índice de fin, exclusivo) donde termina cada aparición completa de
+// una entrada de `resaltar` dentro del texto. Usa el mismo troceo que el resaltado
+// para no confundir Pa con Pas o Paskal.
+function finesResaltados(texto, resaltar = []) {
+  const fines = [];
+  if (!resaltar.length) return fines;
+  let pos = 0;
+  for (const parte of texto.split(PARTIR_PALABRAS)) {
+    pos += parte.length;
+    if (resaltar.includes(parte)) fines.push({ fin: pos, palabra: parte });
+  }
+  return fines;
+}
 
 // Nombre + color de cabecera del personaje (cae en valores neutros si no se halla)
 const infoPersonaje = (clave) => {
@@ -32,7 +49,7 @@ const infoPersonaje = (clave) => {
 function renderResaltado(texto, resaltar = []) {
   if (!resaltar.length) return texto;
   // Comparar palabras completas evita resaltar Pa dentro de Pas o Paskal.
-  return texto.split(/([A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)/).map((parte, i) =>
+  return texto.split(PARTIR_PALABRAS).map((parte, i) =>
     resaltar.includes(parte)
       ? <Text key={i} style={s.resalte}>{parte}</Text>
       : <Text key={i}>{parte}</Text>
@@ -54,11 +71,37 @@ export default function CinematicaScreen({ route, navigation }) {
   const [mostrado, setMostrado] = useState('');
   const [completo, setCompleto] = useState(false);
   const intervalRef = useRef(null);
+  // Reacción del personaje al terminar de escribir una palabra resaltada.
+  const [reaccionando, setReaccionando] = useState(false);
+  const [pulso, setPulso] = useState(0);
+  const [chapa, setChapa] = useState(null); // { palabra, significado, clave }
+  const timeoutRef = useRef(null);
+  const contadorChapaRef = useRef(0);
+
+  const limpiarReaccion = () => {
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = null;
+  };
+
+  // Dispara el gesto sorprendido (~1,5 s), una vibración suave y la chapa de la palabra.
+  const reaccionarA = (palabra) => {
+    limpiarReaccion();
+    contadorChapaRef.current += 1;
+    setPulso(n => n + 1);
+    setReaccionando(true);
+    setChapa({ palabra, significado: significadoDe(palabra), clave: contadorChapaRef.current });
+    vibrar.suave();
+    timeoutRef.current = setTimeout(() => {
+      timeoutRef.current = null;
+      setReaccionando(false);
+    }, REACCION_MS);
+  };
 
   // Cierra la cinemática hacia su destino. Definida antes de los efectos para que
   // el caso defensivo (!cine) pueda invocarla sin caer en TDZ.
   const terminar = () => {
     clearInterval(intervalRef.current);
+    limpiarReaccion();
     if (rever) {
       navigation.goBack();
     } else {
@@ -78,19 +121,26 @@ export default function CinematicaScreen({ route, navigation }) {
   // Máquina de escribir para la escena actual (con cleanup del interval)
   useEffect(() => {
     if (!cine) return;
-    const texto = cine.escenas[idx].texto;
+    const { texto, resaltar } = cine.escenas[idx];
+    const fines = finesResaltados(texto, resaltar);
     setMostrado('');
     setCompleto(false);
+    setReaccionando(false);
     let i = 0;
     intervalRef.current = setInterval(() => {
       i++;
       setMostrado(texto.slice(0, i));
+      const hecho = fines.find(f => f.fin === i);
+      if (hecho) reaccionarA(hecho.palabra);
       if (i >= texto.length) {
         clearInterval(intervalRef.current);
         setCompleto(true);
       }
     }, VEL_ESCRITURA);
-    return () => clearInterval(intervalRef.current);
+    return () => {
+      clearInterval(intervalRef.current);
+      limpiarReaccion();
+    };
   }, [idx, cine]);
 
   if (!cine) return <View style={s.container} />;
@@ -105,6 +155,12 @@ export default function CinematicaScreen({ route, navigation }) {
       clearInterval(intervalRef.current);
       setMostrado(escena.texto);
       setCompleto(true);
+      // Decisión: al saltarse la escritura no se encadenan las reacciones de todas
+      // las palabras pendientes (sería una ráfaga de chapas y vibraciones); solo se
+      // muestra la chapa de la ÚLTIMA palabra resaltada del texto, que es la que
+      // queda más cerca de donde el jugador estaba leyendo.
+      const fines = finesResaltados(escena.texto, escena.resaltar);
+      if (fines.length) reaccionarA(fines[fines.length - 1].palabra);
       return;
     }
     if (esUltima) terminar();
@@ -143,19 +199,25 @@ export default function CinematicaScreen({ route, navigation }) {
 
       <View style={{ flex: 1 }} />
 
-      {/* Retrato del personaje */}
-      <View style={s.retratoWrap}>
-        <View style={s.emblema}>
-          {/* Halos concéntricos (glow real en Android) */}
-          <View style={[s.halo, s.haloLg]} />
-          <View style={[s.halo, s.haloMd]} />
-          <View style={[s.retratoFrame, { borderColor: color, shadowColor: color }]}>
-            <Image source={RETRATOS[escena.personaje] || RETRATOS.taita_rimay} style={s.retratoImg} />
-          </View>
-        </View>
+      {/* Personaje de pie en la escena (figura recortada, sin aro) */}
+      <View style={s.figuraWrap}>
+        <PersonajeVivo
+          key={escena.personaje}
+          personaje={escena.personaje}
+          animo={reaccionando ? 'sorprendido' : 'neutral'}
+          pulso={pulso}
+          tamano={TAM_FIGURA}
+          onPress={avanzar}
+          accessibilityLabel={`${nombre}. ${completo ? 'Toca para continuar' : 'Toca para completar'}`}
+        />
         <View style={[s.nombreTag, { backgroundColor: color }]}>
           <Text style={s.nombreTxt}>{nombre}</Text>
         </View>
+      </View>
+
+      {/* Chapa "palabra · significado" al terminar de escribirse una palabra resaltada */}
+      <View style={s.chapaWrap} pointerEvents="none">
+        {chapa ? <ChapaPalabra palabra={chapa.palabra} significado={chapa.significado} clave={chapa.clave} /> : null}
       </View>
 
       {/* Caja de texto (glass oscuro) */}
@@ -184,16 +246,12 @@ const s = StyleSheet.create({
   progDotOn:  { backgroundColor: colors.doradoNeon, width: 30 },
   progDotDone:{ backgroundColor: colors.turquesaClaro },
 
-  retratoWrap:  { alignItems: 'center', marginBottom: 14 },
-  emblema:      { alignItems: 'center', justifyContent: 'center' },
-  halo:         { position: 'absolute', borderRadius: 999 },
-  haloLg:       { width: 130 * 1.4, height: 130 * 1.4, backgroundColor: ui.haloTurquesa },
-  haloMd:       { width: 130 * 1.15, height: 130 * 1.15, backgroundColor: ui.haloDorado },
-  retratoFrame: { width: 130, height: 130, borderRadius: 65, borderWidth: 4, overflow: 'hidden', shadowOpacity: 0.7, shadowRadius: 20, shadowOffset: { width: 0, height: 0 }, elevation: 16, backgroundColor: colors.noche },
-  retratoImg:   { width: '100%', height: '100%' },
-  nombreTag:    { position: 'absolute', bottom: -12, paddingHorizontal: 18, paddingVertical: 6, borderRadius: 20, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.5)' },
+  figuraWrap:   { alignItems: 'center' },
+  // La etiqueta del nombre se apoya en el suelo, a los pies del personaje.
+  nombreTag:    { marginTop: -10, paddingHorizontal: 18, paddingVertical: 6, borderRadius: 20, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.5)' },
   nombreTxt:    { color: colors.crema, fontSize: 13, fontFamily: fonts.extra, letterSpacing: 0.5 },
 
+  chapaWrap: { minHeight: 34, justifyContent: 'center', marginTop: 10 },
   cajaTexto: { ...ui.card, margin: 16, marginTop: 6, backgroundColor: 'rgba(8,26,34,0.9)', borderColor: 'rgba(93,202,165,0.5)', minHeight: 130 },
   dialogo:   { ...ui.bodyMed, fontSize: 16, lineHeight: 25, textAlign: 'center' },
   resalte:   { ...ui.pastoker, textShadowColor: 'rgba(250,199,117,0.5)', textShadowRadius: 8 },

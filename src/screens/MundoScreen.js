@@ -15,6 +15,8 @@ import ReveladoColor from '../components/ReveladoColor';
 import PalabraIlustrada from '../components/PalabraIlustrada';
 import IconoActividad from '../components/IconoActividad';
 import MedallaPasto, { MEDALLAS_INFO } from '../components/MedallaPasto';
+import RetratoMini from '../components/RetratosPersonaje';
+import { ANFITRIONES, nombreCorto } from '../data/personajesUtil';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 
@@ -176,19 +178,23 @@ export default function MundoScreen({ route, navigation }) {
         </View>
         {misiones.map(m => {
           const comp = estado.misionesCompletadas.has(m.id);
+          const anfitrion = ANFITRIONES[m.tipo];
           return (
             <TouchableOpacity
               key={m.id}
               accessibilityRole="button"
-              accessibilityLabel={`${m.titulo}${comp ? ', completada' : ''}. ${m.desc}`}
+              accessibilityLabel={`${m.titulo}${comp ? ', completada' : ''}. ${m.desc}${anfitrion ? `, con ${nombreCorto(anfitrion)}` : ''}`}
               onPress={() => navigation.navigate(m.pantalla, m.params)}
               activeOpacity={0.85}
               style={[est.card, comp && est.cardDone]}
             >
-              <View style={[est.iconBox, { backgroundColor: m.color }, comp && est.iconBoxDone]}><IconoActividad tipo={m.tipo} color="#fff" /></View>
+              <View style={est.iconWrap}>
+                <View style={[est.iconBox, { backgroundColor: m.color }, comp && est.iconBoxDone]}><IconoActividad tipo={m.tipo} color="#fff" /></View>
+                {anfitrion ? <RetratoMini personaje={anfitrion} size={26} style={est.anfitrionMini} /> : null}
+              </View>
               <View style={{ flex: 1 }}>
                 <Text style={est.cardTit}>{m.titulo}</Text>
-                <Text style={est.cardSub}>{m.desc}</Text>
+                <Text style={est.cardSub}>{anfitrion ? `${m.desc} · con ${nombreCorto(anfitrion)}` : m.desc}</Text>
               </View>
               {comp
                 ? <Text style={est.check}>✓</Text>
@@ -301,6 +307,9 @@ const est = StyleSheet.create({
   cardDone:   { borderColor: 'rgba(242,177,52,0.75)', borderWidth: 1.5 },
   iconBox:    { width: 48, height: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
   iconBoxDone:{ opacity: 0.5 },
+  iconWrap:   { width: 48, height: 48 },
+  // Busto recortado del anfitrión asomado a la esquina del icono (sin círculo).
+  anfitrionMini: { position: 'absolute', right: -9, bottom: -8 },
   cardTit:    { ...ui.cardH, fontSize: 17, lineHeight: 22 },
   cardSub:    { ...ui.cardSubC, fontSize: 14, lineHeight: 20, marginTop: 3 },
   chevron:    { fontSize: 24, color: colors.textoCartaSuave, paddingHorizontal: 6, fontFamily: fonts.bold },

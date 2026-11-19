@@ -8,7 +8,8 @@
 //   - Tarjetas: ui.card (noche translúcida, esquinas 24, borde turquesa tenue, elevación).
 //   - Etiquetas cortas / badges: ui.pill + ui.pillTxt (chip con borde dorado). NADA de emojis decorativos.
 //   - Texto sobre fondo noche: colors.cielo (principal), colors.turquesaSuave (secundario), colors.doradoNeon (acentos/pastoker).
-//   - Focos circulares (retratos, avatares, resultados): usar el componente <Medallon/>.
+//   - Focos circulares de avatares/resultados: <Medallon/>. Los personajes NUNCA en círculo:
+//     usar PersonajeVivo (figura recortada) o RetratoMini (busto).
 import { colors } from './colors';
 import { fonts } from './fonts';
 

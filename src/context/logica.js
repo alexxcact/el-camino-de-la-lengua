@@ -47,6 +47,7 @@ export const estadoInicial = {
   avatarPersonalizado: false, // si ya guardó el avatar al menos una vez
   onboardingVisto: false,  // si ya vio el tutorial de "cómo jugar" en el Mapa (primitivo)
   palabrasFalladas: [],    // [ids] de palabras erradas en quiz/escucha, para el Repaso (array, merge a default)
+  ultimoSaludoFecha: null, // 'YYYY-MM-DD' del último saludo diario de un personaje en el Mapa (primitivo)
 };
 
 export const niveles = [
@@ -108,6 +109,14 @@ export function aplicarSesion(base) {
   const racha = base.ultimaSesion === fechaAyer() ? (base.racha || 0) + 1 : 1;
   const mejorRacha = Math.max(base.mejorRacha || 0, racha);
   return { ...base, racha, mejorRacha, palabrasHoy: 0, ultimaSesion: hoy };
+}
+
+// Racha que sigue en pie hoy: la guardada solo vale si la última sesión fue hoy
+// o ayer (aplicarSesion la recalcula solo al jugar). Si no, la racha ya se rompió.
+export function rachaVigente(estado) {
+  if (!estado) return 0;
+  const u = estado.ultimaSesion;
+  return u === fechaHoy() || u === fechaAyer() ? (estado.racha || 0) : 0;
 }
 
 // Convierte el estado (con Sets) al objeto plano que se guarda en AsyncStorage.

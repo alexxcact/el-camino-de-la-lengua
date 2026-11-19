@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Animated, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { ui } from '../theme/ui';
 import BotonGlow from '../components/BotonGlow';
+import PersonajeVivo from '../components/PersonajeVivo';
 
 const { width, height } = Dimensions.get('window');
+// Altura de la figura del personaje que habla.
+const TAM_FIGURA = Math.round(Math.max(150, Math.min(200, height * 0.24)));
 
 const FRASES = [
   {
@@ -54,13 +57,6 @@ export default function IntroScreen({ navigation }) {
   const colorReveal = useRef(new Animated.Value(0)).current;
 
   const frase = FRASES[idx];
-  const imgPersonaje = {
-    taita_rimay: require('../../assets/images/personajes/taita_rimay.jpg'),
-    uma:         require('../../assets/images/personajes/uma.jpg'),
-    pishku:      require('../../assets/images/personajes/pishku.jpg'),
-    chutun:      require('../../assets/images/personajes/chutun.jpg'),
-    kinti:       require('../../assets/images/personajes/kinti.jpg'),
-  };
 
   useEffect(() => {
     fadeDialog.setValue(0);
@@ -128,14 +124,8 @@ export default function IntroScreen({ navigation }) {
 
       {/* Personaje */}
       <Animated.View style={[s.personajeWrap, { opacity: fadeDialog }]}>
-        <View style={s.emblema}>
-          {/* Halos concéntricos (glow real en Android) */}
-          <View style={[s.halo, s.haloLg]} />
-          <View style={[s.halo, s.haloMd]} />
-          <View style={[s.personajeFrame, { borderColor: frase.color, shadowColor: frase.color }]}>
-            <Image source={imgPersonaje[frase.personaje]} style={s.personajeImg} />
-          </View>
-        </View>
+        {/* Figura recortada de pie, sin aro: cambia (y entra a su manera) con cada personaje */}
+        <PersonajeVivo key={frase.personaje} personaje={frase.personaje} tamano={TAM_FIGURA} />
         <LinearGradient
           colors={[frase.color, colors.negro]}
           start={{ x: 0, y: 0 }}
@@ -196,19 +186,8 @@ const s = StyleSheet.create({
   progDotOn:     { backgroundColor: colors.doradoNeon },
 
   personajeWrap: { alignItems: 'center', marginTop: 30, zIndex: 5 },
-  emblema:       { alignItems: 'center', justifyContent: 'center' },
-  halo:          { position: 'absolute', borderRadius: 999 },
-  haloLg:        { width: 180 * 1.4, height: 180 * 1.4, backgroundColor: ui.haloTurquesa },
-  haloMd:        { width: 180 * 1.15, height: 180 * 1.15, backgroundColor: ui.haloDorado },
-  personajeFrame:{
-    width: 180, height: 180, borderRadius: 90,
-    borderWidth: 4, overflow: 'hidden',
-    shadowOpacity: 0.7, shadowRadius: 24, shadowOffset: { width: 0, height: 0 },
-    elevation: 20, backgroundColor: colors.noche,
-  },
-  personajeImg:  { width: '100%', height: '100%' },
   nombreTag:     {
-    position: 'absolute', bottom: -14,
+    marginTop: -10,
     paddingHorizontal: 18, paddingVertical: 6,
     borderRadius: 20, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.5)',
   },
