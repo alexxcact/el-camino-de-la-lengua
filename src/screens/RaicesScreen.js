@@ -111,7 +111,7 @@ export default function RaicesScreen({ navigation, route }) {
         </View>
         <View style={s.botones}>
           <BotonGlow texto="Otra ronda" onPress={otraRonda} variante="primario" tamano="lg" />
-          <BotonGlow texto="Volver al mapa" onPress={() => navigation.goBack()} variante="secundario" tamano="md" />
+          <BotonGlow texto="Volver a Juegos" onPress={() => navigation.goBack()} variante="secundario" tamano="md" />
         </View>
       </ScrollView>
     );

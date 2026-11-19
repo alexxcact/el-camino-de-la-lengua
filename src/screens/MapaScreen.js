@@ -1,17 +1,16 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { ui, radii } from '../theme/ui';
 import { mundos, CINEMATICAS, palabras } from '../data/datos';
+import { abrirRepaso as abrirRepasoEn } from './JuegosScreen';
 import { useJuego } from '../context/JuegoContext';
 import { fechaHoy, seedFecha, rachaVigente } from '../context/logica';
 import { elegirSaludo } from '../data/reacciones';
 import HudJugador from '../components/HudJugador';
 import SenderoMapa from '../components/SenderoMapa';
-import TarjetaPalabraDia from '../components/TarjetaPalabraDia';
 import Onboarding from '../components/Onboarding';
 import SaludoDiario from '../components/SaludoDiario';
 
@@ -39,7 +38,8 @@ export default function MapaScreen({ navigation }) {
     return () => clearTimeout(t);
   }, [toastAtuendo]);
 
-  // Palabra del día: se calcula en un efecto (getPalabraDelDia persiste estado, no
+  // Palabra del día (la tarjeta está en Juegos; aquí la usa el saludo diario):
+  // se calcula en un efecto (getPalabraDelDia persiste estado, no
   // debe llamarse en render). Se recalcula también al cambiar de día sin cerrar la app.
   const [palabraDia, setPalabraDia] = useState(null);
   useEffect(() => {
@@ -79,14 +79,17 @@ export default function MapaScreen({ navigation }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hoy, saludoPosible, palabraDia?.id]);
 
-  const abrirRepaso = () => navigation.navigate('Quiz', { palabrasPractica: falladas, modoPractica: true, modoRepaso: true, nPreguntas: Math.min(falladas.length, 8) });
+  // Los retos viven en la pestaña Juegos: el saludo lleva allí (initial:false
+  // deja la portada de Juegos debajo para que "atrás" vuelva a ella).
+  const irAJuegos = (screen, params) => navigation.navigate('JuegosTab', { screen, params, initial: false });
+  const abrirRepaso = () => abrirRepasoEn({ navigate: irAJuegos }, falladas);
 
   const cerrarSaludo = () => marcarSaludoHoy();
   const accionSaludo = () => {
     const accion = saludoDia?.accion;
     marcarSaludoHoy();
     if (accion === 'repaso' && falladas.length > 0) abrirRepaso();
-    else if (accion === 'reto') navigation.navigate('RetoDiario');
+    else if (accion === 'reto') irAJuegos('RetoDiario');
   };
 
   // Entra a un mundo: la PRIMERA vez muestra su cinemática de entrada; luego, directo.
@@ -120,55 +123,6 @@ export default function MapaScreen({ navigation }) {
         saludo={saludo}
         nombre={nombre}
         onSelect={irAlMundo}
-        cabecera={
-          <View>
-            <TarjetaPalabraDia
-              palabra={palabraDia}
-              retoCompletado={!retoDiarioDisponible()}
-              onReto={() => navigation.navigate('RetoDiario')}
-            />
-            {falladas.length > 0 && (
-              <TouchableOpacity
-                style={[s.atajoBtn, s.atajoRepaso]}
-                onPress={abrirRepaso}
-                activeOpacity={0.85}
-                accessibilityRole="button"
-                accessibilityLabel={`Repaso de ${falladas.length} palabras que fallaste`}
-              >
-                <View style={[s.atajoIcono, s.atajoIconoRepaso]}><Ionicons name="refresh" size={24} color={colors.sol} /></View>
-                <View style={s.atajoContenido}>
-                  <Text style={s.atajoTitulo}>Repaso</Text>
-                  <Text style={s.atajoSub}>Vuelve a las palabras que fallaste ({falladas.length})</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color={colors.sol} />
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity style={s.atajoBtn} onPress={() => navigation.navigate('Practica')} activeOpacity={0.85} accessibilityRole="button">
-              <View style={s.atajoIcono}><Ionicons name="leaf-outline" size={25} color={colors.turquesaSuave} /></View>
-              <View style={s.atajoContenido}>
-                <Text style={s.atajoTitulo}>Práctica libre</Text>
-                <Text style={s.atajoSub}>Repasa las palabras que ya aprendiste</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.turquesaSuave} />
-            </TouchableOpacity>
-            <TouchableOpacity style={s.atajoBtn} onPress={() => navigation.navigate('Raices')} activeOpacity={0.85} accessibilityRole="button">
-              <View style={s.atajoIcono}><Ionicons name="extension-puzzle-outline" size={25} color={colors.turquesaSuave} /></View>
-              <View style={s.atajoContenido}>
-                <Text style={s.atajoTitulo}>Raíces de la palabra</Text>
-                <Text style={s.atajoSub}>Arma nombres de lugares con sus raíces</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.turquesaSuave} />
-            </TouchableOpacity>
-            <TouchableOpacity style={[s.atajoBtn, s.atajoUltimo]} onPress={() => navigation.navigate('Duelo')} activeOpacity={0.85} accessibilityRole="button">
-              <View style={s.atajoIcono}><Ionicons name="people-outline" size={25} color={colors.turquesaSuave} /></View>
-              <View style={s.atajoContenido}>
-                <Text style={s.atajoTitulo}>Duelo de 2</Text>
-                <Text style={s.atajoSub}>Jueguen juntos en este dispositivo</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.turquesaSuave} />
-            </TouchableOpacity>
-          </View>
-        }
       />
 
       {/* Toast de atuendo nuevo */}
@@ -210,19 +164,4 @@ const s = StyleSheet.create({
   },
   toastTxt: { color: colors.doradoNeon, fontSize: 14, fontFamily: fonts.extra },
   toastSub: { color: colors.turquesaSuave, fontSize: 13, fontFamily: fonts.medium, marginTop: 2 },
-
-  atajoBtn: {
-    marginHorizontal: 16, marginTop: 4, marginBottom: 10,
-    paddingVertical: 12, paddingHorizontal: 14, borderRadius: radii.md,
-    backgroundColor: colors.nocheCard, borderWidth: 1,
-    borderColor: 'rgba(159,225,203,0.16)', minHeight: 76,
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-  },
-  atajoUltimo: { marginBottom: 16 },
-  atajoRepaso: { borderColor: 'rgba(242,177,52,0.5)' },
-  atajoIconoRepaso: { backgroundColor: 'rgba(242,177,52,0.14)' },
-  atajoIcono: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(159,225,203,0.08)' },
-  atajoContenido: { flex: 1, minWidth: 0 },
-  atajoTitulo: { color: colors.cielo, fontSize: 16, fontFamily: fonts.extra },
-  atajoSub: { color: colors.turquesaSuave, fontSize: 13, lineHeight: 18, fontFamily: fonts.regular, marginTop: 1 },
 });

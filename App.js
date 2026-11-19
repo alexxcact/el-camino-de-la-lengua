@@ -35,6 +35,7 @@ import QuizScreen       from './src/screens/QuizScreen';
 import EscuchaScreen    from './src/screens/EscuchaScreen';
 import MemoriaScreen    from './src/screens/MemoriaScreen';
 import RaicesScreen     from './src/screens/RaicesScreen';
+import JuegosScreen     from './src/screens/JuegosScreen';
 import DiccionarioScreen from './src/screens/DiccionarioScreen';
 import AvatarScreen     from './src/screens/AvatarScreen';
 import EstadisticasScreen from './src/screens/EstadisticasScreen';
@@ -56,17 +57,31 @@ function MapaStackScreen() {
     <MapaStack.Navigator screenOptions={hdrOpts}>
       <MapaStack.Screen name="Mapa"    component={MapaScreen}    options={{ headerShown: false }} />
       <MapaStack.Screen name="Mundo"   component={MundoScreen}   options={{ title: 'Mundo' }} />
-      <MapaStack.Screen name="RetoDiario" component={RetoDiarioScreen} options={{ title: 'Reto del día' }} />
-      <MapaStack.Screen name="Practica" component={PracticaScreen} options={{ title: 'Práctica libre' }} />
-      <MapaStack.Screen name="Duelo"    component={DueloScreen}    options={{ headerShown: false }} />
       <MapaStack.Screen name="Cinematica" component={CinematicaScreen} options={{ headerShown: false }} />
       <MapaStack.Screen name="Quiz"    component={QuizScreen}    options={{ title: 'Quiz de palabras' }} />
       <MapaStack.Screen name="Parejas" component={ParejasScreen} options={{ title: 'Une las parejas' }} />
       <MapaStack.Screen name="Dictado" component={DictadoScreen} options={{ title: 'Dictado cultural' }} />
       <MapaStack.Screen name="Escucha" component={EscuchaScreen} options={{ title: 'Escucha y elige' }} />
       <MapaStack.Screen name="Memoria" component={MemoriaScreen} options={{ title: 'Memoria andina' }} />
-      <MapaStack.Screen name="Raices"  component={RaicesScreen}  options={{ title: 'Raíces de la palabra' }} />
     </MapaStack.Navigator>
+  );
+}
+
+function JuegosStackScreen() {
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator screenOptions={hdrOpts}>
+      <Stack.Screen name="JuegosMain" component={JuegosScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="RetoDiario" component={RetoDiarioScreen} options={{ title: 'Reto del día' }} />
+      <Stack.Screen name="Practica" component={PracticaScreen} options={{ title: 'Práctica libre' }} />
+      <Stack.Screen name="Raices"   component={RaicesScreen}   options={{ title: 'Raíces de la palabra' }} />
+      <Stack.Screen name="Duelo"    component={DueloScreen}    options={{ headerShown: false }} />
+      <Stack.Screen name="Quiz"     component={QuizScreen}     options={{ title: 'Quiz de palabras' }} />
+      <Stack.Screen name="Parejas"  component={ParejasScreen}  options={{ title: 'Une las parejas' }} />
+      <Stack.Screen name="Dictado"  component={DictadoScreen}  options={{ title: 'Dictado cultural' }} />
+      <Stack.Screen name="Escucha"  component={EscuchaScreen}  options={{ title: 'Escucha y elige' }} />
+      <Stack.Screen name="Memoria"  component={MemoriaScreen}  options={{ title: 'Memoria andina' }} />
+    </Stack.Navigator>
   );
 }
 
@@ -107,6 +122,8 @@ function MainTabs() {
     >
       <Tab.Screen name="MapaTab"       component={MapaStackScreen}
         options={{ title: 'Mapa',       tabBarIcon: ({ focused, color }) => <TabIcon name="map" focused={focused} color={color} /> }} />
+      <Tab.Screen name="JuegosTab"     component={JuegosStackScreen}
+        options={{ title: 'Juegos',     tabBarIcon: ({ focused, color }) => <TabIcon name="game-controller" focused={focused} color={color} /> }} />
       <Tab.Screen name="DiccionarioTab" component={DiccionarioStackScreen}
         options={{ title: 'Diccionario', tabBarIcon: ({ focused, color }) => <TabIcon name="library" focused={focused} color={color} /> }} />
       <Tab.Screen name="PerfilTab"     component={PerfilStackScreen}

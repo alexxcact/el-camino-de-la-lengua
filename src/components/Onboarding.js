@@ -9,9 +9,9 @@ import PishkuMascota from './PishkuMascota';
 // estado.onboardingVisto). Explica el sendero, las misiones y el ciclo diario.
 const pasosDe = (nombre) => [
   { t: `¡Hola, ${nombre}! Soy Pishku`, d: 'Te acompaño en este camino para descubrir las palabras del pueblo Pasto.' },
-  { t: 'Tu sendero', d: 'Baja en el Mapa y toca un mundo para empezar a aprender sus palabras.' },
+  { t: 'Tu sendero', d: 'En el Mapa toca un mundo para empezar a aprender sus palabras.' },
   { t: 'Las misiones', d: 'Cada mundo tiene 5 retos: quiz, parejas, dictado, escucha y memoria. Complétalos para encender el mundo.' },
-  { t: 'Vuelve cada día', d: 'La Palabra de Hoy y el Reto del día hacen crecer tu racha. ¡Pequeños pasos, gran camino!' },
+  { t: 'Vuelve cada día', d: 'En la pestaña Juegos están la Palabra de Hoy y el Reto del día: hacen crecer tu racha. ¡Pequeños pasos, gran camino!' },
 ];
 
 export default function Onboarding({ nombre, onTerminar }) {

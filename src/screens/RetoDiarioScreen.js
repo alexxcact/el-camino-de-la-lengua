@@ -113,7 +113,7 @@ export default function RetoDiarioScreen({ navigation }) {
             <Text style={s.relojLbl}>VUELVE EN</Text>
             <Text style={s.relojTxt}>{reloj}</Text>
           </View>
-          <BotonGlow texto="← Volver al mapa" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
+          <BotonGlow texto="← Volver a Juegos" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
       </View>
     );
@@ -134,7 +134,7 @@ export default function RetoDiarioScreen({ navigation }) {
             <Text style={s.bonus}>+25 puntos de bonus diario</Text>
             <Text style={s.rachaTxt}>Racha: {estado.racha || 0} {(estado.racha || 0) === 1 ? 'día' : 'días'}</Text>
           </View>
-          <BotonGlow texto="← Volver al mapa" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
+          <BotonGlow texto="← Volver a Juegos" onPress={() => navigation.goBack()} variante="primario" tamano="lg" />
         </ScrollView>
         <Confeti activo={confeti} cantidad={30} onDone={() => setConfeti(false)} />
 

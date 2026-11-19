@@ -7,7 +7,7 @@ import { fonts } from '../theme/fonts';
 import { sonar } from '../utils/sonidos';
 
 /**
- * Tarjeta "Palabra del Día" (glass dorado) para la cabecera del mapa.
+ * Tarjeta "Palabra del Día" (glass dorado) para la pestaña Juegos.
  * Props:
  *  palabra        objeto de datos.js ({ p, e, fon, emoji, ... })
  *  retoCompletado bool — si ya completó el reto diario hoy

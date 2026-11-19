@@ -8,6 +8,7 @@ import { useJuego } from '../context/JuegoContext';
 import BotonGlow from '../components/BotonGlow';
 import PishkuMascota from '../components/PishkuMascota';
 import { sonar } from '../utils/sonidos';
+import { volverAlTerritorio } from '../utils/navegacion';
 
 const MECANICAS = [
   { key: 'Quiz',     emoji: '🧠', label: 'Quiz' },
@@ -65,7 +66,7 @@ export default function PracticaScreen({ navigation }) {
         <PishkuMascota celebrando={false} tamano={88} />
         <Text style={s.gateTit}>Aún no hay mucho para repasar</Text>
         <Text style={s.gateSub}>Aprende algunas palabras en el mapa primero y vuelve a practicarlas aquí cuando quieras.</Text>
-        <BotonGlow texto="🗺️ Ir al mapa" onPress={() => navigation.navigate('Mapa')} variante="primario" tamano="lg" />
+        <BotonGlow texto="🗺️ Ir al mapa" onPress={() => volverAlTerritorio(navigation)} variante="primario" tamano="lg" />
       </View>
     );
   }
