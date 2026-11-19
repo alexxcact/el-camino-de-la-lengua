@@ -24,12 +24,12 @@ const retratos = Object.fromEntries(
 
 // Monta la cinemática "prueba" con las escenas dadas. Devuelve la app y el
 // contador de vibraciones suaves.
-function montarCinematica(escenas, { navigation = { replace: noop, goBack: noop } } = {}) {
+function montarCinematica(escenas, { navigation = { replace: noop, goBack: noop }, relato = null, vistas = [] } = {}) {
   const vibraciones = { suave: 0 };
   const inicio = new Date(2026, 8, 5, 12);
   const app = montarComponente('src/screens/CinematicaScreen.js', {
     fecha: inicio,
-    props: { route: { params: { clave: 'prueba', mundoId: 1 } }, navigation },
+    props: { route: { params: relato ? { clave: 'relato1', mundoId: 1, rever: true } : { clave: 'prueba', mundoId: 1 } }, navigation },
     mocks: {
       ...retratos,
       'react-native': {
@@ -39,11 +39,12 @@ function montarCinematica(escenas, { navigation = { replace: noop, goBack: noop 
       },
       '../data/datos': {
         personajes: [{ id: 'taita-rimay', nombre: 'El guía', color: '#123456' }],
-        CINEMATICAS: { prueba: { titulo: 'Lectura de vocabulario', escenas } },
+        CINEMATICAS: relato ? {} : { prueba: { titulo: 'Lectura de vocabulario', escenas } },
+        RELATOS: relato ? { relato1: { titulo: 'Relato de prueba', fuente: relato, escenas } } : {},
       },
       '../data/personajesUtil': { significadoDe: p => `significado de ${p}` },
       '../data/imagenes': { imgMundoColor: {} },
-      '../context/JuegoContext': { useJuego: () => ({ marcarCinematicaVista: noop }) },
+      '../context/JuegoContext': { useJuego: () => ({ marcarCinematicaVista: c => vistas.push(c) }) },
       '../utils/sonidos': { sonar: { mundo: noop } },
       '../utils/feedback': { vibrar: { suave: () => { vibraciones.suave++; } } },
     },
@@ -155,5 +156,27 @@ test('terminar limpia los temporizadores de la reacción', () => {
   app.tree.props.onPress(); // última escena: termina
   assert.equal(JSON.stringify(destino), JSON.stringify(['Mundo', { mundoId: 1 }]));
   assert.equal(app.timers, 0);
+  app.unmount();
+});
+
+test('un relato muestra su fuente y al terminar cuenta como escuchado y vuelve atrás', () => {
+  const vistas = [];
+  let atras = 0;
+  const { app } = montarCinematica(
+    [{ personaje: 'chutun', fondo: 'aurora', texto: 'Cuentan los mayores.', resaltar: [] }],
+    { relato: 'Libro, p. 99', vistas, navigation: { replace: noop, goBack: () => { atras++; } } },
+  );
+  assert.ok(buscarNodo(app.tree, n => n.type === 'Text' && texto(n) === 'Según Libro, p. 99'));
+  app.tree.props.onPress(); // completa
+  app.tree.props.onPress(); // termina
+  assert.deepEqual(vistas, ['relato1']);
+  assert.equal(atras, 1);
+  app.unmount();
+});
+
+test('una cinemática de mundo no muestra línea de fuente', () => {
+  const vistas = [];
+  const app = montarCinematica([{ personaje: 'uma', fondo: 'aurora', texto: 'Hola.', resaltar: [] }], { vistas }).app;
+  assert.equal(buscarNodo(app.tree, n => n.type === 'Text' && /^Según /.test(texto(n))), undefined);
   app.unmount();
 });

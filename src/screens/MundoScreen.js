@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { ui, radii } from '../theme/ui';
-import { palabras, mundos, CINEMATICAS } from '../data/datos';
+import { palabras, mundos, CINEMATICAS, RELATOS } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import { imgMundoColor, imgMundoGris } from '../data/imagenes';
 import BotonGlow from '../components/BotonGlow';
@@ -96,6 +96,11 @@ export default function MundoScreen({ route, navigation }) {
 
   const todasCompletadas  = misiones.every(m => estado.misionesCompletadas.has(m.id));
   const mundoYaCompletado = estado.mundosCompletados.has(mundoId);
+  // Relato del mundo (tomado de los libros fuente): se desbloquea al completarlo.
+  const claveRelato = `relato${mundoId}`;
+  const relato = RELATOS?.[claveRelato];
+  const relatoNuevo = !!relato && !(estado.cinematicasVistas || []).includes(claveRelato);
+  const abrirRelato = () => navigation.navigate('Cinematica', { clave: claveRelato, mundoId, rever: true });
 
   useEffect(() => {
     if (todasCompletadas && !mundoYaCompletado) {
@@ -208,6 +213,21 @@ export default function MundoScreen({ route, navigation }) {
           <View style={est.compBanner}>
             <Text style={est.compTit}>¡Mundo completado!</Text>
             <Text style={est.compSub}>+20 puntos · Siguiente mundo desbloqueado</Text>
+            {relato && (
+              <TouchableOpacity
+                style={est.relatoBtn}
+                onPress={abrirRelato}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel={`Escuchar el relato: ${relato.titulo}`}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={est.relatoLbl}>{relatoNuevo ? 'RELATO NUEVO' : 'RELATO DEL MUNDO'}</Text>
+                  <Text style={est.relatoTit}>{relato.titulo}</Text>
+                </View>
+                <Text style={est.relatoIr}>Escuchar ›</Text>
+              </TouchableOpacity>
+            )}
             <BotonGlow texto="Ir al mapa" onPress={() => navigation.navigate('Mapa')} variante="secundario" tamano="sm" />
           </View>
         )}
@@ -247,11 +267,19 @@ export default function MundoScreen({ route, navigation }) {
               +20
             </Animated.Text>
             <View style={{ gap: 10, marginTop: 6, alignSelf: 'stretch' }}>
+              {relato && (
+                <BotonGlow
+                  texto="Escuchar el relato"
+                  onPress={() => { cerrarModal(); abrirRelato(); }}
+                  variante="primario"
+                  tamano="lg"
+                />
+              )}
               <BotonGlow
                 texto="Ir al mapa"
                 onPress={() => { cerrarModal(); navigation.navigate('Mapa'); }}
-                variante="primario"
-                tamano="lg"
+                variante={relato ? 'secundario' : 'primario'}
+                tamano={relato ? 'md' : 'lg'}
               />
               <BotonGlow texto="Seguir aquí" onPress={cerrarModal} variante="fantasma" tamano="md" />
             </View>
@@ -321,6 +349,10 @@ const est = StyleSheet.create({
 
   compBanner: { ...ui.cardDestacada, alignItems: 'center', marginTop: 14, gap: 8 },
   compTit:    { fontSize: 18, fontFamily: fonts.extra, color: colors.doradoNeon },
+  relatoBtn:  { alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingHorizontal: 14, paddingVertical: 10, borderRadius: radii.md, borderWidth: 1, borderColor: 'rgba(250,199,117,0.5)', backgroundColor: 'rgba(250,199,117,0.08)' },
+  relatoLbl:  { fontSize: 10, letterSpacing: 2, fontFamily: fonts.bold, color: colors.turquesaSuave },
+  relatoTit:  { fontSize: 15, fontFamily: fonts.extra, color: colors.cielo, marginTop: 2 },
+  relatoIr:   { fontSize: 14, fontFamily: fonts.bold, color: colors.doradoNeon },
   compSub:    { ...ui.sub, fontSize: 14, textAlign: 'center' },
 
   modalOverlay: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', padding: 22 },

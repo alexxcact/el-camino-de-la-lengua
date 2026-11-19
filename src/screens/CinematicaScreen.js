@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { ui } from '../theme/ui';
-import { CINEMATICAS, personajes } from '../data/datos';
+import { CINEMATICAS, RELATOS, personajes } from '../data/datos';
 import { imgMundoColor } from '../data/imagenes';
 import { useJuego } from '../context/JuegoContext';
 import { sonar } from '../utils/sonidos';
@@ -65,7 +65,9 @@ function renderResaltado(texto, resaltar = []) {
 export default function CinematicaScreen({ route, navigation }) {
   const { clave, mundoId, rever = false } = route.params || {};
   const { marcarCinematicaVista } = useJuego();
-  const cine = CINEMATICAS[clave];
+  // Cinemáticas de entrada (mundoN) o relatos de los libros (relatoN).
+  const esRelato = !CINEMATICAS[clave] && !!RELATOS?.[clave];
+  const cine = CINEMATICAS[clave] || RELATOS?.[clave];
 
   const [idx, setIdx] = useState(0);
   const [mostrado, setMostrado] = useState('');
@@ -103,6 +105,8 @@ export default function CinematicaScreen({ route, navigation }) {
     clearInterval(intervalRef.current);
     limpiarReaccion();
     if (rever) {
+      // Un relato cuenta como escuchado aunque se abra desde el mundo.
+      if (esRelato) marcarCinematicaVista(clave);
       navigation.goBack();
     } else {
       marcarCinematicaVista(clave);
@@ -188,13 +192,13 @@ export default function CinematicaScreen({ route, navigation }) {
       {/* Título de la cinemática */}
       <View style={s.tituloWrap}>
         <Text style={s.tituloTxt}>{cine.titulo}</Text>
-      </View>
-
-      {/* Puntitos de progreso */}
-      <View style={s.progRow}>
-        {cine.escenas.map((_, i) => (
-          <View key={i} style={[s.progDot, i === idx && s.progDotOn, i < idx && s.progDotDone]} />
-        ))}
+        {esRelato && cine.fuente ? <Text style={s.fuenteTxt}>Según {cine.fuente}</Text> : null}
+        {/* Puntitos de progreso (en el flujo, debajo del título y la fuente) */}
+        <View style={s.progRow}>
+          {cine.escenas.map((_, i) => (
+            <View key={i} style={[s.progDot, i === idx && s.progDotOn, i < idx && s.progDotDone]} />
+          ))}
+        </View>
       </View>
 
       <View style={{ flex: 1 }} />
@@ -239,9 +243,10 @@ const s = StyleSheet.create({
   saltarTxt: { color: colors.cielo, fontSize: 13, fontFamily: fonts.bold },
 
   tituloWrap: { position: 'absolute', top: 52, left: 16, right: 90, zIndex: 5 },
+  fuenteTxt:  { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2, textShadowColor: 'rgba(0,0,0,0.6)', textShadowRadius: 6 },
   tituloTxt:  { color: colors.doradoNeon, fontSize: 14, fontFamily: fonts.extra, textShadowColor: 'rgba(0,0,0,0.6)', textShadowRadius: 8 },
 
-  progRow:    { position: 'absolute', top: 86, left: 16, flexDirection: 'row', gap: 7, zIndex: 5 },
+  progRow:    { flexDirection: 'row', gap: 7, marginTop: 14 },
   progDot:    { width: 22, height: 5, borderRadius: 3, backgroundColor: 'rgba(225,245,238,0.25)' },
   progDotOn:  { backgroundColor: colors.doradoNeon, width: 30 },
   progDotDone:{ backgroundColor: colors.turquesaClaro },

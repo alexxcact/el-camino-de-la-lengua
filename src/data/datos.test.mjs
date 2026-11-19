@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { palabras, mundos, frases, personajes, CINEMATICAS, logros, TIPOS_MISION } from './datos.js';
+import { palabras, mundos, frases, personajes, CINEMATICAS, RELATOS, logros, TIPOS_MISION } from './datos.js';
 import { hidratarEstado, serializarEstado, STORAGE_KEY } from '../context/logica.js';
 
 // Contrato del listado entregado: los ID no se infieren del orden del archivo.
@@ -192,3 +192,23 @@ test('hidratar y guardar una partida anterior conserva el progreso por ID y las 
   assert.ok(guardado.logrosDesbloqueados.every(id => logros.some(l => l.id === id)));
 });
 
+
+test('hay un relato por mundo, con fuente, personajes válidos y solo palabras del corpus resaltadas', () => {
+  assert.deepEqual(Object.keys(RELATOS), mundos.map(m => `relato${m.id}`));
+  for (const mundo of mundos) {
+    const relato = RELATOS[`relato${mundo.id}`];
+    assert.ok(relato.titulo.trim().length > 0);
+    assert.match(relato.fuente, /p{1,2}\. \d/, 'cita páginas del libro');
+    assert.ok(relato.escenas.length >= 4);
+    for (const escena of relato.escenas) {
+      assert.ok(personajes.some(p => p.id.replaceAll('-', '_') === escena.personaje), escena.personaje);
+      assert.ok(escena.fondo === mundo.id || escena.fondo === 'aurora');
+      assert.ok(escena.texto.length <= 230, `${relato.titulo}: escena demasiado larga`);
+      assert.doesNotMatch(escena.texto, /\b(olvido|fracaso|perdiste|mal)\b/i);
+      for (const destacada of escena.resaltar) {
+        assert.ok(palabras.some(p => p.p === destacada), destacada);
+        assert.ok(escena.texto.includes(destacada), destacada);
+      }
+    }
+  }
+});
