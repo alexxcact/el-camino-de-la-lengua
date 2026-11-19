@@ -39,7 +39,7 @@ import DiccionarioScreen from './src/screens/DiccionarioScreen';
 import AvatarScreen     from './src/screens/AvatarScreen';
 import EstadisticasScreen from './src/screens/EstadisticasScreen';
 import { ParejasScreen, DictadoScreen } from './src/screens/MisionesScreen';
-import { MochilaScreen, PerfilScreen }  from './src/screens/MochilaPerfilScreen';
+import { PerfilScreen }  from './src/screens/PerfilScreen';
 
 const Tab        = createBottomTabNavigator();
 const RootStack  = createStackNavigator();
@@ -67,15 +67,6 @@ function MapaStackScreen() {
       <MapaStack.Screen name="Memoria" component={MemoriaScreen} options={{ title: 'Memoria andina' }} />
       <MapaStack.Screen name="Raices"  component={RaicesScreen}  options={{ title: 'Raíces de la palabra' }} />
     </MapaStack.Navigator>
-  );
-}
-
-function MochilaStackScreen() {
-  const Stack = createStackNavigator();
-  return (
-    <Stack.Navigator screenOptions={hdrOpts}>
-      <Stack.Screen name="MochilaMain" component={MochilaScreen} options={{ title: 'Mochila de palabras' }} />
-    </Stack.Navigator>
   );
 }
 
@@ -116,8 +107,6 @@ function MainTabs() {
     >
       <Tab.Screen name="MapaTab"       component={MapaStackScreen}
         options={{ title: 'Mapa',       tabBarIcon: ({ focused, color }) => <TabIcon name="map" focused={focused} color={color} /> }} />
-      <Tab.Screen name="MochilaTab"    component={MochilaStackScreen}
-        options={{ title: 'Mochila',    tabBarIcon: ({ focused, color }) => <TabIcon name="book" focused={focused} color={color} /> }} />
       <Tab.Screen name="DiccionarioTab" component={DiccionarioStackScreen}
         options={{ title: 'Diccionario', tabBarIcon: ({ focused, color }) => <TabIcon name="library" focused={focused} color={color} /> }} />
       <Tab.Screen name="PerfilTab"     component={PerfilStackScreen}

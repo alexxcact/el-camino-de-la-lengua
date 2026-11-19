@@ -64,7 +64,7 @@ test('filtrar Cuasmal presenta quince entradas y conserva la marca de aprendido 
 
   assert.equal(lista().props.data.length, 15);
   assert.ok(lista().props.data.every(p => p.mundo === 5));
-  assert.ok(buscarNodo(app.tree, n => n.type === 'Text' && texto(n) === '15 palabras'));
+  assert.ok(buscarNodo(app.tree, n => n.type === 'Text' && texto(n).startsWith('15 palabras · 1/')));
   assert.ok(buscarNodo(fila(61), n => n.type === 'Text' && texto(n) === '✓'));
   assert.equal(buscarNodo(fila(62), n => n.type === 'Text' && texto(n) === '✓'), undefined);
   assert.ok(buscarNodo(fila(62), n => n.props.name === 'lock-closed'));
@@ -100,4 +100,32 @@ test('el diccionario monta sin route ni navigation', () => {
   const { app, lista } = diccionario();
   assert.equal(lista().props.data.length, palabras.length);
   app.unmount();
+});
+
+test('Mi mochila deja solo las palabras aprendidas y cuenta cuántas van', () => {
+  const { app, lista } = diccionario([5, 18, 40]);
+  assert.equal(lista().props.data.length, palabras.length);
+  assert.ok(buscarNodo(app.tree, n => n.type === 'Text' && texto(n).includes(`3/${palabras.length} aprendidas`)));
+  const boton = buscarNodo(app.tree, n => n.type === 'TouchableOpacity' && n.props.accessibilityLabel?.startsWith('Mi mochila'));
+  boton.props.onPress();
+  assert.equal(JSON.stringify(lista().props.data.map(p => p.id).sort((a, b) => a - b)), '[5,18,40]');
+  buscarNodo(app.tree, n => n.type === 'TouchableOpacity' && n.props.accessibilityLabel?.startsWith('Mi mochila')).props.onPress();
+  assert.equal(lista().props.data.length, palabras.length);
+  app.unmount();
+});
+
+test('Mi mochila vacía invita a aprender en el mapa', () => {
+  const { app, lista } = diccionario([]);
+  buscarNodo(app.tree, n => n.type === 'TouchableOpacity' && n.props.accessibilityLabel?.startsWith('Mi mochila')).props.onPress();
+  assert.equal(lista().props.data.length, 0);
+  const vacio = lista().props.ListEmptyComponent;
+  assert.ok(texto(vacio).includes('Tu mochila está vacía'));
+  app.unmount();
+});
+
+test('ya no existe la pestaña Mochila', async () => {
+  const fs = await import('node:fs');
+  const app = fs.readFileSync('App.js', 'utf8');
+  assert.ok(!app.includes('MochilaTab'));
+  assert.ok(app.includes('DiccionarioTab'));
 });

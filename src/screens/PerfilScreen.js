@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, FlatList, KeyboardAvoidingView, Platform, Switch } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, KeyboardAvoidingView, Platform, Switch } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
@@ -13,7 +13,6 @@ import MedallaPasto, { MEDALLAS_INFO } from '../components/MedallaPasto';
 import AvatarSVG from '../components/AvatarSVG';
 import Medallon from '../components/Medallon';
 import { programarNotificacionDiaria, cancelarNotificaciones } from '../utils/notificaciones';
-import PalabraIlustrada from '../components/PalabraIlustrada';
 
 // Formatea una hora 0-23 a "4:00 PM"
 const formatoHora = (h) => {
@@ -21,117 +20,6 @@ const formatoHora = (h) => {
   const h12 = h % 12 === 0 ? 12 : h % 12;
   return `${h12}:00 ${ampm}`;
 };
-
-// ── MOCHILA ───────────────────────────────────────────────────
-export function MochilaScreen({ navigation }) {
-  const { estado } = useJuego();
-  const [busqueda, setBusqueda] = useState('');
-  const [catActiva, setCatActiva] = useState('Todas');
-  const [detalle, setDetalle] = useState(null);
-
-  const aprendidas = palabras.filter(p => estado.palabrasVistas.has(p.id));
-  const cats = ['Todas', ...new Set(aprendidas.map(p => p.cat))];
-
-  const filtradas = aprendidas.filter(p => {
-    const okC = catActiva === 'Todas' || p.cat === catActiva;
-    const q = busqueda.toLowerCase();
-    const okQ = !q || p.p.toLowerCase().includes(q) || p.e.toLowerCase().includes(q);
-    return okC && okQ;
-  });
-
-  // ─── Vista detalle ───
-  if (detalle) return (
-    <ScrollView style={ss.container} contentContainerStyle={{ padding: 16 }}>
-      <TouchableOpacity style={ss.backBtn} onPress={() => setDetalle(null)}>
-        <Text style={ss.backTxt}>← Volver a la Mochila</Text>
-      </TouchableOpacity>
-
-      <View style={ss.detWrap}>
-        <Text style={ss.detCat}>{detalle.cat}</Text>
-        <PalabraIlustrada palabra={detalle} tamano={96} style={{ alignSelf: 'center', marginBottom: 8 }} />
-        <Text style={ss.detPast}>{detalle.p}</Text>
-        <Text style={ss.detFon}>Grafía: {detalle.fon}</Text>
-        <Text style={ss.detEsp}>{detalle.e}</Text>
-        <View style={ss.detDiv} />
-        <Text style={ss.detEj}>{detalle.ej}</Text>
-      </View>
-
-      <View style={ss.infoCard}>
-        <Text style={ss.infoTit}>Sobre esta entrada</Text>
-        <Text style={ss.infoTxt}>Fuente: {detalle.fuente}</Text>
-        {detalle.respaldo === 'pendiente_validacion' && (
-          <Text style={ss.infoTxt}>Validación documental pendiente.</Text>
-        )}
-      </View>
-    </ScrollView>
-  );
-
-  // ─── Vista vacía ───
-  if (aprendidas.length === 0) return (
-    <View style={[ss.container, { justifyContent: 'center', alignItems: 'center', padding: 30 }]}>
-      <Text style={ss.vacioTit}>Tu mochila está dormida</Text>
-      <Text style={ss.vacioSub}>Aprende palabras en las lecciones y aparecerán aquí, brillando</Text>
-      <TouchableOpacity style={ss.vacioBtn} onPress={() => navigation.navigate('Mapa')}>
-        <Text style={ss.vacioBtnTxt}>Ir al Mapa →</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  // ─── Lista principal ───
-  return (
-    <View style={ss.container}>
-
-      {/* Buscador */}
-      <View style={ss.srchWrap}>
-        <Ionicons name="search" size={16} color={colors.turquesaSuave} style={ss.srchIco} />
-        <TextInput
-          style={ss.srchIn}
-          placeholder="Buscar palabra o significado…"
-          placeholderTextColor={colors.turquesaSuave}
-          value={busqueda}
-          onChangeText={setBusqueda}
-        />
-      </View>
-
-      {/* Filtros */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ maxHeight: 44 }}
-        contentContainerStyle={{ paddingHorizontal: 16, gap: 8, alignItems: 'center' }}
-      >
-        {cats.map(c => (
-          <TouchableOpacity key={c} style={[ss.catBtn, catActiva === c && ss.catOn]} onPress={() => setCatActiva(c)}>
-            <Text style={[ss.catTxt, catActiva === c && { color: colors.noche }]}>{c}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      <View style={ss.countRow}>
-        <Text style={ss.count}>{filtradas.length} palabras · {aprendidas.length}/{palabras.length} encendidas</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('DiccionarioTab')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Text style={ss.dicLink}>Diccionario →</Text>
-        </TouchableOpacity>
-      </View>
-
-      <FlatList
-        data={filtradas}
-        keyExtractor={i => String(i.id)}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={ss.wordRow} onPress={() => setDetalle(item)}>
-            <PalabraIlustrada palabra={item} tamano={38} style={{ marginRight: 12 }} />
-            <View style={{ flex: 1 }}>
-              <Text style={ss.wordPast}>{item.p}</Text>
-              <Text style={ss.wordEsp}>{item.e}</Text>
-            </View>
-            <View style={ss.badge}><Text style={ss.badgeTxt}>{item.cat}</Text></View>
-          </TouchableOpacity>
-        )}
-      />
-    </View>
-  );
-}
 
 // ── PERFIL ────────────────────────────────────────────────────
 export function PerfilScreen({ navigation }) {
@@ -384,58 +272,6 @@ export function PerfilScreen({ navigation }) {
 }
 
 // ─── Estilos Mochila ───────────────────────────────────────────
-const ss = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.noche },
-
-  srchWrap: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: 'rgba(8,26,34,0.62)',
-    margin: 16, borderRadius: radii.pill,
-    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.35)',
-    paddingHorizontal: 16,
-  },
-  srchIco: { fontSize: 16, marginRight: 8 },
-  srchIn:  { flex: 1, paddingVertical: 12, fontSize: 14, color: colors.cielo, fontFamily: fonts.medium },
-
-  catBtn: { ...ui.chip },
-  catOn:  { backgroundColor: colors.turquesa, borderColor: colors.turquesa },
-  catTxt: { ...ui.chipTxt },
-
-  countRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, marginVertical: 8 },
-  count: { ...ui.caption },
-  dicLink: { fontSize: 12, color: colors.doradoNeon, fontFamily: fonts.bold },
-
-  wordRow: {
-    ...ui.cardClara,
-    padding: 14, marginBottom: 9,
-    flexDirection: 'row', alignItems: 'center',
-    borderLeftWidth: 4, borderLeftColor: colors.sol,
-  },
-  wordPast: { fontSize: 19, color: colors.sol, fontFamily: fonts.bold },
-  wordEsp:  { fontSize: 13, color: colors.textoCartaSuave, marginTop: 2, fontFamily: fonts.medium },
-  badge:    { ...ui.chip, alignSelf: 'flex-start' },
-  badgeTxt: { ...ui.chipTxt, fontSize: 10 },
-
-  backBtn: { marginBottom: 12 },
-  backTxt: { fontSize: 13, color: colors.turquesaClaro, fontFamily: fonts.semibold },
-
-  vacioTit: { ...ui.h3, marginTop: 12, textAlign: 'center' },
-  vacioSub: { ...ui.sub, fontSize: 14, fontStyle: 'italic', marginTop: 6, textAlign: 'center', lineHeight: 20 },
-  vacioBtn: { backgroundColor: colors.turquesa, borderRadius: radii.sm, paddingHorizontal: 24, paddingVertical: 14, marginTop: 22 },
-  vacioBtnTxt: { color: colors.cielo, fontFamily: fonts.bold, fontSize: 15 },
-
-  detWrap: { ...ui.cardClara, padding: 24, marginBottom: 14, overflow: 'hidden' },
-  detCat:  { fontSize: 10, color: colors.textoCartaSuave, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6, textAlign: 'center', fontFamily: fonts.bold },
-  detPast: { fontSize: 36, color: colors.sol, textAlign: 'center', fontFamily: fonts.extra },
-  detFon:  { fontSize: 12, color: colors.textoCartaSuave, fontFamily: fonts.regular, fontStyle: 'italic', textAlign: 'center', marginTop: 4 },
-  detEsp:  { fontSize: 18, color: colors.textoCarta, marginTop: 6, textAlign: 'center', fontFamily: fonts.semibold },
-  detDiv:  { ...ui.divider, marginVertical: 12 },
-  detEj:   { fontSize: 12, color: colors.textoCartaSuave, fontFamily: fonts.regular, fontStyle: 'italic', textAlign: 'center' },
-  infoCard:{ ...ui.cardClara, padding: 16 },
-  infoTit: { fontSize: 14, fontFamily: fonts.bold, color: colors.textoCarta, marginBottom: 8 },
-  infoTxt: { fontSize: 13, color: colors.textoCartaSuave, fontFamily: fonts.regular, lineHeight: 20 },
-});
-
 // ─── Estilos Perfil ────────────────────────────────────────────
 const ps = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.noche },

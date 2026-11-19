@@ -46,6 +46,8 @@ export default function DiccionarioScreen({ route, navigation } = {}) {
   const [orden, setOrden] = useState('past');
   const [expandido, setExpandido] = useState(null);
   const [filtrosAbiertos, setFiltrosAbiertos] = useState(false);
+  // "Mi mochila": solo las palabras que ya aprendiste (antes era otra pestaña).
+  const [soloMias, setSoloMias] = useState(false);
   const listaRef = useRef(null);
   const timersRef = useRef([]);
   const reintentosRef = useRef(0);
@@ -62,6 +64,7 @@ export default function DiccionarioScreen({ route, navigation } = {}) {
       setBusqueda('');
       setMundosSel(new Set());
       setCatsSel(new Set());
+      setSoloMias(false);
       setFiltrosAbiertos(false);
       setExpandido(id);
       // Sin filtros la lista es el corpus completo en el orden actual.
@@ -131,10 +134,13 @@ export default function DiccionarioScreen({ route, navigation } = {}) {
       const okQ = !q || norm(p.p).includes(q) || norm(p.e).includes(q);
       const okM = mundosSel.size === 0 || mundosSel.has(p.mundo);
       const okC = catsSel.size === 0 || catsSel.has(p.cat);
-      return okQ && okM && okC;
+      const okV = !soloMias || estado.palabrasVistas.has(p.id);
+      return okQ && okM && okC && okV;
     });
     return [...r].sort(COMPARADORES[orden]);
-  }, [busqueda, mundosSel, catsSel, orden]);
+  }, [busqueda, mundosSel, catsSel, orden, soloMias, estado.palabrasVistas]);
+
+  const aprendidas = palabras.filter(p => estado.palabrasVistas.has(p.id)).length;
 
   const expandir = (id) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -229,7 +235,17 @@ export default function DiccionarioScreen({ route, navigation } = {}) {
 
       {/* Contador + botón Filtros */}
       <View style={s.toolRow}>
-        <Text style={s.contador}>{lista.length} palabras</Text>
+        <Text style={[s.contador, { flexShrink: 1 }]}>{lista.length} palabras · {aprendidas}/{palabras.length} aprendidas</Text>
+        <TouchableOpacity
+          style={[s.filtBtn, s.mochilaBtn, soloMias && s.filtBtnOn]}
+          onPress={() => setSoloMias(v => !v)}
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel="Mi mochila: ver solo las palabras que ya aprendiste"
+          accessibilityState={{ selected: soloMias }}
+        >
+          <Text style={[s.filtBtnTxt, soloMias && { color: '#fff' }]}>Mi mochila</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={[s.filtBtn, (filtrosAbiertos || mundosSel.size + catsSel.size > 0) && s.filtBtnOn]}
           onPress={toggleFiltros}
@@ -291,7 +307,11 @@ export default function DiccionarioScreen({ route, navigation } = {}) {
         ListEmptyComponent={
           <View style={s.vacio}>
             <PishkuMascota celebrando={false} tamano={72} />
-            <Text style={s.vacioTxt}>No encontramos esa palabra todavía</Text>
+            <Text style={s.vacioTxt}>
+              {soloMias && aprendidas === 0
+                ? 'Tu mochila está vacía: aprende palabras en los mundos del mapa y aparecerán aquí'
+                : 'No encontramos esa palabra todavía'}
+            </Text>
           </View>
         }
       />
@@ -325,6 +345,7 @@ const s = StyleSheet.create({
   filtBtn:     { minHeight: 40, justifyContent: 'center', paddingHorizontal: 14, borderRadius: radii.pill, backgroundColor: 'rgba(8,26,34,0.62)', borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.4)' },
   filtBtnOn:   { backgroundColor: colors.cieloVivo, borderColor: colors.cieloVivo },
   filtBtnTxt:  { fontSize: 13, color: colors.doradoNeon, fontFamily: fonts.bold },
+  mochilaBtn:  { marginLeft: 'auto', marginRight: 8 },
 
   ordenRow:  { flexDirection: 'row', gap: 8, paddingHorizontal: 14, marginBottom: 10 },
   ordenChip: { ...ui.chip, flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 48, paddingVertical: 8 },
