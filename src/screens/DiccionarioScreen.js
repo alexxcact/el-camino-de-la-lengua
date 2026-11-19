@@ -52,7 +52,7 @@ export default function DiccionarioScreen({ route, navigation } = {}) {
 
   const palabraIdParam = route?.params?.palabraId;
 
-  // Llegar con una palabra (p.ej. desde Personajes): limpia búsqueda y filtros,
+  // Llegar con una palabra (desde otra pestaña): limpia búsqueda y filtros,
   // expande su ficha y la lleva a la vista. Luego consume el parámetro.
   useEffect(() => {
     if (palabraIdParam == null) return undefined;

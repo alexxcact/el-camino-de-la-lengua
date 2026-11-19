@@ -48,6 +48,7 @@ export const estadoInicial = {
   onboardingVisto: false,  // si ya vio el tutorial de "cómo jugar" en el Mapa (primitivo)
   palabrasFalladas: [],    // [ids] de palabras erradas en quiz/escucha, para el Repaso (array, merge a default)
   ultimoSaludoFecha: null, // 'YYYY-MM-DD' del último saludo diario de un personaje en el Mapa (primitivo)
+  raicesArmadas: [],       // ['Imues', ...] palabras armadas en Raíces de la palabra (array, merge a default)
 };
 
 export const niveles = [
@@ -145,6 +146,7 @@ export function hidratarEstado(parsed) {
     logrosDesbloqueados: new Set(p.logrosDesbloqueados || []),
     diasActivos:       Array.isArray(p.diasActivos)       ? p.diasActivos       : [],
     cinematicasVistas: Array.isArray(p.cinematicasVistas) ? p.cinematicasVistas : [],
+    raicesArmadas:     Array.isArray(p.raicesArmadas)     ? p.raicesArmadas     : [],
     palabrasFalladas:  Array.isArray(p.palabrasFalladas)  ? p.palabrasFalladas  : [],
     // merge profundo del avatar (objetos planos) para usuarios sin estos campos
     avatar: { ...estadoInicial.avatar, ...(p.avatar || {}) },

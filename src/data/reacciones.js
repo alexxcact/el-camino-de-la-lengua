@@ -1,6 +1,6 @@
 // ───────────────────────────────────────────────────────────────
 // Qué personaje habla y con qué línea (v1 "personajes vivos").
-// Módulo puro: sin React. Lo usan Quiz, Escucha, Personajes y Mapa, y se
+// Módulo puro: sin React. Lo usan Quiz, Escucha, Mapa y los compañeros de cada Mundo, y se
 // puede importar en tests.
 // ───────────────────────────────────────────────────────────────
 import { palabras } from './datos.js';

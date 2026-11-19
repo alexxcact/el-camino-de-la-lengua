@@ -34,7 +34,7 @@ import CinematicaScreen from './src/screens/CinematicaScreen';
 import QuizScreen       from './src/screens/QuizScreen';
 import EscuchaScreen    from './src/screens/EscuchaScreen';
 import MemoriaScreen    from './src/screens/MemoriaScreen';
-import PersonajesScreen from './src/screens/PersonajesScreen';
+import RaicesScreen     from './src/screens/RaicesScreen';
 import DiccionarioScreen from './src/screens/DiccionarioScreen';
 import AvatarScreen     from './src/screens/AvatarScreen';
 import EstadisticasScreen from './src/screens/EstadisticasScreen';
@@ -65,16 +65,8 @@ function MapaStackScreen() {
       <MapaStack.Screen name="Dictado" component={DictadoScreen} options={{ title: 'Dictado cultural' }} />
       <MapaStack.Screen name="Escucha" component={EscuchaScreen} options={{ title: 'Escucha y elige' }} />
       <MapaStack.Screen name="Memoria" component={MemoriaScreen} options={{ title: 'Memoria andina' }} />
+      <MapaStack.Screen name="Raices"  component={RaicesScreen}  options={{ title: 'Raíces de la palabra' }} />
     </MapaStack.Navigator>
-  );
-}
-
-function PersonajesStackScreen() {
-  const Stack = createStackNavigator();
-  return (
-    <Stack.Navigator screenOptions={hdrOpts}>
-      <Stack.Screen name="PersonajesMain" component={PersonajesScreen} options={{ title: 'Personajes del Camino' }} />
-    </Stack.Navigator>
   );
 }
 
@@ -124,8 +116,6 @@ function MainTabs() {
     >
       <Tab.Screen name="MapaTab"       component={MapaStackScreen}
         options={{ title: 'Mapa',       tabBarIcon: ({ focused, color }) => <TabIcon name="map" focused={focused} color={color} /> }} />
-      <Tab.Screen name="PersonajesTab" component={PersonajesStackScreen}
-        options={{ title: 'Héroes',     tabBarIcon: ({ focused, color }) => <TabIcon name="leaf" focused={focused} color={color} /> }} />
       <Tab.Screen name="MochilaTab"    component={MochilaStackScreen}
         options={{ title: 'Mochila',    tabBarIcon: ({ focused, color }) => <TabIcon name="book" focused={focused} color={color} /> }} />
       <Tab.Screen name="DiccionarioTab" component={DiccionarioStackScreen}

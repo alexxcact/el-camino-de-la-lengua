@@ -151,6 +151,14 @@ export default function MapaScreen({ navigation }) {
               </View>
               <Ionicons name="chevron-forward" size={20} color={colors.turquesaSuave} />
             </TouchableOpacity>
+            <TouchableOpacity style={s.atajoBtn} onPress={() => navigation.navigate('Raices')} activeOpacity={0.85} accessibilityRole="button">
+              <View style={s.atajoIcono}><Ionicons name="extension-puzzle-outline" size={25} color={colors.turquesaSuave} /></View>
+              <View style={s.atajoContenido}>
+                <Text style={s.atajoTitulo}>Raíces de la palabra</Text>
+                <Text style={s.atajoSub}>Arma nombres de lugares con sus raíces</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={colors.turquesaSuave} />
+            </TouchableOpacity>
             <TouchableOpacity style={[s.atajoBtn, s.atajoUltimo]} onPress={() => navigation.navigate('Duelo')} activeOpacity={0.85} accessibilityRole="button">
               <View style={s.atajoIcono}><Ionicons name="people-outline" size={25} color={colors.turquesaSuave} /></View>
               <View style={s.atajoContenido}>

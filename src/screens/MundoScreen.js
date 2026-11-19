@@ -16,6 +16,7 @@ import PalabraIlustrada from '../components/PalabraIlustrada';
 import IconoActividad from '../components/IconoActividad';
 import MedallaPasto, { MEDALLAS_INFO } from '../components/MedallaPasto';
 import RetratoMini from '../components/RetratosPersonaje';
+import CompanerosMundo from '../components/CompanerosMundo';
 import { ANFITRIONES, nombreCorto } from '../data/personajesUtil';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
@@ -163,6 +164,8 @@ export default function MundoScreen({ route, navigation }) {
             <Text style={est.historiaTxt}>Ver historia de nuevo</Text>
           </TouchableOpacity>
         )}
+
+        <CompanerosMundo mundoId={mundoId} />
 
         <Text style={est.seccionTitulo}>Aprende primero</Text>
         <TouchableOpacity accessibilityRole="button" style={est.card} onPress={() => setVistaActiva('leccion')} activeOpacity={0.85}>

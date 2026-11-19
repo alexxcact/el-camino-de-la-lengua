@@ -98,6 +98,18 @@ export function JuegoProvider({ children }) {
     actualizarEstado(prev => prev.onboardingVisto ? prev : { ...prev, onboardingVisto: true });
   }, [actualizarEstado]);
 
+  // Raíces de la palabra: la primera vez que arma una palabra suma 3 puntos;
+  // repetirla no da puntos. Los puntos se inlinean (ganarPuntos se declara después).
+  const marcarRaizArmada = useCallback((palabra) => {
+    actualizarEstado(prev => {
+      const armadas = prev.raicesArmadas || [];
+      if (armadas.includes(palabra)) return prev;
+      const puntos = prev.puntos + 3;
+      const nivel = niveles.filter(nv => puntos >= nv.min).length;
+      return agregarDiaActivo({ ...prev, raicesArmadas: [...armadas, palabra], puntos, nivel });
+    });
+  }, [actualizarEstado]);
+
   // Marca que hoy ya se mostró el saludo diario del Mapa. Primitivo, no toca Sets.
   const marcarSaludoHoy = useCallback(() => {
     const hoy = fechaHoy();
@@ -316,7 +328,7 @@ export function JuegoProvider({ children }) {
       cambiarNotificaciones, guardarHoraNotificacion, marcarMemoriaPerfecta,
       guardarAvatar, verificarDesbloqueoAvatar, registrarAperturaDiccionario,
       completarPractica, registrarDuelo, marcarCinematicaVista,
-      marcarOnboardingVisto, marcarSaludoHoy, registrarFallo, quitarFallo,
+      marcarOnboardingVisto, marcarSaludoHoy, marcarRaizArmada, registrarFallo, quitarFallo,
     }}>
       {children}
     </JuegoContext.Provider>
