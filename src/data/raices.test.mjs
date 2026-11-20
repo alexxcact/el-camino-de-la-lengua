@@ -23,7 +23,7 @@ test('cada palabra de Raíces se forma exactamente con sus piezas y cita su fuen
     }
     assert.match(r.fuente, /^(Lengua de los Pastos \(ANH, 2015\)|AUKUSAN), pp?\. \d/);
     const txt = sinTilde(`${r.traduccion} ${r.piezas.map(p => p.sig || '').join(' ')}`);
-    for (const w of PROHIBIDAS) assert.ok(!new RegExp(`\b${w}\b`).test(txt), `${w} en ${r.palabra}`);
+    for (const w of PROHIBIDAS) assert.ok(!new RegExp(`(?<![\\p{L}])${w}(?![\\p{L}])`, 'u').test(txt), `${w} en ${r.palabra}`);
   }
 });
 

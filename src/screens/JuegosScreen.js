@@ -8,6 +8,7 @@ import { radii } from '../theme/ui';
 import { palabras } from '../data/datos';
 import { RAICES } from '../data/raices';
 import { useJuego } from '../context/JuegoContext';
+import { rachaVigente } from '../context/logica';
 import HudJugador from '../components/HudJugador';
 import TarjetaPalabraDia from '../components/TarjetaPalabraDia';
 
@@ -64,6 +65,7 @@ export default function JuegosScreen({ navigation }) {
           palabra={palabraDia}
           retoCompletado={!retoDiarioDisponible()}
           onReto={() => navigation.navigate('RetoDiario')}
+          racha={rachaVigente(estado)}
         />
 
         {falladas.length > 0 && (

@@ -15,6 +15,9 @@ import { vibrar } from '../utils/feedback';
 
 const POR_RONDA = 5;
 
+// Piezas siempre en minúscula (ver nota de estilos).
+const pieza = (t) => String(t || '').toLowerCase();
+
 const INTRO = 'En la lengua pasto las palabras se arman con raíces, y se leen de derecha a izquierda. Une las piezas para formar la palabra que te digo.';
 
 export default function RaicesScreen({ navigation, route }) {
@@ -153,7 +156,7 @@ export default function RaicesScreen({ navigation, route }) {
             disabled={!h || h.fija || resultado === 'bien'}
             activeOpacity={0.8}
             accessibilityRole="button"
-            accessibilityLabel={h ? (h.fija ? `${h.t}, letra de enlace` : `${h.t}, toca para quitar`) : 'Hueco vacío'}
+            accessibilityLabel={h ? (h.fija ? `${pieza(h.t)}, letra de enlace` : `${pieza(h.t)}, toca para quitar`) : 'Hueco vacío'}
             style={[
               s.hueco,
               h && s.huecoLleno,
@@ -162,7 +165,7 @@ export default function RaicesScreen({ navigation, route }) {
               resultado === 'otra' && h && !h.fija && s.huecoOtra,
             ]}
           >
-            <Text style={[s.huecoTxt, h?.fija && s.enlaceTxt]}>{h ? h.t : ''}</Text>
+            <Text style={[s.huecoTxt, h?.fija && s.enlaceTxt]}>{h ? pieza(h.t) : ''}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -173,7 +176,7 @@ export default function RaicesScreen({ navigation, route }) {
           <View style={s.desglose}>
             {item.piezas.map((p, i) => (
               <View key={i} style={[s.pieza, p.enlace && s.piezaEnlace]}>
-                <Text style={s.piezaT}>{p.t}</Text>
+                <Text style={s.piezaT}>{pieza(p.t)}</Text>
                 <Text style={s.piezaSig}>{p.enlace ? 'enlace' : p.sig}</Text>
               </View>
             ))}
@@ -199,10 +202,10 @@ export default function RaicesScreen({ navigation, route }) {
                   disabled={usada}
                   activeOpacity={0.8}
                   accessibilityRole="button"
-                  accessibilityLabel={`${f.t}: ${f.sig}`}
+                  accessibilityLabel={`${pieza(f.t)}: ${f.sig}`}
                   style={[s.ficha, usada && s.fichaUsada]}
                 >
-                  <Text style={s.fichaT}>{f.t}</Text>
+                  <Text style={s.fichaT}>{pieza(f.t)}</Text>
                   <Text style={s.fichaSig}>{f.sig}</Text>
                 </TouchableOpacity>
               );
@@ -217,6 +220,8 @@ export default function RaicesScreen({ navigation, route }) {
   );
 }
 
+// Las piezas se muestran en minúscula: con Baloo (y sin serif en muchos Android)
+// la 'I' mayúscula y la 'l' se ven iguales (p.ej. en Ipiales); 'i' y 'l' no.
 const s = StyleSheet.create({
   container:  { flex: 1, backgroundColor: colors.noche },
   content:    { padding: 16, paddingBottom: 40 },
@@ -251,7 +256,7 @@ const s = StyleSheet.create({
   desglose:   { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 6, marginTop: 10 },
   pieza:      { alignItems: 'center', paddingHorizontal: 10, paddingVertical: 6, borderRadius: radii.sm || 10, backgroundColor: 'rgba(29,158,117,0.18)' },
   piezaEnlace:{ backgroundColor: 'transparent', borderWidth: 1, borderColor: 'rgba(250,199,117,0.4)' },
-  piezaT:     { color: colors.cielo, fontSize: 17, fontFamily: fonts.bold },
+  piezaT:     { color: colors.cielo, fontSize: 17, fontFamily: fonts.extra },
   piezaSig:   { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium },
   lectura:    { ...ui.body, fontSize: 14, marginTop: 12, textAlign: 'center' },
   fuente:     { ...ui.caption, color: colors.turquesaSuave, marginTop: 8, textAlign: 'center', fontStyle: 'italic' },

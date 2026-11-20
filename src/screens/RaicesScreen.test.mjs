@@ -37,7 +37,7 @@ function montar(armadasRef) {
   return { app, llamadas };
 }
 
-const ficha = (arbol, t) => todos(arbol, n => n.type === 'TouchableOpacity' && n.props.accessibilityLabel?.startsWith(`${t}:`))[0];
+const ficha = (arbol, t) => todos(arbol, n => n.type === 'TouchableOpacity' && n.props.accessibilityLabel?.startsWith(`${t.toLowerCase()}:`))[0];
 
 function armar(app, orden) {
   for (const t of orden) ficha(app.tree, t).props.onPress();
@@ -84,5 +84,16 @@ test('Raíces: con la palabra llena, tocar otra ficha no suma intentos', () => {
   const libre = todos(app.tree, n => n.type === 'TouchableOpacity' && n.props.accessibilityLabel?.includes(':') && !n.props.disabled)[0];
   libre.props.onPress();
   assert.equal(buscarNodo(app.tree, n => n.type === 'Acompanante').props.pulso, pulsoAntes);
+  app.unmount();
+});
+
+test('Raíces: las piezas se muestran en minúscula para no confundir I con l', () => {
+  const { app } = montar([]);
+  const fichas = todos(app.tree, n => n.type === 'TouchableOpacity' && /^[^ ]+: /.test(n.props.accessibilityLabel || ''));
+  assert.ok(fichas.length >= 3);
+  for (const f of fichas) {
+    const t = f.props.accessibilityLabel.split(':')[0];
+    assert.equal(t, t.toLowerCase());
+  }
   app.unmount();
 });
