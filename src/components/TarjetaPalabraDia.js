@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import Svg, { Path, Rect } from 'react-native-svg';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
@@ -10,40 +9,11 @@ import { RAICES } from '../data/raices';
 import { dondeViveRaiz } from '../data/raicesLogica';
 import { decirPalabra } from '../utils/voz';
 import PalabraIlustrada from './PalabraIlustrada';
+import FranjaTejida from './FranjaTejida';
 
 const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 export const fechaLarga = (d = new Date()) => `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`;
-
-// Franja tejida: rombos escalonados como en una faja o ruana pasto, con el
-// color del mundo de la palabra. Se repite según el ancho medido.
-function FranjaTejida({ color, alto = 16 }) {
-  const [ancho, setAncho] = useState(0);
-  const paso = alto * 1.75;
-  const n = ancho ? Math.ceil(ancho / paso) + 1 : 0;
-  const m = alto / 2;
-  const d = [];
-  const relleno = [];
-  for (let i = 0; i < n; i++) {
-    const cx = i * paso + paso / 2;
-    d.push(`M${cx - m} ${m} L${cx} 1 L${cx + m} ${m} L${cx} ${alto - 1} Z`);
-    relleno.push(`M${cx - m / 2.4} ${m} L${cx} ${m - m / 2.4} L${cx + m / 2.4} ${m} L${cx} ${m + m / 2.4} Z`);
-    // Dientes entre rombos (arriba y abajo).
-    const x = i * paso;
-    relleno.push(`M${x - 3} 0 L${x} 4 L${x + 3} 0 Z`, `M${x - 3} ${alto} L${x} ${alto - 4} L${x + 3} ${alto} Z`);
-  }
-  return (
-    <View style={{ height: alto }} onLayout={e => setAncho(e.nativeEvent.layout.width)} pointerEvents="none">
-      {n > 0 && (
-        <Svg width={ancho} height={alto}>
-          <Rect x={0} y={0} width={ancho} height={alto} fill="rgba(8,26,34,0.85)" />
-          <Path d={d.join(' ')} stroke={colors.doradoNeon} strokeWidth={1.4} fill="none" />
-          <Path d={relleno.join(' ')} fill={color} />
-        </Svg>
-      )}
-    </View>
-  );
-}
 
 /**
  * Tarjeta "Palabra de hoy" (pestaña Juegos), con aire de tejido: franja de

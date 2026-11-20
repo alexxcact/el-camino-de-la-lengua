@@ -21,7 +21,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#1E4010"
+        "backgroundColor": "#0B1F2A"
       },
       "package": "com.pumamaki.elcaminodelalengua",
       "versionCode": 1,

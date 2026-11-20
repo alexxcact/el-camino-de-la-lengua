@@ -1,20 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, StyleSheet, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Animated, Dimensions, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Svg, { Path, Rect, Defs, LinearGradient as Degradado, Stop } from 'react-native-svg';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
+import { acento } from '../theme/ui';
+import { PALETA_SOL } from '../theme/solPasto';
 import { useJuego } from '../context/JuegoContext';
 import BotonGlow from '../components/BotonGlow';
+import SolPasto from '../components/SolPasto';
+import FranjaTejida from '../components/FranjaTejida';
 
 const { width, height } = Dimensions.get('window');
 
-// Diámetro del medallón (emblema circular). Acotado para tablets/pantallas grandes.
-const EMBLEMA = Math.min(width * 0.6, 250);
+// Tamaño del Sol de los Pastos, acotado para pantallas grandes y bajas.
+const SOL = Math.round(Math.min(width * 0.62, height * 0.3, 270));
+const ANCHO_HORIZONTE = width - 32;
+const ALTO_HORIZONTE = 74;
 
-// Estrella decorativa con opacidad pulsante (posición fija)
-function Estrella({ style, size = 8, dur = 1600, delay = 0 }) {
+// Estrella decorativa con opacidad pulsante (posición fija).
+function Estrella({ style, size = 6, dur = 1600, delay = 0 }) {
   const pulso = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     const loop = Animated.loop(
@@ -26,22 +33,50 @@ function Estrella({ style, size = 8, dur = 1600, delay = 0 }) {
     loop.start();
     return () => loop.stop();
   }, []);
-  const opacity = pulso.interpolate({ inputRange: [0, 1], outputRange: [0.15, 0.9] });
+  const opacity = pulso.interpolate({ inputRange: [0, 1], outputRange: [0.12, 0.85] });
   return (
     <Animated.View
       pointerEvents="none"
-      style={[{ position: 'absolute', width: size, height: size, borderRadius: size / 2, backgroundColor: colors.doradoNeon, opacity }, style]}
+      style={[{ position: 'absolute', width: size, height: size, transform: [{ rotate: '45deg' }], backgroundColor: colors.doradoNeon, opacity }, style]}
     />
+  );
+}
+
+// Horizonte: cerros del territorio con el camino punteado que une los cinco
+// mundos (un rombo por mundo, con su color), como anticipo del mapa.
+function Horizonte() {
+  const W = ANCHO_HORIZONTE;
+  const H = ALTO_HORIZONTE;
+  const cerros = `M0 ${H} L0 ${H * 0.62} L${W * 0.12} ${H * 0.4} L${W * 0.22} ${H * 0.55} L${W * 0.36} ${H * 0.18} L${W * 0.47} ${H * 0.46}`
+    + ` L${W * 0.58} ${H * 0.3} L${W * 0.7} ${H * 0.52} L${W * 0.83} ${H * 0.12} L${W * 0.93} ${H * 0.44} L${W} ${H * 0.36} L${W} ${H} Z`;
+  const puntos = [0.1, 0.3, 0.5, 0.7, 0.9].map((f, i) => [W * f, H * (i % 2 === 0 ? 0.8 : 0.68)]);
+  const camino = `M${puntos.map(([x, y]) => `${x} ${y}`).join(' L')}`;
+  const r = 7;
+  return (
+    <Svg width={W} height={H}>
+      <Defs>
+        <Degradado id="cerros" x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0" stopColor={PALETA_SOL.nocheAlta} stopOpacity="1" />
+          <Stop offset="1" stopColor={PALETA_SOL.noche} stopOpacity="0" />
+        </Degradado>
+      </Defs>
+      <Path d={cerros} fill="url(#cerros)" />
+      <Path d={camino} stroke={colors.doradoNeon} strokeWidth={2} strokeDasharray="2 6" strokeLinecap="round" fill="none" />
+      {puntos.map(([x, y], i) => (
+        <Rect key={i} x={x - r} y={y - r} width={r * 2} height={r * 2} rx={2}
+          fill={acento(i + 1)} stroke={colors.noche} strokeWidth={2} transform={`rotate(45 ${x} ${y})`} />
+      ))}
+    </Svg>
   );
 }
 
 export default function BienvenidaScreen({ navigation }) {
   const { estado, cargado } = useJuego();
-  const fadeHero = useRef(new Animated.Value(0)).current;
-  const fadeCard = useRef(new Animated.Value(0)).current;
-  const fadeBtn  = useRef(new Animated.Value(0)).current;
-  const levita   = useRef(new Animated.Value(0)).current;
-  const entrada  = useRef(new Animated.Value(0.85)).current; // escala de entrada del emblema
+  const aparece = useRef(new Animated.Value(0)).current;
+  const titulo = useRef(new Animated.Value(0)).current;
+  const pie = useRef(new Animated.Value(0)).current;
+  const giro = useRef(new Animated.Value(0)).current;
+  const entrada = useRef(new Animated.Value(0.8)).current;
   const [introVista, setIntroVista] = useState(null);
 
   useEffect(() => {
@@ -55,29 +90,27 @@ export default function BienvenidaScreen({ navigation }) {
     })();
 
     const anim = Animated.sequence([
-      Animated.delay(200),
+      Animated.delay(150),
       Animated.parallel([
-        Animated.timing(fadeHero, { toValue: 1, duration: 800, useNativeDriver: true }),
-        Animated.spring(entrada,  { toValue: 1, friction: 6, tension: 40, useNativeDriver: true }),
+        Animated.timing(aparece, { toValue: 1, duration: 700, useNativeDriver: true }),
+        Animated.spring(entrada, { toValue: 1, friction: 6, tension: 40, useNativeDriver: true }),
       ]),
-      Animated.timing(fadeCard, { toValue: 1, duration: 700, useNativeDriver: true }),
-      Animated.timing(fadeBtn,  { toValue: 1, duration: 500, useNativeDriver: true }),
+      Animated.timing(titulo, { toValue: 1, duration: 600, useNativeDriver: true }),
+      Animated.timing(pie, { toValue: 1, duration: 500, useNativeDriver: true }),
     ]);
     anim.start();
 
-    const flotar = Animated.loop(
-      Animated.sequence([
-        Animated.timing(levita, { toValue: 1, duration: 2400, useNativeDriver: true }),
-        Animated.timing(levita, { toValue: 0, duration: 2400, useNativeDriver: true }),
-      ])
+    // El sol gira muy despacio (una vuelta cada 80 s).
+    const girar = Animated.loop(
+      Animated.timing(giro, { toValue: 1, duration: 80000, easing: Easing.linear, useNativeDriver: true })
     );
-    flotar.start();
+    girar.start();
 
-    return () => { anim.stop(); flotar.stop(); };
+    return () => { anim.stop(); girar.stop(); };
   }, []);
 
   const comenzar = async () => {
-    // Si aún no dio su nombre, pedirlo primero (NombreScreen decide a dónde sigue)
+    // Si aún no dio su nombre, pedirlo primero (NombreScreen decide a dónde sigue).
     if (estado.nombreJugador == null) {
       navigation.replace('Nombre');
       return;
@@ -90,54 +123,44 @@ export default function BienvenidaScreen({ navigation }) {
     }
   };
 
-  const translateY = levita.interpolate({ inputRange: [0, 1], outputRange: [-7, 7] });
+  const rotate = giro.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '360deg'] });
+  const subir = (v) => v.interpolate({ inputRange: [0, 1], outputRange: [14, 0] });
 
   return (
     <View style={s.bg}>
-      <LinearGradient colors={colors.gradAurora} start={{ x: 0.1, y: 0 }} end={{ x: 0.9, y: 1 }} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={[PALETA_SOL.nocheAlta, PALETA_SOL.noche, '#081821']} locations={[0, 0.55, 1]} style={StyleSheet.absoluteFill} />
 
-      {/* Estrellas decorativas de fondo */}
-      <Estrella style={{ top: height * 0.10, left: width * 0.14 }} size={8} dur={1500} />
-      <Estrella style={{ top: height * 0.16, right: width * 0.18 }} size={5} dur={1900} delay={400} />
-      <Estrella style={{ top: height * 0.30, right: width * 0.10 }} size={6} dur={1700} delay={800} />
-      <Estrella style={{ top: height * 0.62, left: width * 0.12 }} size={5} dur={2100} delay={200} />
-      <Estrella style={{ top: height * 0.70, right: width * 0.16 }} size={7} dur={1600} delay={600} />
+      <Estrella style={{ top: height * 0.09, left: width * 0.12 }} size={7} dur={1500} />
+      <Estrella style={{ top: height * 0.15, right: width * 0.14 }} size={5} dur={1900} delay={400} />
+      <Estrella style={{ top: height * 0.33, left: width * 0.08 }} size={5} dur={2100} delay={200} />
+      <Estrella style={{ top: height * 0.29, right: width * 0.08 }} size={6} dur={1700} delay={800} />
 
-      <SafeAreaView style={s.safe}>
-        {/* HERO: medallón + tagline */}
-        <Animated.View style={[s.hero, { opacity: fadeHero }]}>
-          <Animated.View style={{ transform: [{ translateY }, { scale: entrada }] }}>
-            <View style={s.emblemaWrap}>
-              {/* Halo (círculos concéntricos translúcidos: glow real en Android) */}
-              <View style={[s.halo, s.haloLg]} />
-              <View style={[s.halo, s.haloMd]} />
-              <View style={s.ring}>
-                <Image source={require('../../assets/images/icon.png')} style={s.logo} resizeMode="cover" />
-              </View>
-            </View>
+      <SafeAreaView style={s.safe} edges={['top', 'bottom']}>
+        <FranjaTejida alto={14} fondo="transparent" />
+
+        {/* Sol de los Pastos con halo */}
+        <Animated.View style={[s.hero, { opacity: aparece, transform: [{ scale: entrada }] }]}>
+          <View style={[s.halo, { width: SOL * 1.45, height: SOL * 1.45, borderRadius: SOL }]} />
+          <View style={[s.halo, s.haloInterior, { width: SOL * 1.15, height: SOL * 1.15, borderRadius: SOL }]} />
+          <Animated.View style={{ transform: [{ rotate }] }}>
+            <SolPasto tamano={SOL} />
           </Animated.View>
-
-          <Text style={s.tagline}>Pueblo Pasto · Nariño · Colombia</Text>
         </Animated.View>
 
-        {/* Story card */}
-        <Animated.View style={{ opacity: fadeCard }}>
-          <View style={s.storyCard}>
-            <View style={s.kintiPill}>
-              <Text style={s.kintiPillTxt}>COMIENZA LA AVENTURA</Text>
-            </View>
-            <Text style={s.storyTxt}>
-              Explora el vocabulario del <Text style={s.dorado}>pueblo Pasto</Text> y sus vínculos con el territorio.
-            </Text>
-            <View style={s.storyDivider} />
-            <Text style={s.storyTxt2}>
-              Recorre <Text style={s.dorado}>cinco mundos</Text> y descubre <Text style={s.dorado}>75 palabras</Text> entre las alturas, la chagra, la comunidad, el hogar y el agua.
-            </Text>
-          </View>
+        {/* Título */}
+        <Animated.View style={[s.tituloWrap, { opacity: titulo, transform: [{ translateY: subir(titulo) }] }]}>
+          <Text style={s.antetitulo}>EL CAMINO</Text>
+          <Text style={s.titulo} accessibilityRole="header">de la Lengua</Text>
+          <Text style={s.subtitulo}>La lengua del pueblo Pasto vive en los nombres de sus cerros, ríos y familias.</Text>
         </Animated.View>
 
-        {/* CTA */}
-        <Animated.View style={[s.btnWrap, { opacity: fadeBtn }]}>
+        {/* Horizonte con los cinco mundos */}
+        <Animated.View style={[s.horizonte, { opacity: titulo }]} accessibilityLabel="Cinco mundos unidos por un camino">
+          <Horizonte />
+        </Animated.View>
+
+        {/* Botón */}
+        <Animated.View style={[s.pie, { opacity: pie, transform: [{ translateY: subir(pie) }] }]}>
           <BotonGlow
             texto={introVista ? 'Continuar el camino' : 'Comenzar el camino'}
             onPress={comenzar}
@@ -145,71 +168,28 @@ export default function BienvenidaScreen({ navigation }) {
             tamano="lg"
             desactivado={!cargado}
           />
-          <Text style={s.creditos}>El Camino de la Lengua</Text>
         </Animated.View>
+
+        <FranjaTejida alto={10} fondo="transparent" color={colors.turquesa} />
       </SafeAreaView>
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  bg: { flex: 1 },
-  safe: {
-    flex: 1,
-    paddingHorizontal: 26,
-    paddingVertical: 28,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+  bg:   { flex: 1, backgroundColor: PALETA_SOL.noche },
+  safe: { flex: 1, justifyContent: 'space-between', paddingVertical: 8 },
 
-  // ── Hero ──
-  hero: { alignItems: 'center', marginTop: height * 0.02 },
-  emblemaWrap: { alignItems: 'center', justifyContent: 'center' },
-  halo: { position: 'absolute', borderRadius: 999 },
-  haloLg: { width: EMBLEMA * 1.42, height: EMBLEMA * 1.42, backgroundColor: 'rgba(29,158,117,0.16)' },
-  haloMd: { width: EMBLEMA * 1.16, height: EMBLEMA * 1.16, backgroundColor: 'rgba(250,199,117,0.12)' },
-  ring: {
-    width: EMBLEMA, height: EMBLEMA, borderRadius: EMBLEMA / 2,
-    overflow: 'hidden',
-    borderWidth: 3, borderColor: 'rgba(250,199,117,0.55)',
-    backgroundColor: colors.noche,
-    // Sombra (iOS) + elevación (Android) para despegar el medallón del fondo
-    shadowColor: colors.doradoNeon, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.5, shadowRadius: 18,
-    elevation: 12,
-  },
-  // icon.png es el ícono de lanzador: emblema circular sobre baldosa turquesa con
-  // marco/esquinas NEGRAS. Al recortarlo en círculo, ese negro asomaba en las esquinas.
-  // Lo escalamos para que el recorte circular caiga dentro de la baldosa turquesa
-  // (sin tocar el emblema ni el texto). Ajustar el factor si aún asoma negro.
-  logo: { width: '100%', height: '100%', transform: [{ scale: 1.16 }] },
+  hero: { alignItems: 'center', justifyContent: 'center', marginTop: height * 0.03, height: SOL * 1.2 },
+  halo: { position: 'absolute', backgroundColor: 'rgba(250,199,117,0.035)' },
+  haloInterior: { backgroundColor: 'rgba(250,199,117,0.05)' },
 
-  tagline: {
-    fontSize: 12, color: colors.turquesaSuave, fontFamily: fonts.medium,
-    letterSpacing: 2.5, marginTop: 22, opacity: 0.9, textAlign: 'center',
-  },
+  tituloWrap: { alignItems: 'center', paddingHorizontal: 28 },
+  antetitulo: { color: colors.turquesaSuave, fontSize: 14, fontFamily: fonts.extra, letterSpacing: 8 },
+  titulo:     { color: colors.doradoNeon, fontSize: 44, fontFamily: fonts.extra, lineHeight: 52, marginTop: -2 },
+  subtitulo:  { color: colors.cielo, fontSize: 15, fontFamily: fonts.medium, textAlign: 'center', lineHeight: 22, marginTop: 8, opacity: 0.9 },
 
-  // ── Story card ──
-  storyCard: {
-    width: '100%',
-    padding: 22, borderRadius: 24,
-    backgroundColor: 'rgba(8,26,34,0.62)',
-    borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.35)',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.25, shadowRadius: 16,
-    elevation: 6,
-  },
-  kintiPill: {
-    alignSelf: 'center', marginBottom: 16,
-    paddingHorizontal: 14, paddingVertical: 5, borderRadius: 999,
-    backgroundColor: 'rgba(250,199,117,0.14)',
-    borderWidth: 1, borderColor: 'rgba(250,199,117,0.5)',
-  },
-  kintiPillTxt: { color: colors.doradoNeon, fontSize: 11, fontFamily: fonts.extra, letterSpacing: 3 },
-  storyTxt:     { color: colors.cielo, fontSize: 15, textAlign: 'center', lineHeight: 23, fontFamily: fonts.medium },
-  storyDivider: { height: 1, backgroundColor: 'rgba(93,202,165,0.3)', marginVertical: 14, alignSelf: 'center', width: '60%' },
-  storyTxt2:    { color: colors.cielo, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: fonts.regular, opacity: 0.95 },
-  dorado:       { color: colors.doradoNeon, fontFamily: fonts.bold },
+  horizonte: { alignItems: 'center', paddingHorizontal: 16 },
 
-  // ── CTA ──
-  btnWrap:  { width: '100%', alignItems: 'center', gap: 16 },
-  creditos: { fontSize: 10, color: colors.turquesaSuave, letterSpacing: 2, opacity: 0.65, fontFamily: fonts.regular },
+  pie:     { alignItems: 'center', gap: 12, paddingHorizontal: 26 },
 });
