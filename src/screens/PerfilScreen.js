@@ -13,6 +13,7 @@ import MedallaPasto, { MEDALLAS_INFO } from '../components/MedallaPasto';
 import AvatarSVG from '../components/AvatarSVG';
 import Medallon from '../components/Medallon';
 import { programarNotificacionDiaria, cancelarNotificaciones } from '../utils/notificaciones';
+import { AUTOR } from './CreditosScreen';
 
 // Formatea una hora 0-23 a "4:00 PM"
 const formatoHora = (h) => {
@@ -215,7 +216,18 @@ export function PerfilScreen({ navigation }) {
           </View>
         )}
 
-        <Text style={ps.footer}>El Camino de la Lengua · Vocabulario Pasto</Text>
+        {/* Fuentes y créditos: libros fuente y autoría */}
+        <TouchableOpacity
+          style={ps.statsBtn}
+          onPress={() => navigation.navigate('Creditos')}
+          activeOpacity={0.85}
+          accessibilityRole="button"
+        >
+          <Text style={ps.statsBtnTxt}>Fuentes y créditos</Text>
+          <Text style={ps.statsBtnSub}>Los libros de donde salen las palabras y quién hizo el juego</Text>
+        </TouchableOpacity>
+
+        <Text style={ps.footer}>El Camino de la Lengua · {AUTOR}</Text>
       </ScrollView>
 
       {/* Modal significado de medalla */}

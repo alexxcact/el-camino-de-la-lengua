@@ -40,6 +40,7 @@ import ApellidoScreen   from './src/screens/ApellidoScreen';
 import DiccionarioScreen from './src/screens/DiccionarioScreen';
 import AvatarScreen     from './src/screens/AvatarScreen';
 import EstadisticasScreen from './src/screens/EstadisticasScreen';
+import CreditosScreen from './src/screens/CreditosScreen';
 import { ParejasScreen, DictadoScreen } from './src/screens/MisionesScreen';
 import { PerfilScreen }  from './src/screens/PerfilScreen';
 
@@ -103,6 +104,7 @@ function PerfilStackScreen() {
       <Stack.Screen name="PerfilMain" component={PerfilScreen} options={{ title: 'Mi progreso' }} />
       <Stack.Screen name="Avatar"     component={AvatarScreen} options={{ title: 'Mi avatar' }} />
       <Stack.Screen name="Estadisticas" component={EstadisticasScreen} options={{ title: 'Mis estadísticas' }} />
+      <Stack.Screen name="Creditos" component={CreditosScreen} options={{ title: 'Fuentes y créditos' }} />
     </Stack.Navigator>
   );
 }
