@@ -58,7 +58,7 @@ export default function CreditosScreen() {
       {/* Autoría */}
       <View style={[s.card, s.autor]}>
         <FranjaTejida alto={10} fondo="transparent" />
-        <Text style={s.lbl}>CREACIÓN, DISEÑO Y DESARROLLO</Text>
+        <Text style={s.lbl}>DESARROLLADO POR</Text>
         <Text style={s.autorNombre} accessibilityRole="header">{AUTOR}</Text>
       </View>
 

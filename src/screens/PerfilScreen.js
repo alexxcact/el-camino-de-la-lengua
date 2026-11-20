@@ -227,7 +227,7 @@ export function PerfilScreen({ navigation }) {
           <Text style={ps.statsBtnSub}>Los libros de donde salen las palabras y quién hizo el juego</Text>
         </TouchableOpacity>
 
-        <Text style={ps.footer}>El Camino de la Lengua · {AUTOR}</Text>
+        <Text style={ps.footer}>Desarrollado por {AUTOR}</Text>
       </ScrollView>
 
       {/* Modal significado de medalla */}

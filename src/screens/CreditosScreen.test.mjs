@@ -19,7 +19,8 @@ function textos(arbol) {
 test('créditos: autoría, los dos libros con sus datos y cuánto se usa cada uno', () => {
   const app = montarComponente('src/screens/CreditosScreen.js', {});
   const t = textos(app.tree);
-  assert.match(t, /Ing\. Alexander Cuaspud/);
+  assert.match(t, /DESARROLLADO POR \| Ing\. Alexander Cuaspud/);
+  assert.doesNotMatch(t, /CREACIÓN|DISEÑO/);
   assert.match(t, /Lengua de los Pastos: Vocabulario Básico y Etimologías Sagradas/);
   assert.match(t, /Academia Nariñense de Historia \(ANH\), 2015/);
   assert.match(t, /ISBN 978-958-58150-8-7/);
@@ -34,7 +35,7 @@ test('créditos: autoría, los dos libros con sus datos y cuánto se usa cada un
 test('se llega a los créditos desde Progreso y el pie lleva la autoría', () => {
   const perfil = fs.readFileSync('src/screens/PerfilScreen.js', 'utf8');
   assert.ok(perfil.includes("navigate('Creditos')"));
-  assert.ok(perfil.includes('{AUTOR}'));
+  assert.ok(perfil.includes('Desarrollado por {AUTOR}'));
   const app = fs.readFileSync('App.js', 'utf8');
   const pila = app.slice(app.indexOf('function PerfilStackScreen'), app.indexOf('function TabIcon'));
   assert.ok(pila.includes('name="Creditos"'));
