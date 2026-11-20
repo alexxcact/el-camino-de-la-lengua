@@ -113,3 +113,21 @@ export function esCorrecta(item, huecos) {
 export function lecturaDerechaIzquierda(item) {
   return item.piezas.filter(p => !p.enlace && p.sig).map(p => p.sig).reverse();
 }
+
+// ¿Dónde vive esta raíz? Palabras de Raíces que llevan una pieza igual a `p`
+// (sin tildes ni mayúsculas). Sirve para enlazar el vocabulario con los
+// nombres reales que lo contienen (Diccionario, Palabra de hoy).
+const sinTilde = (t) => norm(t).normalize('NFD').replace(/[̀-ͯ]/g, '');
+// Devuelve [{ palabra, t, sig, traduccion, fuente }]: sig es lo que significa
+// la pieza DENTRO de ese nombre (puede no coincidir con la ficha: Pa = sol,
+// pero en Pacual es "familia").
+export function dondeViveRaiz(p, todas) {
+  const clave = sinTilde(p);
+  if (!clave) return [];
+  const out = [];
+  for (const r of todas) {
+    const pieza = r.piezas.find(x => !x.enlace && sinTilde(x.t) === clave);
+    if (pieza) out.push({ palabra: r.palabra, t: pieza.t, sig: pieza.sig, traduccion: r.traduccion, fuente: r.fuente });
+  }
+  return out;
+}

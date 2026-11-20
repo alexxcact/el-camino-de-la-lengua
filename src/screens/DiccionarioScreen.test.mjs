@@ -129,3 +129,18 @@ test('ya no existe la pestaña Mochila', async () => {
   assert.ok(!app.includes('MochilaTab'));
   assert.ok(app.includes('DiccionarioTab'));
 });
+
+test('la ficha de una raíz enseña en qué nombres vive y qué significa allí', () => {
+  const { app, fila } = diccionario([]);
+  const pa = palabras.find(w => w.p === 'Pa');
+  const cerrada = fila(pa.id);
+  cerrada.props.onPress();
+  const abierta = fila(pa.id);
+  const t = JSON.stringify(abierta);
+  assert.ok(t.includes('VIVE EN NOMBRES COMO'));
+  assert.ok(t.includes('Pacual') && t.includes('pa = familia'));
+  const zon = palabras.find(w => w.p === 'Zon');
+  fila(zon.id).props.onPress();
+  assert.ok(!JSON.stringify(fila(zon.id)).includes('VIVE EN'));
+  app.unmount();
+});

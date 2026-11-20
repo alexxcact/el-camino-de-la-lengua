@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { palabras } from '../data/datos.js';
+import { RAICES } from '../data/raices.js';
+import { dondeViveRaiz } from '../data/raicesLogica.js';
 import { montarComponente, buscarNodo } from '../test/componentHarness.mjs';
 
 function texto(nodo) {
@@ -29,6 +31,16 @@ function montar(p, props = {}) {
   return { app, dichas };
 }
 
+test('dondeViveRaiz da el significado de la pieza dentro de cada nombre', () => {
+  const pa = dondeViveRaiz('Pa', RAICES);
+  assert.deepEqual(pa.map(x => x.palabra), ['Pacual', 'Pipala', 'Alpala']);
+  assert.equal(pa.find(x => x.palabra === 'Pacual').sig, 'familia');
+  assert.equal(pa.find(x => x.palabra === 'Pipala').sig, 'hablar');
+  assert.deepEqual(dondeViveRaiz('Puli', RAICES).map(x => x.palabra), ['Capulí'], 'sin tildes');
+  assert.deepEqual(dondeViveRaiz('Guango', RAICES), []);
+  assert.deepEqual(dondeViveRaiz('', RAICES), []);
+});
+
 test('la tarjeta muestra fecha, grafía, ejemplo, mundo y la ilustración propia (sin emojis)', () => {
   const { app, dichas } = montar('Guango');
   const t = todoTexto(app.tree);
@@ -38,15 +50,19 @@ test('la tarjeta muestra fecha, grafía, ejemplo, mundo y la ilustración propia
   assert.match(t, /copo de lana o algodón/);
   assert.ok(buscarNodo(app.tree, n => n.type === 'PalabraIlustrada'));
   assert.ok(!/[\u{1F300}-\u{1FAFF}✨]/u.test(t), 'sin emojis decorativos');
+  assert.ok(!t.includes('VIVE EN'), 'Guango no es raíz de ningún nombre');
   buscarNodo(app.tree, n => n.type === 'TouchableOpacity' && n.props.accessibilityLabel?.startsWith('Escuchar')).props.onPress();
   assert.deepEqual(dichas, ['Guango']);
   app.unmount();
 });
 
-test('el reto enseña la racha', () => {
+test('si la palabra es raíz, muestra dónde vive; el reto enseña la racha', () => {
   let abierto = 0;
   const { app } = montar('Es', { onReto: () => { abierto++; } });
   const t = todoTexto(app.tree);
+  assert.match(t, /VIVE EN NOMBRES COMO/);
+  assert.match(t, /Imues/);
+  assert.match(t, /es = agua/);
   const reto = buscarNodo(app.tree, n => n.type === 'TouchableOpacity' && n.props.accessibilityLabel === 'Empezar el Reto del día');
   assert.match(texto(reto), /3/);
   reto.props.onPress();

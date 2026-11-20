@@ -14,6 +14,8 @@ import PishkuMascota from '../components/PishkuMascota';
 import { decirPalabra } from '../utils/voz';
 import { sonar } from '../utils/sonidos';
 import PalabraIlustrada from '../components/PalabraIlustrada';
+import { RAICES } from '../data/raices';
+import { dondeViveRaiz } from '../data/raicesLogica';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -181,6 +183,23 @@ export default function DiccionarioScreen({ route, navigation } = {}) {
           <View style={s.expand}>
             <Text style={s.fon}>Grafía: {item.fon} · Voz sintética de práctica</Text>
             <Text style={s.ej}>{item.ej}</Text>
+            {(() => {
+              // ¿Dónde vive esta raíz? Nombres reales que la llevan (de Raíces de la palabra).
+              const nombres = dondeViveRaiz(item.p, RAICES);
+              if (nombres.length === 0) return null;
+              return (
+                <View style={s.vive}>
+                  <Text style={s.viveLbl}>VIVE EN NOMBRES COMO</Text>
+                  {nombres.slice(0, 5).map(n => (
+                    <Text key={n.palabra} style={s.viveFila}>
+                      <Text style={s.viveNombre}>{n.palabra}</Text>
+                      {`  ${n.t.toLowerCase()} = ${n.sig} · «${n.traduccion}»`}
+                    </Text>
+                  ))}
+                  {nombres.length > 5 ? <Text style={s.viveMas}>y {nombres.length - 5} más en Raíces de la palabra</Text> : null}
+                </View>
+              );
+            })()}
             <Text style={s.documentacion}>Fuente: {item.fuente}</Text>
             {item.respaldo === 'pendiente_validacion' && (
               <Text style={s.documentacion}>Validación documental pendiente.</Text>
@@ -381,6 +400,11 @@ const s = StyleSheet.create({
   expand: { marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: colors.cartaClaraBorde },
   fon: { fontSize: 12, color: colors.textoCartaSuave, fontStyle: 'italic' },
   ej:  { fontSize: 13, color: colors.textoCartaSuave, fontStyle: 'italic', marginTop: 4 },
+  vive:       { marginTop: 10, padding: 10, borderRadius: radii.sm, backgroundColor: 'rgba(23,64,58,0.07)' },
+  viveLbl:    { fontSize: 9, color: colors.textoCartaSuave, fontFamily: fonts.bold, letterSpacing: 2, marginBottom: 4 },
+  viveFila:   { fontSize: 12, lineHeight: 19, color: colors.textoCartaSuave, fontFamily: fonts.medium },
+  viveNombre: { fontSize: 14, color: colors.sol, fontFamily: fonts.extra },
+  viveMas:    { fontSize: 11, color: colors.textoCartaSuave, fontFamily: fonts.medium, fontStyle: 'italic', marginTop: 2 },
   documentacion: { fontSize: 12, lineHeight: 18, color: colors.textoCartaSuave, fontFamily: fonts.regular, marginTop: 6 },
 
   vacio:    { alignItems: 'center', paddingTop: 40 },

@@ -6,6 +6,8 @@ import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { radii, acento } from '../theme/ui';
 import { mundos } from '../data/datos';
+import { RAICES } from '../data/raices';
+import { dondeViveRaiz } from '../data/raicesLogica';
 import { decirPalabra } from '../utils/voz';
 import PalabraIlustrada from './PalabraIlustrada';
 
@@ -46,7 +48,7 @@ function FranjaTejida({ color, alto = 16 }) {
 /**
  * Tarjeta "Palabra de hoy" (pestaña Juegos), con aire de tejido: franja de
  * rombos del color del mundo, la ilustración propia de la palabra en un rombo,
- * su grafía y ejemplo, y el Reto del día.
+ * su grafía y ejemplo, dónde vive como raíz y el Reto del día.
  * Props:
  *  palabra        objeto de datos.js
  *  retoCompletado bool — si ya completó el reto diario hoy
@@ -58,6 +60,7 @@ export default function TarjetaPalabraDia({ palabra, retoCompletado, onReto, rac
   if (!palabra) return null;
   const mundo = mundos.find(m => m.id === palabra.mundo);
   const color = acento(palabra.mundo);
+  const enNombres = dondeViveRaiz(palabra.p, RAICES).slice(0, 4);
 
   return (
     <View style={[s.wrap, { borderColor: color }]}>
@@ -102,6 +105,20 @@ export default function TarjetaPalabraDia({ palabra, retoCompletado, onReto, rac
             </View>
           ) : null}
         </View>
+
+        {enNombres.length > 0 && (
+          <View style={s.raices} accessibilityLabel={`${palabra.p} vive en nombres como ${enNombres.map(r => r.palabra).join(', ')}`}>
+            <Text style={s.raicesLbl}>VIVE EN NOMBRES COMO</Text>
+            <View style={s.chips}>
+              {enNombres.map(r => (
+                <View key={r.palabra} style={s.nombre}>
+                  <Text style={s.nombreTxt}>{r.palabra}</Text>
+                  <Text style={s.nombreSig}>{r.t.toLowerCase()} = {r.sig}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
 
         {retoCompletado ? (
           <View style={s.hecho}>
@@ -169,6 +186,11 @@ const s = StyleSheet.create({
   chip:    { paddingHorizontal: 10, paddingVertical: 3, borderRadius: radii.pill, borderWidth: 1, borderColor: 'rgba(159,225,203,0.35)' },
   chipTxt: { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.bold },
 
+  raices:    { marginTop: 12, padding: 10, borderRadius: radii.sm, backgroundColor: 'rgba(8,26,34,0.55)' },
+  raicesLbl: { fontSize: 9, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 2 },
+  nombre:    { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radii.sm, backgroundColor: 'rgba(250,199,117,0.10)' },
+  nombreTxt: { fontSize: 15, color: colors.doradoNeon, fontFamily: fonts.extra },
+  nombreSig: { fontSize: 10, color: colors.turquesaSuave, fontFamily: fonts.medium },
 
   reto: {
     marginTop: 14, minHeight: 56, borderRadius: radii.md, paddingHorizontal: 12,
