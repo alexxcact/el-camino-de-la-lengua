@@ -16,6 +16,9 @@ import { sonar } from '../utils/sonidos';
 import PalabraIlustrada from '../components/PalabraIlustrada';
 import { RAICES } from '../data/raices';
 import { dondeViveRaiz } from '../data/raicesLogica';
+import Petroglifo from '../components/Petroglifo';
+import { laja, LAJA, SIMBOLO_MUNDO } from '../theme/pasto';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -150,84 +153,125 @@ export default function DiccionarioScreen({ route, navigation } = {}) {
     sonar.pop();
   };
 
-  const renderItem = ({ item }) => {
+  const sinTilde = (t) => (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+
+  const renderItem = ({ item, index }) => {
     const vista = estado.palabrasVistas.has(item.id);
     const abierto = expandido === item.id;
     const mundo = mundos.find(m => m.id === item.mundo);
+    const color = acento(item.mundo);
+    // En orden alfabético, una letra tallada abre cada grupo.
+    const letra = sinTilde(item.p).charAt(0);
+    const nuevaLetra = orden === 'past' && (index === 0 || sinTilde(lista[index - 1]?.p).charAt(0) !== letra);
     return (
-      <TouchableOpacity style={[s.row, { borderLeftColor: acento(item.mundo) }]} onPress={() => expandir(item.id)} activeOpacity={0.85}>
-        <View style={s.rowTop}>
-          <View style={{ flex: 1 }}>
-            <View style={s.pastLine}>
-              <PalabraIlustrada palabra={item} tamano={30} />
-              <Text style={s.past}>{item.p}</Text>
-              <TouchableOpacity
-                style={s.audioBtn}
-                onPress={() => decirPalabra(item.p)}
-                accessibilityRole="button"
-                accessibilityLabel={`Leer ${item.p} con voz sintética de práctica`}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                activeOpacity={0.7}
-              >
-                <Ionicons name="volume-high" size={16} color={colors.sol} />
-              </TouchableOpacity>
-            </View>
-            <Text style={s.esp}>{item.e}</Text>
-            <Text style={s.meta}>{item.cat} · {mundo?.emoji} Mundo {item.mundo}</Text>
-          </View>
-          {vista
-            ? <Text style={s.check}>✓</Text>
-            : <Ionicons name="lock-closed" size={14} color={colors.textoCartaSuave} style={s.lock} />}
-        </View>
-        {abierto && (
-          <View style={s.expand}>
-            <Text style={s.fon}>Grafía: {item.fon} · Voz sintética de práctica</Text>
-            <Text style={s.ej}>{item.ej}</Text>
-            {(() => {
-              // ¿Dónde vive esta raíz? Nombres reales que la llevan (de Raíces de la palabra).
-              const nombres = dondeViveRaiz(item.p, RAICES);
-              if (nombres.length === 0) return null;
-              return (
-                <View style={s.vive}>
-                  <Text style={s.viveLbl}>VIVE EN NOMBRES COMO</Text>
-                  {nombres.slice(0, 5).map(n => (
-                    <Text key={n.palabra} style={s.viveFila}>
-                      <Text style={s.viveNombre}>{n.palabra}</Text>
-                      {`  ${n.t.toLowerCase()} = ${n.sig} · «${n.traduccion}»`}
-                    </Text>
-                  ))}
-                  {nombres.length > 5 ? <Text style={s.viveMas}>y {nombres.length - 5} más en Raíces de la palabra</Text> : null}
-                </View>
-              );
-            })()}
-            <Text style={s.documentacion}>Fuente: {item.fuente}</Text>
-            {item.respaldo === 'pendiente_validacion' && (
-              <Text style={s.documentacion}>Validación documental pendiente.</Text>
-            )}
+      <View>
+        {nuevaLetra && (
+          <View style={s.letraFila} accessibilityRole="header">
+            <View style={s.letraRombo}><Text style={s.letraTxt}>{letra}</Text></View>
+            <View style={s.letraLinea} />
           </View>
         )}
-      </TouchableOpacity>
+        <TouchableOpacity style={[s.row, { borderLeftColor: color }]} onPress={() => expandir(item.id)} activeOpacity={0.85}>
+          <View style={s.rowTop}>
+            <View style={[s.romboIlus, { borderColor: color }]}>
+              <View style={s.romboDentro}><PalabraIlustrada palabra={item} tamano={30} /></View>
+            </View>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <View style={s.pastLine}>
+                <Text style={s.past}>{item.p}</Text>
+                <TouchableOpacity
+                  style={s.audioBtn}
+                  onPress={() => decirPalabra(item.p)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Leer ${item.p} con voz sintética de práctica`}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="volume-high" size={15} color={colors.doradoNeon} />
+                </TouchableOpacity>
+              </View>
+              <Text style={s.esp}>{item.e}</Text>
+              <View style={s.metaFila}>
+                <Petroglifo id={SIMBOLO_MUNDO[item.mundo]} tamano={14} color={color} />
+                <Text style={s.meta}>{mundo?.titulo} · {item.cat}</Text>
+              </View>
+            </View>
+            {vista
+              ? <View style={s.sello} accessibilityLabel="Aprendida"><View style={s.romboDentro}><Ionicons name="checkmark" size={13} color={colors.noche} /></View></View>
+              : <Ionicons name="lock-closed" size={14} color={colors.turquesaSuave} style={s.lock} />}
+          </View>
+          {abierto && (
+            <View style={s.expand}>
+              <Text style={s.fon}>Grafía: {item.fon} · Voz sintética de práctica</Text>
+              <Text style={s.ej}>{item.ej}</Text>
+              {(() => {
+                // ¿Dónde vive esta raíz? Nombres reales que la llevan (de Raíces de la palabra).
+                const nombres = dondeViveRaiz(item.p, RAICES);
+                if (nombres.length === 0) return null;
+                return (
+                  <View style={s.vive}>
+                    <Text style={s.viveLbl}>VIVE EN NOMBRES COMO</Text>
+                    {nombres.slice(0, 5).map(n => (
+                      <Text key={n.palabra} style={s.viveFila}>
+                        <Text style={s.viveNombre}>{n.palabra}</Text>
+                        {`  ${n.t.toLowerCase()} = ${n.sig} · «${n.traduccion}»`}
+                      </Text>
+                    ))}
+                    {nombres.length > 5 ? <Text style={s.viveMas}>y {nombres.length - 5} más en Raíces de la palabra</Text> : null}
+                  </View>
+                );
+              })()}
+              <Text style={s.documentacion}>Fuente: {item.fuente}</Text>
+              {item.respaldo === 'pendiente_validacion' && (
+                <Text style={s.documentacion}>Validación documental pendiente.</Text>
+              )}
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
     );
   };
 
   return (
     <View style={s.bg}>
+      <FondoSimbolos variante="diccionario" />
       {/* Buscador */}
       <View style={s.srchWrap}>
-        <Ionicons name="search" size={16} color={colors.textoCartaSuave} style={s.srchIco} />
+        <Ionicons name="search" size={16} color={colors.doradoNeon} style={s.srchIco} />
         <TextInput
           style={s.srchIn}
           placeholder="Busca una palabra o significado…"
-          placeholderTextColor={colors.textoCartaSuave}
+          placeholderTextColor={colors.turquesaSuave}
           value={busqueda}
           onChangeText={setBusqueda}
           autoCorrect={false}
         />
         {busqueda.length > 0 && (
           <TouchableOpacity onPress={() => setBusqueda('')} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-            <Ionicons name="close" size={16} color={colors.textoCartaSuave} style={s.clear} />
+            <Ionicons name="close" size={16} color={colors.turquesaSuave} style={s.clear} />
           </TouchableOpacity>
         )}
+      </View>
+
+      {/* Los cinco mundos, cada uno con su petroglifo: tocar filtra */}
+      <View style={s.mundosFila}>
+        {mundos.map(m => {
+          const on = mundosSel.has(m.id);
+          return (
+            <TouchableOpacity
+              key={m.id}
+              style={[s.mundoLaja, on && { borderColor: acento(m.id), backgroundColor: 'rgba(250,199,117,0.08)' }]}
+              onPress={() => toggleMundo(m.id)}
+              activeOpacity={0.85}
+              accessibilityRole="button"
+              accessibilityLabel={`Filtrar por el mundo ${m.titulo}`}
+              accessibilityState={{ selected: on }}
+            >
+              <Petroglifo id={SIMBOLO_MUNDO[m.id]} tamano={30} color={on ? colors.doradoNeon : LAJA.crema} opacity={on ? 1 : 0.55} />
+              <Text style={[s.mundoNom, on && { color: colors.doradoNeon }]} numberOfLines={1}>{m.titulo}</Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
       {/* Etiquetas de filtros activos (toca para quitar) */}
@@ -288,19 +332,7 @@ export default function DiccionarioScreen({ route, navigation } = {}) {
       {/* Panel colapsable de filtros (mundos + categorías) con wrap cómodo */}
       {filtrosAbiertos && (
         <ScrollView style={s.panel} contentContainerStyle={s.panelContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <Text style={s.panelLbl}>MUNDOS</Text>
-          <View style={s.wrap}>
-            {mundos.map(m => {
-              const on = mundosSel.has(m.id);
-              return (
-                <TouchableOpacity key={m.id} style={[s.chip, on && s.chipOn]} onPress={() => toggleMundo(m.id)} activeOpacity={0.85}>
-                  <Text style={[s.chipTxt, on && { color: '#fff' }]}>{m.emoji} {m.titulo}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-
-          <Text style={[s.panelLbl, { marginTop: 14 }]}>CATEGORÍAS</Text>
+          <Text style={s.panelLbl}>CATEGORÍAS</Text>
           <View style={s.wrap}>
             {CATS.map(c => {
               const on = catsSel.has(c);
@@ -343,12 +375,21 @@ const s = StyleSheet.create({
 
   srchWrap: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: colors.cartaClara, margin: 14, marginBottom: 8, borderRadius: radii.pill,
-    borderWidth: 1, borderColor: colors.cartaClaraBorde, paddingHorizontal: 16,
+    backgroundColor: LAJA.fondo, margin: 14, marginBottom: 10, borderRadius: radii.pill,
+    borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.35)', paddingHorizontal: 16,
     shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 3,
   },
   srchIco: { fontSize: 16, marginRight: 8 },
-  srchIn:  { flex: 1, paddingVertical: 12, fontSize: 14, color: colors.textoCarta, fontFamily: fonts.medium },
+  srchIn:  { flex: 1, paddingVertical: 12, fontSize: 15, color: colors.cielo, fontFamily: fonts.medium },
+
+  mundosFila: { flexDirection: 'row', gap: 6, paddingHorizontal: 14, marginBottom: 10 },
+  mundoLaja:  { ...laja, flex: 1, alignItems: 'center', paddingTop: 8, paddingBottom: 6, minHeight: 64 },
+  mundoNom:   { fontSize: 10, color: colors.turquesaSuave, fontFamily: fonts.bold, marginTop: 3 },
+
+  letraFila:  { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 10, marginBottom: 8, paddingLeft: 4 },
+  letraRombo: { width: 30, height: 30, borderWidth: 1.5, borderColor: colors.doradoNeon, transform: [{ rotate: '45deg' }], alignItems: 'center', justifyContent: 'center', backgroundColor: LAJA.fondo },
+  letraTxt:   { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.extra, transform: [{ rotate: '-45deg' }] },
+  letraLinea: { flex: 1, height: 1, backgroundColor: 'rgba(250,199,117,0.25)' },
   clear:   { fontSize: 16, color: colors.textoCartaSuave, paddingLeft: 8 },
 
   // Etiquetas de filtros activos (removibles)
@@ -383,29 +424,34 @@ const s = StyleSheet.create({
   lista: { flex: 1 },
 
   row: {
-    ...ui.cardClara,
-    borderRadius: radii.md, padding: 14, marginBottom: 9,
+    ...laja,
+    borderRadius: radii.md, padding: 12, marginBottom: 9,
     borderLeftWidth: 4, borderLeftColor: colors.sol,
   },
-  rowTop:   { flexDirection: 'row', alignItems: 'flex-start' },
+  rowTop:   { flexDirection: 'row', alignItems: 'center', gap: 14 },
+  // Ilustración dentro de un rombo, como la tarjeta de la palabra de hoy.
+  romboIlus:   { width: 40, height: 40, marginLeft: 6, marginRight: 2, borderRadius: 8, borderWidth: 1.5, transform: [{ rotate: '45deg' }], alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(250,199,117,0.06)' },
+  romboDentro: { transform: [{ rotate: '-45deg' }] },
   pastLine: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  past: { ...ui.pastoker, color: colors.sol, fontSize: 19 },
-  audioBtn: { width: 34, height: 34, borderRadius: 17, backgroundColor: 'rgba(242,177,52,0.14)', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: 'rgba(242,177,52,0.35)' },
+  past: { ...ui.pastoker, color: colors.doradoNeon, fontSize: 20 },
+  audioBtn: { width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(250,199,117,0.10)', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: 'rgba(250,199,117,0.35)' },
   audioIco: { fontSize: 16 },
-  esp:  { fontSize: 14, color: colors.textoCarta, marginTop: 3, fontFamily: fonts.medium },
-  meta: { fontSize: 10, color: colors.textoCartaSuave, marginTop: 3, fontFamily: fonts.medium },
-  check: { fontSize: 18, color: colors.selva, fontFamily: fonts.extra, paddingLeft: 8 },
+  esp:  { fontSize: 15, color: colors.cielo, marginTop: 2, fontFamily: fonts.semibold },
+  metaFila: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  meta: { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.medium },
+  // Sello de palabra aprendida: rombo dorado.
+  sello: { width: 20, height: 20, marginRight: 4, borderRadius: 3, backgroundColor: colors.doradoNeon, transform: [{ rotate: '45deg' }], alignItems: 'center', justifyContent: 'center' },
   lock:  { fontSize: 14, opacity: 0.5, paddingLeft: 8 },
 
-  expand: { marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: colors.cartaClaraBorde },
-  fon: { fontSize: 12, color: colors.textoCartaSuave, fontStyle: 'italic' },
-  ej:  { fontSize: 13, color: colors.textoCartaSuave, fontStyle: 'italic', marginTop: 4 },
-  vive:       { marginTop: 10, padding: 10, borderRadius: radii.sm, backgroundColor: 'rgba(23,64,58,0.07)' },
-  viveLbl:    { fontSize: 9, color: colors.textoCartaSuave, fontFamily: fonts.bold, letterSpacing: 2, marginBottom: 4 },
-  viveFila:   { fontSize: 12, lineHeight: 19, color: colors.textoCartaSuave, fontFamily: fonts.medium },
-  viveNombre: { fontSize: 14, color: colors.sol, fontFamily: fonts.extra },
-  viveMas:    { fontSize: 11, color: colors.textoCartaSuave, fontFamily: fonts.medium, fontStyle: 'italic', marginTop: 2 },
-  documentacion: { fontSize: 12, lineHeight: 18, color: colors.textoCartaSuave, fontFamily: fonts.regular, marginTop: 6 },
+  expand: { marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: LAJA.borde },
+  fon: { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic' },
+  ej:  { fontSize: 13, color: colors.cielo, fontStyle: 'italic', marginTop: 4, opacity: 0.9 },
+  vive:       { marginTop: 10, padding: 10, borderRadius: radii.sm, backgroundColor: 'rgba(8,26,34,0.6)' },
+  viveLbl:    { fontSize: 9, color: colors.turquesaSuave, fontFamily: fonts.bold, letterSpacing: 2, marginBottom: 4 },
+  viveFila:   { fontSize: 12, lineHeight: 19, color: colors.cielo, fontFamily: fonts.medium },
+  viveNombre: { fontSize: 14, color: colors.doradoNeon, fontFamily: fonts.extra },
+  viveMas:    { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.medium, fontStyle: 'italic', marginTop: 2 },
+  documentacion: { fontSize: 12, lineHeight: 18, color: colors.turquesaSuave, fontFamily: fonts.regular, marginTop: 6 },
 
   vacio:    { alignItems: 'center', paddingTop: 40 },
   vacioTxt: { fontSize: 15, color: colors.turquesaSuave, fontFamily: fonts.semibold, marginTop: 14, textAlign: 'center' },

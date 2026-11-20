@@ -10,19 +10,29 @@ import AvatarSVG from '../components/AvatarSVG';
 import BotonGlow from '../components/BotonGlow';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
+import FondoSimbolos from '../components/FondoSimbolos';
+import AnillosPlato from '../components/pasto/AnillosPlato';
+import Petroglifo from '../components/Petroglifo';
+import { laja, LAJA } from '../theme/pasto';
 
 const CATEGORIAS = [
   { key: 'piel',      label: 'Piel',      emoji: '🧑' },
-  { key: 'ropa',      label: 'Ruana',     emoji: '🧥' },
-  { key: 'sombrero',  label: 'Sombrero',  emoji: '🎩' },
+  { key: 'cabello',   label: 'Cabello',   emoji: '💇' },
+  { key: 'ropa',      label: 'Ropa',      emoji: '🧥' },
+  { key: 'sombrero',  label: 'Cabeza',    emoji: '👒' },
+  { key: 'adorno',    label: 'Adornos',   emoji: '📿' },
   { key: 'accesorio', label: 'Extra',     emoji: '🎒' },
+  { key: 'emblema',   label: 'Emblema',   petroglifo: 'espiralDoble' },
 ];
+
+// Piel y cabello son parte de quién eres: siempre disponibles.
+const LIBRES = ['piel', 'cabello'];
 
 export default function AvatarScreen({ navigation }) {
   const { estado, guardarAvatar, verificarLogros } = useJuego();
   const nombre = estado.nombreJugador || 'Caminante';
 
-  const [sel, setSel] = useState({ piel: 0, ropa: 0, sombrero: 0, accesorio: 0, ...estado.avatar });
+  const [sel, setSel] = useState({ piel: 0, cabello: 0, ropa: 0, sombrero: 0, adorno: 0, accesorio: 0, emblema: 0, ...estado.avatar });
   const [cat, setCat] = useState('piel');
 
   // Balanceo idle de la vista previa
@@ -40,8 +50,8 @@ export default function AvatarScreen({ navigation }) {
   const rotate = sway.interpolate({ inputRange: [-1, 1], outputRange: ['-4deg', '4deg'] });
 
   // Índices desbloqueados de la categoría activa (la piel siempre está toda disponible)
-  const desbloqueados = cat === 'piel'
-    ? AVATAR_OPCIONES.piel.map((_, i) => i)
+  const desbloqueados = LIBRES.includes(cat)
+    ? AVATAR_OPCIONES[cat].map((_, i) => i)
     : atuendosDesbloqueados(estado, cat);
 
   const elegir = (idx, libre) => {
@@ -59,13 +69,16 @@ export default function AvatarScreen({ navigation }) {
 
   return (
     <View style={s.bg}>
+      <FondoSimbolos variante="progreso" />
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
 
         {/* Vista previa */}
         <View style={s.preview}>
-          <Animated.View style={{ transform: [{ rotate }] }}>
-            <AvatarSVG avatar={sel} tamano={180} conFondo />
-          </Animated.View>
+          <AnillosPlato tamano={220}>
+            <Animated.View style={{ transform: [{ rotate }] }}>
+              <AvatarSVG avatar={sel} tamano={172} conFondo />
+            </Animated.View>
+          </AnillosPlato>
           <Text style={s.previewNom}>{nombre}</Text>
         </View>
 
@@ -78,7 +91,9 @@ export default function AvatarScreen({ navigation }) {
               onPress={() => setCat(c.key)}
               activeOpacity={0.85}
             >
-              <Text style={s.tabEmoji}>{c.emoji}</Text>
+              {c.petroglifo
+                ? <View style={s.tabSimbolo}><Petroglifo id={c.petroglifo} tamano={26} color={cat === c.key ? colors.doradoNeon : LAJA.crema} /></View>
+                : <Text style={s.tabEmoji}>{c.emoji}</Text>}
               <Text style={[s.tabLbl, cat === c.key && s.tabLblOn]}>{c.label}</Text>
             </TouchableOpacity>
           ))}
@@ -106,7 +121,7 @@ export default function AvatarScreen({ navigation }) {
                     </View>
                   )}
                 </View>
-                <Text style={[s.tileNom, activa && { color: colors.doradoNeon }]} numberOfLines={1}>{op.nombre}</Text>
+                <Text style={[s.tileNom, activa && { color: colors.doradoNeon }]} numberOfLines={2}>{op.nombre}</Text>
                 {!libre && <Text style={s.tilePista} numberOfLines={2}>{op.pista}</Text>}
               </TouchableOpacity>
             );
@@ -125,18 +140,19 @@ const s = StyleSheet.create({
   bg: { flex: 1, backgroundColor: colors.noche },
 
   preview: {
-    ...ui.cardDestacada,
-    alignItems: 'center', paddingVertical: 18, marginBottom: 16,
+    ...laja, borderColor: 'rgba(250,199,117,0.45)',
+    alignItems: 'center', paddingVertical: 14, marginBottom: 16,
   },
   previewNom: { fontSize: 20, fontFamily: fonts.extra, color: colors.cielo, marginTop: 10 },
 
-  tabs: { flexDirection: 'row', gap: 8, marginBottom: 16 },
+  tabs: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginBottom: 16 },
   tab: {
-    flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: radii.sm,
+    width: '22.5%', alignItems: 'center', paddingVertical: 8, borderRadius: radii.sm,
     backgroundColor: 'rgba(8,26,34,0.62)', borderWidth: 1.5, borderColor: 'rgba(93,202,165,0.35)',
   },
   tabOn: { borderColor: colors.doradoNeon, backgroundColor: 'rgba(250,199,117,0.12)' },
   tabEmoji: { fontSize: 22 },
+  tabSimbolo: { height: 29, justifyContent: 'center' },
   tabLbl: { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.semibold, marginTop: 2 },
   tabLblOn: { color: colors.doradoNeon },
 

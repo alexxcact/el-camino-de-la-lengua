@@ -1,12 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import Svg, { Circle, Path } from 'react-native-svg';
 import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { useJuego } from '../context/JuegoContext';
 import ContadorAnimado from './ContadorAnimado';
 import AvatarSVG from './AvatarSVG';
-import RetratoMini from './RetratosPersonaje';
+import { pathGreca } from '../data/greca';
+import { LAJA } from '../theme/pasto';
 
 // Mismos umbrales de nivel que el JuegoContext (para la barra de XP del HUD)
 const NIVELES = [0, 10, 20, 30, 50];
@@ -20,8 +23,13 @@ function fraccionXP(puntos) {
   return Math.max(0, Math.min(1, (puntos - lo) / (hi - lo)));
 }
 
+const AV = 50;      // avatar
+const MARCO = 64;   // anillos del plato alrededor
+
 /**
- * Barra superior fija del jugador (HUD estilo videojuego).
+ * Barra superior fija del jugador (HUD estilo videojuego), con la estética
+ * pasta: el avatar dentro de los anillos del plato, el nivel en un rombo, la
+ * barra con su rombo de avance, los puntos en una laja y una greca abajo.
  * Visible en Mapa, Mundo y Perfil.
  * Props:
  *  expandido  bool  (margen/padding un poco mayor para la pantalla de perfil)
@@ -33,6 +41,9 @@ export default function HudJugador({ expandido = false }) {
   const palabrasHoy = estado.palabrasHoy || 0;
   const nombre = estado.nombreJugador || 'Caminante';
   const inicial = nombre.charAt(0).toUpperCase();
+  const { width: W } = useWindowDimensions();
+  const greca = pathGreca(W, 8);
+  const fraccion = fraccionXP(puntos);
 
   const xpAnim = useRef(new Animated.Value(fraccionXP(puntos))).current;
 
@@ -76,87 +87,123 @@ export default function HudJugador({ expandido = false }) {
 
   return (
     <View style={[s.wrap, expandido && s.wrapExp]}>
-      {/* Avatar del jugador + insignia del Caminante (inicial como fallback) */}
-      <View style={s.avatarBox}>
-        <View style={s.avatarMarco}>
-          {estado.avatar
-            ? <AvatarSVG avatar={estado.avatar} tamano={50} conFondo />
-            : <View style={s.avatarInicial}><Text style={s.inicialTxt}>{inicial}</Text></View>}
+      <View style={s.fila}>
+        {/* Avatar dentro de los anillos del plato, con el nivel en un rombo */}
+        <View style={s.avatarBox} accessibilityLabel={`${nombre}, nivel ${estado.nivel}`}>
+          <Svg width={MARCO} height={MARCO} style={StyleSheet.absoluteFill}>
+            <Circle cx={MARCO / 2} cy={MARCO / 2} r={MARCO / 2 - 1.5} fill="none" stroke={colors.doradoNeon} strokeWidth={2} opacity={0.9} />
+            <Circle cx={MARCO / 2} cy={MARCO / 2} r={MARCO / 2 - 5} fill="none" stroke={colors.doradoNeon} strokeWidth={1} opacity={0.45} />
+          </Svg>
+          <View style={s.avatarMarco}>
+            {estado.avatar
+              ? <AvatarSVG avatar={estado.avatar} tamano={AV} conFondo />
+              : <View style={s.avatarInicial}><Text style={s.inicialTxt}>{inicial}</Text></View>}
+          </View>
+          <View style={s.nivelRombo}>
+            <Text style={s.nivelTxt}>{estado.nivel}</Text>
+          </View>
         </View>
-        <RetratoMini personaje="kinti" size={28} style={s.kintiBadge} />
-      </View>
 
-      {/* Nombre + barra XP + chips */}
-      <View style={s.center}>
-        <Text style={s.nombre} numberOfLines={1}>{nombre} · Nivel {estado.nivel}</Text>
-        <View style={s.xpTrack}>
-          <Animated.View style={[s.xpFillWrap, { transform: [{ scaleX: xpAnim }], transformOrigin: 'left' }]}>
-            <LinearGradient
-              colors={colors.gradXP}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={s.xpFill}
-            />
+        {/* Nombre + barra del camino + racha */}
+        <View style={s.center}>
+          <View style={s.nombreFila}>
+            <Text style={s.nombre} numberOfLines={1}>{nombre}</Text>
+            <Text style={s.nivelLbl}>NIVEL {estado.nivel}</Text>
+          </View>
+          <View style={s.xpTrack}>
+            <Animated.View style={[s.xpFillWrap, { transform: [{ scaleX: xpAnim }], transformOrigin: 'left' }]}>
+              <LinearGradient
+                colors={[colors.doradoNeon, '#D9643A']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.xpFill}
+              />
+            </Animated.View>
+            <View style={[s.xpRombo, { left: `${Math.min(97, Math.round(fraccion * 100))}%` }]} />
+          </View>
+          <View style={s.chips}>
+            <View style={s.chip}>
+              <Ionicons name="flame" size={13} color="#E8774A" />
+              <Text style={s.chipTxt}>{racha} {racha === 1 ? 'día' : 'días'}</Text>
+            </View>
+            <View style={s.chip}>
+              <Ionicons name="leaf" size={12} color={colors.turquesaClaro} />
+              <Text style={s.chipTxt}>{palabrasHoy} hoy</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Puntos en una laja, con pulso y "+X" flotante */}
+        <View style={s.puntosBox}>
+          <Animated.Text style={[s.flotante, { opacity: flotanteOp, transform: [{ translateY: flotanteY }] }]}>
+            +{delta}
+          </Animated.Text>
+          <Animated.View style={[s.pillGlow, { opacity: glowOp }]} />
+          <Animated.View style={[s.puntosPill, { transform: [{ scale: pillScale }] }]}>
+            <ContadorAnimado valor={puntos} estilo={s.puntosNum} duracion={600} />
+            <Text style={s.puntosLbl}>PUNTOS</Text>
           </Animated.View>
         </View>
-        <View style={s.chips}>
-          <Text style={s.chip}>🔥 {racha} {racha === 1 ? 'día' : 'días'}</Text>
-          <Text style={s.chip}>✨ {palabrasHoy} hoy</Text>
-        </View>
       </View>
 
-      {/* Píldora de puntos animada */}
-      <View style={s.puntosBox}>
-        <Animated.Text style={[s.flotante, { opacity: flotanteOp, transform: [{ translateY: flotanteY }] }]}>
-          +{delta}
-        </Animated.Text>
-        <Animated.View style={[s.pillGlow, { opacity: glowOp }]} />
-        <Animated.View style={[s.puntosPill, { transform: [{ scale: pillScale }] }]}>
-          <ContadorAnimado valor={puntos} estilo={s.puntosNum} duracion={600} />
-          <Text style={s.puntosLbl}>pts</Text>
-        </Animated.View>
-      </View>
+      {/* Greca tejida que cierra la barra */}
+      <Svg width={W} height={8} style={s.greca} pointerEvents="none">
+        <Path d={greca.d} fill="none" stroke={colors.doradoNeon} strokeWidth={greca.trazo} strokeLinecap="square" opacity={0.28} />
+      </Svg>
     </View>
   );
 }
 
 const s = StyleSheet.create({
   wrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 14,
     backgroundColor: colors.nocheHeader,
   },
-  wrapExp: { paddingVertical: 16 },
+  wrapExp: { paddingTop: 14, paddingBottom: 18 },
+  fila: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  greca: { position: 'absolute', left: 0, bottom: 3 },
 
-  avatarBox: { position: 'relative', width: 50, height: 50 },
-  avatarMarco: {
-    width: 50, height: 50, borderRadius: 25, overflow: 'hidden',
-    borderWidth: 2, borderColor: colors.turquesaClaro,
-  },
+  avatarBox: { width: MARCO, height: MARCO, alignItems: 'center', justifyContent: 'center' },
+  avatarMarco: { width: AV, height: AV, borderRadius: AV / 2, overflow: 'hidden' },
   avatarInicial: {
-    width: 50, height: 50, borderRadius: 25,
+    width: AV, height: AV, borderRadius: AV / 2,
     backgroundColor: colors.turquesa,
     alignItems: 'center', justifyContent: 'center',
   },
   inicialTxt: { fontSize: 24, color: colors.cielo, fontFamily: fonts.extra, marginTop: -1 },
-  kintiBadge: {
-    // Busto recortado de Kinti asomado a la esquina del avatar (sin círculo).
-    position: 'absolute', bottom: -6, right: -10,
+  // Nivel en un rombo dorado, al pie del avatar
+  nivelRombo: {
+    position: 'absolute', bottom: -4, alignSelf: 'center',
+    width: 20, height: 20, borderRadius: 3,
+    backgroundColor: colors.doradoNeon, borderWidth: 2, borderColor: colors.nocheHeader,
+    transform: [{ rotate: '45deg' }], alignItems: 'center', justifyContent: 'center',
   },
+  nivelTxt: { color: colors.noche, fontSize: 11, fontFamily: fonts.extra, transform: [{ rotate: '-45deg' }], lineHeight: 13 },
 
-  center: { flex: 1 },
-  nombre: { color: colors.cielo, fontSize: 14, fontFamily: fonts.bold, marginBottom: 4 },
+  center: { flex: 1, minWidth: 0 },
+  nombreFila: { flexDirection: 'row', alignItems: 'baseline', gap: 8, marginBottom: 6 },
+  nombre: { flexShrink: 1, color: colors.cielo, fontSize: 16, fontFamily: fonts.extra },
+  nivelLbl: { color: colors.doradoNeon, fontSize: 10, fontFamily: fonts.bold, letterSpacing: 1.5 },
   xpTrack: {
-    height: 9, borderRadius: 5, overflow: 'hidden',
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    height: 10, borderRadius: 5, justifyContent: 'center',
+    backgroundColor: 'rgba(8,26,34,0.8)', borderWidth: 1, borderColor: LAJA.borde,
   },
-  xpFillWrap: { width: '100%', height: '100%' },
-  xpFill: { flex: 1, borderRadius: 5 },
-  chips: { flexDirection: 'row', gap: 10, marginTop: 5 },
-  chip: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.semibold },
+  xpFillWrap: { position: 'absolute', left: 0, top: 0, bottom: 0, width: '100%', borderRadius: 5, overflow: 'hidden' },
+  xpFill: { flex: 1 },
+  xpRombo: {
+    position: 'absolute', width: 10, height: 10, marginLeft: -5,
+    backgroundColor: colors.doradoNeon, borderWidth: 2, borderColor: colors.nocheHeader,
+    transform: [{ rotate: '45deg' }],
+  },
+  chips: { flexDirection: 'row', gap: 8, marginTop: 7 },
+  chip: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10,
+    backgroundColor: 'rgba(8,26,34,0.55)', borderWidth: 1, borderColor: LAJA.borde,
+  },
+  chipTxt: { color: colors.cielo, fontSize: 11, fontFamily: fonts.semibold },
 
   puntosBox: { position: 'relative', alignItems: 'center' },
   flotante: {
@@ -164,15 +211,15 @@ const s = StyleSheet.create({
     color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.bold,
   },
   puntosPill: {
-    backgroundColor: colors.nocheProfundo,
-    borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6,
-    alignItems: 'center', minWidth: 56,
-    borderWidth: 1, borderColor: 'rgba(93,202,165,0.3)',
+    backgroundColor: LAJA.fondo,
+    borderRadius: 12, paddingHorizontal: 12, paddingVertical: 7,
+    alignItems: 'center', minWidth: 64,
+    borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.4)',
   },
   pillGlow: {
     position: 'absolute', top: -5, left: -5, right: -5, bottom: -5,
-    borderRadius: 20, backgroundColor: colors.doradoNeon,
+    borderRadius: 16, backgroundColor: colors.doradoNeon,
   },
-  puntosNum: { color: colors.doradoNeon, fontSize: 20, fontFamily: fonts.extra, lineHeight: 22 },
-  puntosLbl: { color: colors.turquesaSuave, fontSize: 9, fontFamily: fonts.medium, letterSpacing: 1 },
+  puntosNum: { color: colors.doradoNeon, fontSize: 20, fontFamily: fonts.extra, lineHeight: 23 },
+  puntosLbl: { color: colors.turquesaSuave, fontSize: 8, fontFamily: fonts.bold, letterSpacing: 1.5 },
 });

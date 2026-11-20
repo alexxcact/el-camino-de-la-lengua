@@ -18,6 +18,7 @@ import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { programarNotificacionDiaria } from '../utils/notificaciones';
 import { distinguirDibujos } from '../utils/ejercicios';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 // Orden fijo de mecánicas del reto: 2 quiz, 2 parejas rápidas, 1 dictado
 const ORDEN = ['quiz', 'parejas', 'quiz', 'parejas', 'dictado'];
@@ -105,10 +106,11 @@ export default function RetoDiarioScreen({ navigation }) {
     return (
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
+        <FondoSimbolos variante="juego" />
         <ScrollView contentContainerStyle={s.resContent}>
           <PishkuMascota celebrando={false} tamano={92} />
           <Text style={s.resTit}>¡Reto completado, {nombre}!</Text>
-          <Text style={s.resSub}>Ya repasaste tu palabra de hoy. El Ave mensajera te espera mañana.</Text>
+          <Text style={s.resSub}>Ya repasaste tu palabra de hoy. Auara te espera mañana.</Text>
           <View style={s.relojCard}>
             <Text style={s.relojLbl}>VUELVE EN</Text>
             <Text style={s.relojTxt}>{reloj}</Text>
@@ -126,6 +128,7 @@ export default function RetoDiarioScreen({ navigation }) {
     return (
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
+        <FondoSimbolos variante="juego" />
         <ScrollView contentContainerStyle={s.resContent}>
           <PishkuMascota celebrando tamano={96} />
           <Text style={s.resTit}>¡Reto del día logrado!</Text>
@@ -204,6 +207,7 @@ export default function RetoDiarioScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView style={s.bg} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <FondoSimbolos variante="juego" />
       <ScrollView contentContainerStyle={{ padding: 14, flexGrow: 1 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 
         {/* Header con progreso */}

@@ -10,6 +10,7 @@ import Confeti from './Confeti';
 import MedallaPasto from './MedallaPasto';
 import AvatarSVG from './AvatarSVG';
 import PaisajeSendero from './PaisajeSendero';
+import PetroglifoEscondido from './PetroglifoEscondido';
 import { sonar } from '../utils/sonidos';
 
 const NODE = 100;
@@ -253,7 +254,7 @@ export default function SenderoMapa({ mundos, estado, saludo, nombre, onSelect, 
             <Text style={s.headerSub}>{estado.mundosCompletados.size} de {ROWS} mundos completados</Text>
           </View>
 
-          <PaisajeSendero ancho={W} alto={canvasH} nodos={Object.values(nodos)} />
+          <PaisajeSendero ancho={W} alto={canvasH} nodos={Object.values(nodos)} encontrados={estado.petroglifosEncontrados || []} />
 
           {/* Capa SVG: línea del sendero */}
           <Svg width={W} height={canvasH} style={StyleSheet.absoluteFill} pointerEvents="none">
@@ -294,6 +295,7 @@ export default function SenderoMapa({ mundos, estado, saludo, nombre, onSelect, 
         </View>
 
         <View style={s.footer}>
+          <PetroglifoEscondido lugar="mapa" tamano={46} style={{ marginBottom: 8 }} />
           <Text style={s.footNeg}>EL CAMINO DE LA LENGUA</Text>
           <Text style={s.footSub}>Vocabulario del pueblo Pasto</Text>
         </View>

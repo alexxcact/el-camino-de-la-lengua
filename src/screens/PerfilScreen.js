@@ -14,6 +14,13 @@ import AvatarSVG from '../components/AvatarSVG';
 import Medallon from '../components/Medallon';
 import { programarNotificacionDiaria, cancelarNotificaciones } from '../utils/notificaciones';
 import { AUTOR } from './CreditosScreen';
+import PiedraPetroglifos from '../components/PiedraPetroglifos';
+import Petroglifo from '../components/Petroglifo';
+import SolPasto from '../components/SolPasto';
+import TituloGreca from '../components/pasto/TituloGreca';
+import AnillosPlato from '../components/pasto/AnillosPlato';
+import { laja, LAJA, SIMBOLO_LOGRO } from '../theme/pasto';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 // Formatea una hora 0-23 a "4:00 PM"
 const formatoHora = (h) => {
@@ -56,10 +63,10 @@ export function PerfilScreen({ navigation }) {
   const [medallaSel, setMedallaSel] = useState(null);
 
   const stats = [
-    { n: estado.puntos,                  l: 'Puntos' },
-    { n: estado.palabrasVistas.size,     l: 'Palabras' },
-    { n: estado.mundosCompletados.size,  l: 'Mundos' },
-    { n: estado.logrosDesbloqueados.size, l: 'Logros' },
+    { n: estado.puntos,                  l: 'Puntos',   s: 'espiralDoble' },
+    { n: estado.palabrasVistas.size,     l: 'Palabras', s: 'espiralS' },
+    { n: estado.mundosCompletados.size,  l: 'Mundos',   s: 'venado' },
+    { n: estado.logrosDesbloqueados.size, l: 'Logros',  s: 'selloMono' },
   ];
 
   const barras = [
@@ -71,15 +78,18 @@ export function PerfilScreen({ navigation }) {
 
   return (
     <View style={ps.container}>
+      <FondoSimbolos variante="progreso" />
       <HudJugador expandido />
 
       <ScrollView contentContainerStyle={ps.content} showsVerticalScrollIndicator={false}>
 
         {/* Avatar grande + acceso a personalizar */}
         <View style={ps.avatarHeader}>
-          <Medallon size={126} ring={ui.ringDorado}>
-            <AvatarSVG avatar={estado.avatar} tamano={110} conFondo />
-          </Medallon>
+          <AnillosPlato tamano={168}>
+            <Medallon size={124} ring={ui.ringDorado}>
+              <AvatarSVG avatar={estado.avatar} tamano={108} conFondo />
+            </Medallon>
+          </AnillosPlato>
           <TouchableOpacity style={ps.personalizarBtn} onPress={() => navigation.navigate('Avatar')} activeOpacity={0.85}>
             <Text style={ps.personalizarTxt}>Personalizar avatar</Text>
           </TouchableOpacity>
@@ -98,6 +108,7 @@ export function PerfilScreen({ navigation }) {
         <View style={ps.statsGrid}>
           {stats.map((stat, i) => (
             <View key={stat.l} style={ps.statCard}>
+              <View style={ps.statSimbolo}><Petroglifo id={stat.s} tamano={30} color={colors.doradoNeon} opacity={0.75} /></View>
               <ContadorAnimado valor={stat.n} estilo={[ps.statN, { color: acento(i) }]} duracion={800} delay={i * 100} animarEntrada />
               <Text style={ps.statL}>{stat.l}</Text>
             </View>
@@ -105,14 +116,18 @@ export function PerfilScreen({ navigation }) {
         </View>
 
         {/* Acceso a estadísticas */}
-        <TouchableOpacity style={ps.statsBtn} onPress={() => navigation.navigate('Estadisticas')} activeOpacity={0.85}>
-          <Text style={ps.statsBtnTxt}>Ver mis estadísticas</Text>
-          <Text style={ps.statsBtnSub}>Progreso por mundo, categorías y calendario de racha</Text>
+        <TouchableOpacity style={ps.lajaBtn} onPress={() => navigation.navigate('Estadisticas')} activeOpacity={0.85} accessibilityRole="button">
+          <Petroglifo id="monosRama" tamano={46} color={colors.doradoNeon} opacity={0.8} />
+          <View style={{ flex: 1 }}>
+            <Text style={ps.lajaBtnTxt}>Ver mis estadísticas</Text>
+            <Text style={ps.lajaBtnSub}>Progreso por mundo, categorías y calendario de racha</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={colors.doradoNeon} />
         </TouchableOpacity>
 
         {/* Progreso */}
+        <TituloGreca texto="TU AVANCE" />
         <View style={ps.card}>
-          <Text style={ps.cardTit}>Tu avance</Text>
           {barras.map(b => (
             <View key={b.lbl} style={{ marginTop: 12 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
@@ -121,20 +136,20 @@ export function PerfilScreen({ navigation }) {
               </View>
               <View style={ps.barWrap}>
                 <LinearGradient
-                  colors={colors.gradXP}
+                  colors={[colors.doradoNeon, '#D9643A']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={[ps.barFill, { width: `${Math.min(100, Math.round((b.val / b.max) * 100))}%` }]}
                 />
+                {/* Rombo que marca hasta dónde va el camino */}
+                <View style={[ps.barRombo, { left: `${Math.min(97, Math.round((b.val / b.max) * 100))}%` }]} />
               </View>
             </View>
           ))}
         </View>
 
         {/* Vitrina de medallas Pasto */}
-        <View style={ps.seccionPill}>
-          <Text style={ps.seccionPillTxt}>VITRINA</Text>
-        </View>
+        <TituloGreca texto="MEDALLAS DE LOS MUNDOS" />
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={ps.vitrina}>
           {[1, 2, 3, 4, 5].map(id => {
             const ganada = estado.mundosCompletados.has(id);
@@ -155,17 +170,16 @@ export function PerfilScreen({ navigation }) {
         </ScrollView>
 
         {/* Logros */}
-        <View style={ps.seccionPill}>
-          <Text style={ps.seccionPillTxt}>LOGROS</Text>
-        </View>
+        <TituloGreca texto="LOGROS" />
         <View style={ps.logrosGrid}>
           {todosLogros.map(l => {
             const on = estado.logrosDesbloqueados.has(l.id);
             return (
               <View key={l.id} style={[ps.logroCard, on ? ps.logroOn : ps.logroOff]}>
-                {on
-                  ? <Text style={[ps.logroEmoji, ps.logroEmojiOn]}>{l.emoji}</Text>
-                  : <Ionicons name="lock-closed" size={28} color={colors.turquesaSuave} style={ps.logroEmoji} />}
+                {/* Cada logro lleva un petroglifo: se enciende al conseguirlo */}
+                <View style={ps.logroSimbolo}>
+                  <Petroglifo id={SIMBOLO_LOGRO[l.id] || 'espiralS'} tamano={44} color={on ? colors.doradoNeon : LAJA.tallado} enColor={on} />
+                </View>
                 <Text style={[ps.logroNom, on && { color: colors.sol }]}>{l.nom}</Text>
                 <Text style={ps.logroDesc}>{l.desc}</Text>
               </View>
@@ -181,6 +195,7 @@ export function PerfilScreen({ navigation }) {
         )}
 
         {/* Ajustes */}
+        <TituloGreca texto="AJUSTES" />
         <View style={ps.ajusteRow}>
           <Text style={ps.ajusteLbl}>Sonidos y vibración</Text>
           <Switch
@@ -216,15 +231,22 @@ export function PerfilScreen({ navigation }) {
           </View>
         )}
 
+        {/* Colección de petroglifos escondidos en el juego */}
+        <PiedraPetroglifos encontrados={estado.petroglifosEncontrados || []} />
+
         {/* Fuentes y créditos: libros fuente y autoría */}
         <TouchableOpacity
-          style={ps.statsBtn}
+          style={ps.lajaBtn}
           onPress={() => navigation.navigate('Creditos')}
           activeOpacity={0.85}
           accessibilityRole="button"
         >
-          <Text style={ps.statsBtnTxt}>Fuentes y créditos</Text>
-          <Text style={ps.statsBtnSub}>Los libros de donde salen las palabras y quién hizo el juego</Text>
+          <SolPasto tamano={44} />
+          <View style={{ flex: 1 }}>
+            <Text style={ps.lajaBtnTxt}>Fuentes y créditos</Text>
+            <Text style={ps.lajaBtnSub}>Los libros de donde salen las palabras y quién hizo el juego</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={colors.doradoNeon} />
         </TouchableOpacity>
 
         <Text style={ps.footer}>Desarrollado por {AUTOR}</Text>
@@ -314,20 +336,24 @@ const ps = StyleSheet.create({
   modalSaveTxt:  { color: colors.cielo, fontFamily: fonts.extra, fontSize: 14 },
 
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 16 },
-  statCard:  { ...ui.cardClara, width: '48%', padding: 16, alignItems: 'center', marginBottom: 12 },
-  statN:     { fontSize: 28, fontFamily: fonts.extra, color: colors.textoCarta },
-  statL:     { fontSize: 11, color: colors.textoCartaSuave, marginTop: 2, fontFamily: fonts.medium },
+  statCard:  { ...laja, width: '48%', paddingVertical: 14, paddingHorizontal: 12, alignItems: 'center', marginBottom: 12 },
+  statSimbolo: { height: 32, justifyContent: 'center', marginBottom: 4 },
+  statN:     { fontSize: 28, fontFamily: fonts.extra, color: colors.cielo },
+  statL:     { fontSize: 11, color: colors.turquesaSuave, marginTop: 2, fontFamily: fonts.bold, letterSpacing: 1.5 },
+  lajaBtn:    { ...laja, flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14, marginBottom: 14, borderColor: 'rgba(250,199,117,0.45)' },
+  lajaBtnTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.extra },
+  lajaBtnSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 2 },
 
   statsBtn:    { backgroundColor: 'rgba(250,199,117,0.12)', borderRadius: radii.md, padding: 16, marginBottom: 16, borderWidth: 1.5, borderColor: colors.doradoNeon, alignItems: 'center' },
   statsBtnTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.extra },
   statsBtnSub: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.medium, marginTop: 3, textAlign: 'center' },
 
-  card:    { ...ui.cardClara, padding: 16, marginBottom: 18 },
-  cardTit: { fontSize: 15, fontFamily: fonts.bold, color: colors.textoCarta },
-  barLbl:  { fontSize: 11, color: colors.textoCartaSuave, fontFamily: fonts.medium },
-  barVal:  { fontSize: 11, color: colors.textoCarta, fontFamily: fonts.semibold },
-  barWrap: { height: 8, backgroundColor: 'rgba(23,64,58,0.12)', borderRadius: 4, overflow: 'hidden' },
-  barFill: { height: '100%', borderRadius: 4 },
+  card:    { ...laja, padding: 16, paddingTop: 4, marginBottom: 6 },
+  barLbl:  { fontSize: 12, color: colors.cielo, fontFamily: fonts.semibold },
+  barVal:  { fontSize: 12, color: colors.doradoNeon, fontFamily: fonts.extra },
+  barWrap: { height: 10, backgroundColor: 'rgba(8,26,34,0.8)', borderRadius: 5, borderWidth: 1, borderColor: LAJA.borde, justifyContent: 'center' },
+  barFill: { height: '100%', borderRadius: 5 },
+  barRombo:{ position: 'absolute', width: 10, height: 10, marginLeft: -5, backgroundColor: colors.doradoNeon, borderWidth: 2, borderColor: colors.noche, transform: [{ rotate: '45deg' }] },
 
   seccionPill:   { ...ui.pill, marginBottom: 12 },
   seccionPillTxt:{ ...ui.pillTxt },
@@ -341,17 +367,16 @@ const ps = StyleSheet.create({
   medModalSig:  { fontSize: 14, color: colors.cielo, textAlign: 'center', marginTop: 10, lineHeight: 21, fontStyle: 'italic' },
   medModalTap:  { fontSize: 11, color: colors.turquesaSuave, marginTop: 16 },
   logrosGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  logroCard:  { width: '48%', borderRadius: radii.md, padding: 14, alignItems: 'center', marginBottom: 12 },
-  logroOn:    { backgroundColor: 'rgba(8,26,34,0.62)', borderWidth: 2, borderColor: colors.sol },
-  logroOff:   { backgroundColor: colors.nocheProfundo, opacity: 0.5, borderWidth: 1, borderColor: 'rgba(93,202,165,0.15)' },
-  logroEmoji: { fontSize: 28, marginBottom: 4 },
-  logroEmojiOn:{ textShadowColor: 'rgba(242,177,52,0.7)', textShadowRadius: 12 },
+  logroCard:  { ...laja, width: '48%', padding: 14, alignItems: 'center', marginBottom: 12 },
+  logroOn:    { borderColor: 'rgba(250,199,117,0.55)' },
+  logroOff:   { opacity: 0.6 },
+  logroSimbolo: { height: 50, justifyContent: 'center', marginBottom: 6 },
   logroNom:   { fontSize: 12, fontFamily: fonts.bold, color: colors.turquesaSuave, textAlign: 'center' },
   logroDesc:  { fontSize: 10, color: colors.turquesaSuave, marginTop: 2, textAlign: 'center', opacity: 0.8 },
 
   finalBtn:    { backgroundColor: 'rgba(250,199,117,0.15)', borderRadius: 16, paddingVertical: 14, alignItems: 'center', marginBottom: 12, borderWidth: 1.5, borderColor: colors.doradoNeon },
   finalBtnTxt: { color: colors.doradoNeon, fontSize: 15, fontFamily: fonts.bold },
-  ajusteRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.nocheCard, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 12, marginTop: 4, marginBottom: 12, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },
+  ajusteRow: { ...laja, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12, marginBottom: 10 },
   ajusteLbl: { color: colors.cielo, fontSize: 14, fontFamily: fonts.semibold },
 
   horaRow:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.nocheProfundo, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 10, marginBottom: 16, borderWidth: 1, borderColor: 'rgba(93,202,165,0.18)' },

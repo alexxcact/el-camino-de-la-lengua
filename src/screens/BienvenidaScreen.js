@@ -12,6 +12,7 @@ import { useJuego } from '../context/JuegoContext';
 import BotonGlow from '../components/BotonGlow';
 import SolPasto from '../components/SolPasto';
 import FranjaTejida from '../components/FranjaTejida';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 const { width, height } = Dimensions.get('window');
 
@@ -129,6 +130,7 @@ export default function BienvenidaScreen({ navigation }) {
   return (
     <View style={s.bg}>
       <LinearGradient colors={[PALETA_SOL.nocheAlta, PALETA_SOL.noche, '#081821']} locations={[0, 0.55, 1]} style={StyleSheet.absoluteFill} />
+      <FondoSimbolos variante="inicio" />
 
       <Estrella style={{ top: height * 0.09, left: width * 0.12 }} size={7} dur={1500} />
       <Estrella style={{ top: height * 0.15, right: width * 0.14 }} size={5} dur={1900} delay={400} />

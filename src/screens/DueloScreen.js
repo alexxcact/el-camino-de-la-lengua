@@ -11,6 +11,7 @@ import { ui, radii } from '../theme/ui';
 import { palabras, mundos } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import AvatarSVG from '../components/AvatarSVG';
+import PetroglifoEscondido from '../components/PetroglifoEscondido';
 import Medallon from '../components/Medallon';
 import PishkuMascota from '../components/PishkuMascota';
 import PalabraIlustrada from '../components/PalabraIlustrada';
@@ -20,6 +21,7 @@ import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { decirPalabra, detenerVoz } from '../utils/voz';
 import { bancoDuelo, filtrarBancoDuelo, generarPreguntaDuelo } from '../utils/duelo';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 // ══════════════════════════════════════════════════════════════
 // DUELO DE LA LENGUA — 2 jugadores por turnos en el MISMO dispositivo.
@@ -31,7 +33,7 @@ import { bancoDuelo, filtrarBancoDuelo, generarPreguntaDuelo } from '../utils/du
 // Dos "equipos" con avatar y color propios (cosméticos; ignoran desbloqueos)
 const EQUIPOS = [
   { def: 'Equipo Cóndor',  color: colors.turquesa,  emoji: '🦅', avatar: { piel: 1, ropa: 1, sombrero: 2, accesorio: 1 } },
-  { def: 'Equipo Colibrí', color: colors.doradoNeon, emoji: '🐦', avatar: { piel: 2, ropa: 3, sombrero: 1, accesorio: 2 } },
+  { def: 'Equipo Colibrí', color: colors.doradoNeon, emoji: '🐦', avatar: { piel: 2, cabello: 1, ropa: 6, sombrero: 4, adorno: 3, accesorio: 0 } },
 ];
 
 const OPCIONES_RONDAS = [5, 7, 10];
@@ -171,7 +173,10 @@ export default function DueloScreen({ navigation }) {
     const puedeEmpezar = nombres[0].trim().length > 0 && nombres[1].trim().length > 0 && bancoSeleccionado.length > 0;
     return (
       <KeyboardAvoidingView style={s.bg} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <FondoSimbolos variante="juego" />
         <ScrollView contentContainerStyle={s.configContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+          {/* La Perdiz, que invita al diálogo, se esconde en el duelo */}
+          <PetroglifoEscondido lugar="duelo" tamano={50} style={{ position: 'absolute', top: 0, right: 0, zIndex: 2 }} />
           <Text style={s.tituloGrande}>Duelo de la Lengua</Text>
           <Text style={s.subtitulo}>Dos jugadores, un mismo dispositivo. ¡Por turnos!</Text>
 
@@ -262,6 +267,7 @@ export default function DueloScreen({ navigation }) {
     return (
       <TouchableOpacity style={[s.bg, s.paseWrap]} activeOpacity={1} onPress={() => setFase('pregunta')}>
         <LinearGradient colors={[colors.noche, colors.nocheCard]} style={StyleSheet.absoluteFill} />
+        <FondoSimbolos variante="juego" />
         <Text style={s.paseRonda}>RONDA {rondaIdx + 1} DE {rondas}</Text>
         <Medallon size={132} ring={eq.color}>
           <AvatarSVG avatar={eq.avatar} tamano={120} conFondo />
@@ -306,6 +312,7 @@ export default function DueloScreen({ navigation }) {
     const nom = nombres[jugadorIdx].trim() || eq.def;
     return (
       <View style={s.bg}>
+        <FondoSimbolos variante="juego" />
         {Marcador()}
         <ScrollView contentContainerStyle={{ padding: 14, paddingBottom: 30, flexGrow: 1 }} showsVerticalScrollIndicator={false}>
           <Text style={s.turnoLbl}>Ronda {rondaIdx + 1}/{rondas} · Turno de <Text style={{ color: eq.color }}>{nom}</Text></Text>
@@ -426,6 +433,7 @@ export default function DueloScreen({ navigation }) {
     return (
       <View style={s.bg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
+        <FondoSimbolos variante="juego" />
         <ScrollView contentContainerStyle={s.finalContent}>
           <PishkuMascota celebrando tamano={96} mensaje={empate ? '¡Pío! ¡Qué duelo tan parejo!' : `¡Pío pío! ¡${nom} gana!`} />
 

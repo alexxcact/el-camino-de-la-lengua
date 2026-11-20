@@ -26,11 +26,11 @@ export function datosPersonaje(idOClave) {
 }
 
 const NOMBRES_CORTOS = {
-  kinti: 'el Caminante',
-  'taita-rimay': 'el guía',
-  uma: 'la tejedora',
-  pishku: 'el Ave mensajera',
-  chutun: 'la Niebla juguetona',
+  kinti: 'Tercán',
+  'taita-rimay': 'Taita Ipaín',
+  uma: 'Mama Cuenda',
+  pishku: 'Auara',
+  chutun: 'Chalaca',
 };
 
 export function nombreCorto(idOClave) {

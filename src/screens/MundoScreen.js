@@ -17,9 +17,11 @@ import IconoActividad from '../components/IconoActividad';
 import MedallaPasto, { MEDALLAS_INFO } from '../components/MedallaPasto';
 import RetratoMini from '../components/RetratosPersonaje';
 import CompanerosMundo from '../components/CompanerosMundo';
+import PetroglifoEscondido from '../components/PetroglifoEscondido';
 import { ANFITRIONES, nombreCorto } from '../data/personajesUtil';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 // ═══════════════════════════════════════════════════════════
 // VISTA DE LECCIÓN (aprendizaje de vocabulario)
@@ -117,6 +119,7 @@ export default function MundoScreen({ route, navigation }) {
   if (vistaActiva === 'leccion') {
     return (
       <View style={{ flex: 1, backgroundColor: colors.noche }}>
+        <FondoSimbolos variante="mundo" />
         <TouchableOpacity accessibilityRole="button" style={est.backBtn} onPress={() => setVistaActiva(null)}>
           <Text style={est.backTxt}>← Volver</Text>
         </TouchableOpacity>
@@ -130,6 +133,7 @@ export default function MundoScreen({ route, navigation }) {
 
   return (
     <View style={est.container}>
+      <FondoSimbolos variante="mundo" />
       <HudJugador />
 
       <ScrollView contentContainerStyle={est.content} showsVerticalScrollIndicator={false}>
@@ -148,6 +152,7 @@ export default function MundoScreen({ route, navigation }) {
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
           />
+          <PetroglifoEscondido lugar={`mundo${mundoId}`} tamano={54} style={est.petroglifo} />
           <View style={est.bannerTxt}>
             <Text style={est.bannerTit}>{mundo.titulo}</Text>
             <Text style={est.bannerSub}>{mundo.desc}</Text>
@@ -327,6 +332,7 @@ const est = StyleSheet.create({
   bannerSub:    { fontSize: 15, lineHeight: 21, color: colors.cielo, fontFamily: fonts.medium, marginTop: 3 },
   seccionHeader: { flexDirection: 'row', flexWrap: 'wrap', columnGap: 12, alignItems: 'baseline', justifyContent: 'space-between', marginTop: 12 },
   seccionTitulo: { color: colors.cielo, fontSize: 18, fontFamily: fonts.bold, marginTop: 8, marginBottom: 10 },
+  petroglifo:  { position: 'absolute', top: 14, right: 14, zIndex: 2 },
   historiaBtn: { alignSelf: 'flex-start', paddingHorizontal: 4, minHeight: 48, justifyContent: 'center', marginBottom: 2 },
   historiaTxt: { color: colors.turquesaSuave, fontSize: 14, fontFamily: fonts.bold },
 

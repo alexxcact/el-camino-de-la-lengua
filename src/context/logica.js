@@ -42,13 +42,14 @@ export const estadoInicial = {
   cinematicasVistas: [],   // ['mundo1', ...] cinemáticas ya vistas (array, merge a default [])
   // Avatar personalizable (objetos planos: se serializan con JSON.stringify igual
   // que el resto del estado no-Set; se mergean con default para usuarios viejos)
-  avatar: { piel: 0, ropa: 0, sombrero: 0, accesorio: 0 },
-  avatarDesbloqueados: { ropa: [0], sombrero: [0], accesorio: [0] },
+  avatar: { piel: 0, cabello: 0, ropa: 0, sombrero: 0, adorno: 0, accesorio: 0, emblema: 0 },
+  avatarDesbloqueados: { ropa: [0], sombrero: [0], adorno: [0], accesorio: [0], emblema: [0] },
   avatarPersonalizado: false, // si ya guardó el avatar al menos una vez
   onboardingVisto: false,  // si ya vio el tutorial de "cómo jugar" en el Mapa (primitivo)
   palabrasFalladas: [],    // [ids] de palabras erradas en quiz/escucha, para el Repaso (array, merge a default)
   ultimoSaludoFecha: null, // 'YYYY-MM-DD' del último saludo diario de un personaje en el Mapa (primitivo)
-  raicesArmadas: [],       // ['Imues', ...] palabras armadas en Raíces de la palabra (array, merge a default)
+  raicesArmadas: [],
+  petroglifosEncontrados: [], // ['venado', ...] petroglifos descubiertos (array, merge a default)       // ['Imues', ...] palabras armadas en Raíces de la palabra (array, merge a default)
 };
 
 export const niveles = [
@@ -147,6 +148,7 @@ export function hidratarEstado(parsed) {
     diasActivos:       Array.isArray(p.diasActivos)       ? p.diasActivos       : [],
     cinematicasVistas: Array.isArray(p.cinematicasVistas) ? p.cinematicasVistas : [],
     raicesArmadas:     Array.isArray(p.raicesArmadas)     ? p.raicesArmadas     : [],
+    petroglifosEncontrados: Array.isArray(p.petroglifosEncontrados) ? p.petroglifosEncontrados : [],
     palabrasFalladas:  Array.isArray(p.palabrasFalladas)  ? p.palabrasFalladas  : [],
     // merge profundo del avatar (objetos planos) para usuarios sin estos campos
     avatar: { ...estadoInicial.avatar, ...(p.avatar || {}) },
@@ -154,6 +156,8 @@ export function hidratarEstado(parsed) {
       ropa:      p.avatarDesbloqueados?.ropa      || estadoInicial.avatarDesbloqueados.ropa,
       sombrero:  p.avatarDesbloqueados?.sombrero  || estadoInicial.avatarDesbloqueados.sombrero,
       accesorio: p.avatarDesbloqueados?.accesorio || estadoInicial.avatarDesbloqueados.accesorio,
+      adorno:    p.avatarDesbloqueados?.adorno    || estadoInicial.avatarDesbloqueados.adorno,
+      emblema:   p.avatarDesbloqueados?.emblema   || estadoInicial.avatarDesbloqueados.emblema,
     },
   };
 }

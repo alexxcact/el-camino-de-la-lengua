@@ -6,6 +6,7 @@ import { fonts } from '../theme/fonts';
 import { ui } from '../theme/ui';
 import BotonGlow from '../components/BotonGlow';
 import PersonajeVivo from '../components/PersonajeVivo';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 const { width, height } = Dimensions.get('window');
 // Altura de la figura del personaje que habla.
@@ -14,37 +15,37 @@ const TAM_FIGURA = Math.round(Math.max(150, Math.min(200, height * 0.24)));
 const FRASES = [
   {
     personaje: 'taita_rimay',
-    nombre: 'El guía',
+    nombre: 'Taita Ipaín',
     color: '#8B4513',
     texto: 'Bienvenido al camino.\nEn esta aventura conocerás palabras relacionadas con el territorio y la vida del pueblo Pasto.',
   },
   {
     personaje: 'taita_rimay',
-    nombre: 'El guía',
+    nombre: 'Taita Ipaín',
     color: '#8B4513',
     texto: 'Empezaremos en Pud, Las Alturas. Encontrarás cerros, volcanes, viento y cielo entre las palabras del recorrido.',
   },
   {
     personaje: 'uma',
-    nombre: 'La tejedora',
+    nombre: 'Mama Cuenda',
     color: '#7A1515',
     texto: 'También visitaremos la chagra, el encuentro comunitario y el hogar. Los ejemplos en español te ayudarán a relacionar cada palabra con su significado.',
   },
   {
     personaje: 'pishku',
-    nombre: 'Ave mensajera',
+    nombre: 'Auara',
     color: '#1A3A5C',
     texto: '¡Pío pío! Volaré contigo entre los mundos y celebraremos cada avance. Puedes volver al diccionario siempre que quieras repasar.',
   },
   {
     personaje: 'chutun',
-    nombre: 'Niebla juguetona',
+    nombre: 'Chalaca',
     color: '#2D5A16',
-    texto: 'Soy un personaje de fantasía de este juego. Te propondré retos de palabras, parejas y memoria. ¡Cada intento te ayuda a aprender!',
+    texto: 'Soy Chalaca, la neblina que anuncia lluvia. Te propondré retos de palabras, parejas y memoria. ¡Cada intento te ayuda a aprender!',
   },
   {
     personaje: 'taita_rimay',
-    nombre: 'El guía',
+    nombre: 'Taita Ipaín',
     color: '#8B4513',
     texto: 'Nuestro recorrido termina en Cuasmal, El Camino del Agua. Hay cinco mundos y 75 entradas para explorar. ¡Demos el primer paso!',
   },
@@ -109,6 +110,7 @@ export default function IntroScreen({ navigation }) {
           />
         </ImageBackground>
       </Animated.View>
+      <FondoSimbolos variante="escena" desvanecer={false} />
 
       {/* Botón saltar */}
       <TouchableOpacity style={s.saltarBtn} onPress={saltar}>

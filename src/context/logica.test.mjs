@@ -35,7 +35,7 @@ function estadoDemo() {
   e.logrosDesbloqueados = new Set(['primera-palabra']);
   e.diasActivos = ['2026-07-01', '2026-07-02'];
   e.cinematicasVistas = ['mundo1'];
-  e.avatar = { piel: 1, ropa: 2, sombrero: 0, accesorio: 1 };
+  e.avatar = { piel: 1, cabello: 2, ropa: 5, sombrero: 4, adorno: 3, accesorio: 4, emblema: 1 };
   return e;
 }
 
@@ -90,8 +90,8 @@ test('hidratarEstado mergea campos nuevos a default para un usuario viejo', () =
   // Campos nuevos rellenados con defaults seguros.
   assert.equal(e.duelosJugados, 0);
   assert.equal(e.horaNotificacion, 16);
-  assert.deepEqual(e.avatar, { piel: 0, ropa: 0, sombrero: 0, accesorio: 1 - 1 }); // {0,0,0,0}
-  assert.deepEqual(e.avatarDesbloqueados, { ropa: [0], sombrero: [0], accesorio: [0] });
+  assert.deepEqual(e.avatar, { piel: 0, cabello: 0, ropa: 0, sombrero: 0, adorno: 0, accesorio: 0, emblema: 0 });
+  assert.deepEqual(e.avatarDesbloqueados, { ropa: [0], sombrero: [0], adorno: [0], accesorio: [0], emblema: [0] });
   assert.deepEqual(e.diasActivos, []);
 });
 
@@ -113,7 +113,7 @@ test('ultimoSaludoFecha hidrata a null en partidas viejas y se conserva en round
 
 test('hidratarEstado hace merge profundo del avatar (mantiene lo guardado, completa lo faltante)', () => {
   const e = hidratarEstado({ avatar: { ropa: 3 } });
-  assert.deepEqual(e.avatar, { piel: 0, ropa: 3, sombrero: 0, accesorio: 0 });
+  assert.deepEqual(e.avatar, { piel: 0, cabello: 0, ropa: 3, sombrero: 0, adorno: 0, accesorio: 0, emblema: 0 });
 });
 
 // ─── Racha diaria (aplicarSesion) ───

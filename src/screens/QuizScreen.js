@@ -18,6 +18,7 @@ import { vibrar } from '../utils/feedback';
 import { sesionAprobada } from '../utils/ejercicios';
 import { ANFITRIONES } from '../data/personajesUtil';
 import { reaccionPara, cierreSinAprobar } from '../data/reacciones';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 export default function QuizScreen({ route, navigation }) {
   const { mundoId, palabrasPractica, modoPractica = false, nPreguntas, modoRepaso = false } = route.params || {};
@@ -128,6 +129,7 @@ export default function QuizScreen({ route, navigation }) {
           colors={exito ? colors.gradAurora : ['#0B1F2A', '#0E2730', '#11353F']}
           style={StyleSheet.absoluteFill}
         />
+        <FondoSimbolos variante="juego" />
         <ScrollView contentContainerStyle={s.resultContent}>
           {exito
             ? <PishkuMascota celebrando tamano={96} personaje={ANFITRIONES.quiz} momento="fin_exito" ctx={{ nombre }} />
@@ -170,6 +172,7 @@ export default function QuizScreen({ route, navigation }) {
 
   return (
     <View style={s.bg}>
+      <FondoSimbolos variante="juego" />
       <ScrollView contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
 
         {/* Header compacto */}

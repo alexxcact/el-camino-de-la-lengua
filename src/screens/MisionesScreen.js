@@ -18,6 +18,7 @@ import IconoActividad from '../components/IconoActividad';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { sesionAprobada } from '../utils/ejercicios';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 // ══════════════════════════════════════════════════════════
 // PAREJAS — la tejedora acompaña
@@ -104,6 +105,7 @@ export function ParejasScreen({ route, navigation }) {
     return (
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
+        <FondoSimbolos variante="juego" />
         <ScrollView contentContainerStyle={s.resContent}>
           <PishkuMascota
             celebrando
@@ -126,6 +128,7 @@ export function ParejasScreen({ route, navigation }) {
 
   return (
     <View style={s.bg}>
+      <FondoSimbolos variante="juego" />
       <ScrollView contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
 
         <View style={s.header}>
@@ -259,6 +262,7 @@ export function DictadoScreen({ route, navigation }) {
           colors={exito ? colors.gradAurora : ['#0B1F2A', '#0E2730', '#11353F']}
           style={StyleSheet.absoluteFill}
         />
+        <FondoSimbolos variante="juego" />
         <ScrollView contentContainerStyle={s.resContent}>
           {exito && (
             <PishkuMascota

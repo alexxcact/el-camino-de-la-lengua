@@ -8,6 +8,7 @@ import { ui, radii } from '../theme/ui';
 import { palabras, mundos, categorias, TIPOS_MISION } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import ContadorAnimado from '../components/ContadorAnimado';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 const DIAS_CAL = 35; // 5 semanas
 
@@ -80,6 +81,7 @@ export default function EstadisticasScreen() {
 
   return (
     <View style={s.bg}>
+      <FondoSimbolos variante="progreso" />
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
 
         {/* Resumen general */}

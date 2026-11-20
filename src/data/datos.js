@@ -9,11 +9,14 @@
 // este contenido a una organización ni se presenta como validación comunitaria.
 // ─────────────────────────────────────────────────────────────
 
+import { COLECCIONABLES } from './petroglifos.js';
+
 export const personajes = [
   {
     id: 'kinti',
-    nombre: 'Caminante',
-    rol: 'Protagonista',
+    nombre: 'Tercán',
+    rol: 'El caminante',
+    origen: 'Tercán: «gran paso, vereda grande» (ter = camino + ca = grande). Nombre de un cacique pasto. ANH 2015, p. 63.',
     emoji: '👦🏽',
     color: '#C49010',
     desc: 'Personaje del juego que recorre el territorio con curiosidad y respeto. Tú acompañas sus pasos mientras exploras el vocabulario.',
@@ -21,8 +24,9 @@ export const personajes = [
   },
   {
     id: 'taita-rimay',
-    nombre: 'El guía',
-    rol: 'Guía del recorrido',
+    nombre: 'Taita Ipaín',
+    rol: 'El guía',
+    origen: 'Ipaín: la tulpa apartada donde uno se sienta a conversar (i = apartado + pa = hablar + in = fuego). ANH 2015, pp. 56 y 73.',
     emoji: '🧙🏽‍♂️',
     color: '#8B4513',
     desc: 'Personaje del juego que presenta cada mundo y explica en español los significados del vocabulario. Invita a observar el paisaje y a aprender con calma.',
@@ -30,8 +34,9 @@ export const personajes = [
   },
   {
     id: 'uma',
-    nombre: 'La tejedora',
-    rol: 'Abuela tejedora',
+    nombre: 'Mama Cuenda',
+    rol: 'La tejedora',
+    origen: 'Cuenda: los hilos de lana que sujetan la madeja, «la que sostiene el hilo». ANH 2015, p. 94.',
     emoji: '👵🏽',
     color: '#7A1515',
     desc: 'Personaje del juego que acompaña el aprendizaje de las palabras del tejido, la familia y el hogar. Sus explicaciones están escritas en español.',
@@ -39,8 +44,9 @@ export const personajes = [
   },
   {
     id: 'pishku',
-    nombre: 'Ave mensajera',
-    rol: 'Pájaro mensajero',
+    nombre: 'Auara',
+    rol: 'El ave mensajera',
+    origen: 'Auara: «el ave que avisa» (au = voz, avisar + ara = ave). Nombre compuesto con raíces de la ANH 2015, p. 15.',
     emoji: '🦜',
     color: '#1A3A5C',
     desc: 'Ave que acompaña la aventura y celebra tus avances. Sus mensajes animan a observar, practicar y volver a intentar.',
@@ -48,11 +54,12 @@ export const personajes = [
   },
   {
     id: 'chutun',
-    nombre: 'Niebla juguetona',
-    rol: 'Retos del camino',
+    nombre: 'Chalaca',
+    rol: 'La niebla juguetona',
+    origen: 'Chalaca: la neblina que se extiende y anuncia lluvia. ANH 2015, p. 95.',
     emoji: '👻',
     color: '#2D5A16',
-    desc: 'Personaje de fantasía creado para el juego. Aparece entre la niebla con desafíos de vocabulario que puedes resolver a tu ritmo.',
+    desc: 'La neblina que anuncia lluvia, hecha personaje del juego. Esconde entre la niebla las palabras que fallaste hasta que las repasas, a tu ritmo.',
     frase: '"¡Observa las pistas y prueba otra vez!"',
   },
 ];
@@ -440,11 +447,29 @@ export const TIPOS_MISION = ['quiz', 'parejas', 'dictado', 'escucha', 'memoria']
 // ropa/sombrero/accesorio se desbloquean con el progreso (idx 0 = inicial).
 // `cond(estado)` decide si una opción ya se ganó. Sin cond ⇒ siempre disponible.
 // ─────────────────────────────────────────────────────────────
+// Las prendas y adornos nuevos se AÑADEN al final de cada lista: el avatar
+// guardado usa índices, así nadie pierde lo que eligió.
+// Fuentes: follera y chalina, «símbolos de la memoria ancestral del tejido»,
+// y la guagua cargada en la chalina (Cartilla 4 «Tejido de los Pastos», pp. 58
+// y 63); fajas o chumbes con rojo (p. 70); orejeras, collares y pectorales de
+// la orfebrería pasto (revista Mopa Mopa 19); chaquiras (Lengua de los Pastos,
+// ANH 2015, pp. 25 y 32). El Sol de los Pastos no se usa en la ropa: es sagrado.
+const petroglifosHallados = (e) => (e.petroglifosEncontrados || []).length;
+
 export const AVATAR_OPCIONES = {
   piel: [
     { nombre: 'Tono claro',  color: '#E8B894' },
     { nombre: 'Tono medio',  color: '#C68642' },
     { nombre: 'Tono cálido', color: '#8D5524' },
+    { nombre: 'Tono profundo', color: '#6B3E1E' },
+  ],
+  // Siempre disponible, como la piel: es parte de quién eres.
+  cabello: [
+    { nombre: 'Pelo corto',   estilo: 'corto' },
+    { nombre: 'Dos trenzas',  estilo: 'trenzas' },
+    { nombre: 'Una trenza',   estilo: 'trenza' },
+    { nombre: 'Pelo largo',   estilo: 'suelto' },
+    { nombre: 'Moño',         estilo: 'chongo' },
   ],
   ropa: [
     { nombre: 'Ruana sencilla',    color: '#B86B2E', patron: 'franjas', pista: 'Atuendo inicial' },
@@ -452,23 +477,50 @@ export const AVATAR_OPCIONES = {
     { nombre: 'Ruana del encuentro', color: '#1A3A5C', patron: 'franjas', pista: 'Completa el Mundo 3', cond: (e) => e.mundosCompletados.has(3) },
     { nombre: 'Ruana del fogón',   color: '#7A1515', patron: 'rombos',  pista: 'Completa el Mundo 4', cond: (e) => e.mundosCompletados.has(4) },
     { nombre: 'Ruana dorada',      color: '#C49010', patron: 'rombos',  pista: 'Completa los 5 mundos', cond: (e) => e.mundosCompletados.size >= 5 },
+    { nombre: 'Chalina y blusa',   color: '#8E2A5A', patron: 'chalina', pista: 'Atuendo inicial' },
+    { nombre: 'Chalina de guanga', color: '#1F5F5B', patron: 'chalina', pista: 'Completa el Mundo 2', cond: (e) => e.mundosCompletados.has(2) },
+    { nombre: 'Ruana de espirales', color: '#4A2E1C', patron: 'espiral', pista: 'Encuentra 3 petroglifos', cond: (e) => petroglifosHallados(e) >= 3 },
+    { nombre: 'Ruana con greca',   color: '#22414A', patron: 'greca',   pista: 'Aprende 50 palabras', cond: (e) => e.palabrasVistas.size >= 50 },
   ],
   sombrero: [
     { nombre: 'Sin sombrero',     pista: 'Atuendo inicial' },
     { nombre: 'Sombrero de lana', pista: 'Aprende 10 palabras', cond: (e) => e.palabrasVistas.size >= 10 },
     { nombre: 'Con pluma',        pista: 'Completa el Mundo 2',  cond: (e) => e.mundosCompletados.has(2) },
     { nombre: 'Capucha de ruana', pista: 'Aprende 40 palabras',  cond: (e) => e.palabrasVistas.size >= 40 },
+    { nombre: 'Sombrero con cinta', pista: 'Atuendo inicial' },
+    { nombre: 'Cinta tejida',     pista: 'Racha de 3 días', cond: (e) => (e.racha || 0) >= 3 },
+  ],
+  // Adornos de la orfebrería y de las chaquiras pastas.
+  adorno: [
+    { nombre: 'Ninguno',             pista: 'Atuendo inicial' },
+    { nombre: 'Orejeras de oro',     pista: 'Atuendo inicial' },
+    { nombre: 'Collar de chaquiras', pista: 'Atuendo inicial' },
+    { nombre: 'Chaquiras y orejeras', pista: 'Aprende 20 palabras', cond: (e) => e.palabrasVistas.size >= 20 },
+    { nombre: 'Colgante de espiral', pista: 'Encuentra 5 petroglifos', cond: (e) => petroglifosHallados(e) >= 5 },
+    { nombre: 'Pectoral de oro',     pista: 'Completa el Mundo 5', cond: (e) => e.mundosCompletados.has(5) },
   ],
   accesorio: [
     { nombre: 'Ninguno',          pista: 'Atuendo inicial' },
     { nombre: 'Ave al hombro',    pista: 'Racha de 7 días',     cond: (e) => (e.racha || 0) >= 7 },
-    { nombre: 'Faja tejida',      pista: 'Completa el Mundo 4', cond: (e) => e.mundosCompletados.has(4) },
+    { nombre: 'Chumbe tejido',    pista: 'Completa el Mundo 4', cond: (e) => e.mundosCompletados.has(4) },
     { nombre: 'Mochila tejida',   pista: 'Aprende 30 palabras', cond: (e) => e.palabrasVistas.size >= 30 },
+    { nombre: 'Guagua en la chalina', pista: 'Completa el Mundo 1', cond: (e) => e.mundosCompletados.has(1) },
+    { nombre: 'Huso de hilar',    pista: 'Arma 5 raíces',       cond: (e) => (e.raicesArmadas || []).length >= 5 },
+  ],
+  // Emblema detrás del avatar: cada petroglifo que descubres en el juego.
+  emblema: [
+    { nombre: 'Ninguno', pista: 'Atuendo inicial' },
+    ...COLECCIONABLES.map(p => ({
+      nombre: p.nombre.replace(/^(El|La) /, '').replace(/^./, c => c.toUpperCase()),
+      petroglifo: p.id,
+      pista: 'Descúbrelo en el juego',
+      cond: (e) => (e.petroglifosEncontrados || []).includes(p.id),
+    })),
   ],
 };
 
-// Categorías con desbloqueo (la piel queda fuera: siempre disponible)
-export const CATS_AVATAR = ['ropa', 'sombrero', 'accesorio'];
+// Categorías con desbloqueo (piel y cabello quedan fuera: siempre disponibles)
+export const CATS_AVATAR = ['ropa', 'sombrero', 'adorno', 'accesorio', 'emblema'];
 
 // Conserva lo ya ganado aunque baje la racha; también admite partidas antiguas
 // sin historial de atuendos. Solo devuelve índices que existen en la categoría.

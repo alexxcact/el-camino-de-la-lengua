@@ -15,6 +15,7 @@ import PersonajeVivo from '../components/PersonajeVivo';
 import { sonar } from '../utils/sonidos';
 import { volverAlTerritorio } from '../utils/navegacion';
 import { cajaFigura } from '../data/personajesUtil';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 const { width: W } = Dimensions.get('window');
 
@@ -101,6 +102,7 @@ export default function FinalScreen({ navigation }) {
     <View style={s.cont}>
       {/* Fondo aurora para fases 2-4 */}
       {fase >= 2 && <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />}
+      <FondoSimbolos variante="escena" desvanecer={false} />
 
       {/* Fase 0 — laguna revelándose */}
       {fase === 0 && (

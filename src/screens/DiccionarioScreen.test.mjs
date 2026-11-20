@@ -34,7 +34,9 @@ function diccionario(idsAprendidos = [], props = {}) {
   const fila = id => {
     const item = lista().props.data.find(p => p.id === id);
     assert.ok(item, `La lista debe contener la palabra ${id}`);
-    return lista().props.renderItem({ item });
+    const index = lista().props.data.indexOf(item);
+    // Cada palabra es una laja tocable (puede ir precedida por la letra tallada).
+    return buscarNodo(lista().props.renderItem({ item, index }), n => n.type === 'TouchableOpacity' && typeof n.props.onPress === 'function' && n.props.activeOpacity === 0.85);
   };
   return { app, lista, fila, estado };
 }
@@ -65,8 +67,8 @@ test('filtrar Cuasmal presenta quince entradas y conserva la marca de aprendido 
   assert.equal(lista().props.data.length, 15);
   assert.ok(lista().props.data.every(p => p.mundo === 5));
   assert.ok(buscarNodo(app.tree, n => n.type === 'Text' && texto(n).startsWith('15 palabras · 1/')));
-  assert.ok(buscarNodo(fila(61), n => n.type === 'Text' && texto(n) === '✓'));
-  assert.equal(buscarNodo(fila(62), n => n.type === 'Text' && texto(n) === '✓'), undefined);
+  assert.ok(buscarNodo(fila(61), n => n.props?.accessibilityLabel === 'Aprendida'));
+  assert.equal(buscarNodo(fila(62), n => n.props?.accessibilityLabel === 'Aprendida'), undefined);
   assert.ok(buscarNodo(fila(62), n => n.props.name === 'lock-closed'));
   assert.deepEqual([...estado.palabrasVistas], [61]);
   app.unmount();

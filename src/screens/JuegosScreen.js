@@ -11,6 +11,8 @@ import { useJuego } from '../context/JuegoContext';
 import { rachaVigente } from '../context/logica';
 import HudJugador from '../components/HudJugador';
 import TarjetaPalabraDia from '../components/TarjetaPalabraDia';
+import PetroglifoEscondido from '../components/PetroglifoEscondido';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 // Pestaña de juegos y retos: todo lo que no es el camino de los mundos.
 // El mapa queda solo para recorrer el territorio.
@@ -56,6 +58,7 @@ export default function JuegosScreen({ navigation }) {
 
   return (
     <View style={s.container}>
+      <FondoSimbolos variante="juegos" />
       <SafeAreaView edges={['top']} style={s.hudSafe}>
         <HudJugador />
       </SafeAreaView>
@@ -79,7 +82,10 @@ export default function JuegosScreen({ navigation }) {
           />
         )}
 
-        <Text style={s.seccion}>Juegos</Text>
+        <View style={s.seccionFila}>
+          <Text style={s.seccion}>Juegos</Text>
+          <PetroglifoEscondido lugar="juegos" tamano={44} />
+        </View>
         <Atajo icono="leaf-outline" titulo="Práctica libre" sub="Repasa las palabras que ya aprendiste" onPress={() => navigation.navigate('Practica')} />
         <Atajo
           icono="extension-puzzle-outline"
@@ -98,6 +104,7 @@ const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.noche },
   hudSafe:   { backgroundColor: colors.nocheHeader },
   content:   { paddingTop: 12, paddingBottom: 30 },
+  seccionFila: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginRight: 20, zIndex: 2 },
   seccion:   { color: colors.cielo, fontSize: 18, fontFamily: fonts.bold, marginHorizontal: 16, marginTop: 10, marginBottom: 8 },
 
   atajoBtn: {

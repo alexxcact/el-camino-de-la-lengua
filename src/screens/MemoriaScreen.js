@@ -15,6 +15,7 @@ import PalabraIlustrada from '../components/PalabraIlustrada';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { distinguirDibujos } from '../utils/ejercicios';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 const PARES = 6;
 const COLUMNAS = 3;
@@ -180,6 +181,7 @@ export default function MemoriaScreen({ route, navigation }) {
     return (
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
+        <FondoSimbolos variante="juego" />
         <ScrollView contentContainerStyle={s.resContent}>
           <PishkuMascota
             celebrando
@@ -203,6 +205,7 @@ export default function MemoriaScreen({ route, navigation }) {
 
   return (
     <View style={s.bg}>
+      <FondoSimbolos variante="juego" />
       <ScrollView contentContainerStyle={s.contenido} showsVerticalScrollIndicator={false}>
 
         <View style={s.header}>

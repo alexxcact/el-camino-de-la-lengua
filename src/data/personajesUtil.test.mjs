@@ -32,12 +32,12 @@ test('datosPersonaje encuentra cada personaje y devuelve null si no existe', () 
 });
 
 test('nombreCorto sirve para mitad de frase', () => {
-  assert.equal(nombreCorto('kinti'), 'el Caminante');
-  assert.equal(nombreCorto('taita_rimay'), 'el guía');
-  assert.equal(nombreCorto('taita-rimay'), 'el guía');
-  assert.equal(nombreCorto('uma'), 'la tejedora');
-  assert.equal(nombreCorto('pishku'), 'el Ave mensajera');
-  assert.equal(nombreCorto('chutun'), 'la Niebla juguetona');
+  assert.equal(nombreCorto('kinti'), 'Tercán');
+  assert.equal(nombreCorto('taita_rimay'), 'Taita Ipaín');
+  assert.equal(nombreCorto('taita-rimay'), 'Taita Ipaín');
+  assert.equal(nombreCorto('uma'), 'Mama Cuenda');
+  assert.equal(nombreCorto('pishku'), 'Auara');
+  assert.equal(nombreCorto('chutun'), 'Chalaca');
 });
 
 test('ANFITRIONES cubre cada tipo de misión con un id de personaje', () => {
@@ -134,4 +134,20 @@ test('medidasFigura aplica la escala propia: Chutun y Pishku salen más pequeño
   assert.equal(medidasFigura('chutun', 200).alto, Math.round(200 * FIGURA_INFO.chutun.escala));
   assert.equal(medidasFigura('pishku', 200).alto, Math.round(200 * FIGURA_INFO.pishku.escala));
   assert.ok(medidasFigura('chutun', 200).alto < medidasFigura('kinti', 200).alto);
+});
+
+test('los personajes llevan nombres pastos con su origen y página, sin nombres quechua visibles', async () => {
+  const { personajes } = await import('./datos.js');
+  const fs = await import('node:fs');
+  const nombres = personajes.map(p => p.nombre);
+  assert.deepEqual(nombres, ['Tercán', 'Taita Ipaín', 'Mama Cuenda', 'Auara', 'Chalaca']);
+  for (const p of personajes) {
+    assert.match(p.origen, /ANH 2015, pp?\. \d/, `origen de ${p.nombre}`);
+    assert.ok(p.rol, `apodo de ${p.nombre}`);
+  }
+  const visibles = ['src/components/Onboarding.js', 'src/screens/IntroScreen.js', 'src/screens/NombreScreen.js', 'src/screens/RetoDiarioScreen.js'];
+  for (const f of visibles) {
+    const src = fs.readFileSync(f, 'utf8').split('\n').filter(l => !/^\s*(\/\/|\*|import )/.test(l)).join('\n');
+    assert.doesNotMatch(src, /['"`>][^'"`<]*\b(Kinti|Rimay|Pishku|Chutún)\b/, `nombre quechua visible en ${f}`);
+  }
 });

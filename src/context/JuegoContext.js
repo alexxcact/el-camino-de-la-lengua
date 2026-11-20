@@ -110,6 +110,18 @@ export function JuegoProvider({ children }) {
     });
   }, [actualizarEstado]);
 
+  // Petroglifos escondidos: la primera vez que se descubre uno suma 5 puntos.
+  // Puntos inlineados (ganarPuntos se declara después).
+  const descubrirPetroglifo = useCallback((id) => {
+    actualizarEstado(prev => {
+      const ya = prev.petroglifosEncontrados || [];
+      if (ya.includes(id)) return prev;
+      const puntos = prev.puntos + 5;
+      const nivel = niveles.filter(nv => puntos >= nv.min).length;
+      return agregarDiaActivo({ ...prev, petroglifosEncontrados: [...ya, id], puntos, nivel });
+    });
+  }, [actualizarEstado]);
+
   // Marca que hoy ya se mostró el saludo diario del Mapa. Primitivo, no toca Sets.
   const marcarSaludoHoy = useCallback(() => {
     const hoy = fechaHoy();
@@ -328,7 +340,7 @@ export function JuegoProvider({ children }) {
       cambiarNotificaciones, guardarHoraNotificacion, marcarMemoriaPerfecta,
       guardarAvatar, verificarDesbloqueoAvatar, registrarAperturaDiccionario,
       completarPractica, registrarDuelo, marcarCinematicaVista,
-      marcarOnboardingVisto, marcarSaludoHoy, marcarRaizArmada, registrarFallo, quitarFallo,
+      marcarOnboardingVisto, marcarSaludoHoy, marcarRaizArmada, descubrirPetroglifo, registrarFallo, quitarFallo,
     }}>
       {children}
     </JuegoContext.Provider>

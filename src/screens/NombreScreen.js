@@ -8,6 +8,7 @@ import { ui, radii } from '../theme/ui';
 import { useJuego } from '../context/JuegoContext';
 import BotonGlow from '../components/BotonGlow';
 import PersonajeVivo from '../components/PersonajeVivo';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 // Mismo formateo que guardarNombre, para mostrar el nombre correcto en la respuesta
 const formatNombre = (raw) => {
@@ -57,6 +58,7 @@ export default function NombreScreen({ navigation }) {
   return (
     <KeyboardAvoidingView style={s.bg} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <LinearGradient colors={colors.gradAurora} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+      <FondoSimbolos variante="inicio" />
       <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 
         {/* El guía, de pie (figura recortada, sin aro); salta al confirmar el nombre */}
@@ -64,14 +66,14 @@ export default function NombreScreen({ navigation }) {
           <PersonajeVivo personaje="taita-rimay" tamano={170} />
         </Animated.View>
         <View style={s.nombrePill}>
-          <Text style={s.nombrePillTxt}>El guía</Text>
+          <Text style={s.nombrePillTxt}>Taita Ipaín</Text>
         </View>
 
         {/* Globo de diálogo */}
         {fase === 'pregunta' ? (
           <View style={s.bubble}>
             <Text style={s.bubbleTxt}>
-              Hola, soy el guía de esta aventura.{'\n'}
+              Hola, soy Taita Ipaín, el guía de esta aventura.{'\n'}
               ¿Cómo te llamas tú, caminante?
             </Text>
           </View>
@@ -79,7 +81,7 @@ export default function NombreScreen({ navigation }) {
           <Animated.View style={[s.bubble, s.bubbleResp, { opacity: respFade }]}>
             <Text style={s.bubbleTxt}>
               ¡<Text style={s.nombreResp}>{nombreFinal}</Text>! Un buen nombre para un guardián de la lengua.
-              Acompaña al Caminante en este recorrido...
+              Acompaña a Tercán en este recorrido...
             </Text>
           </Animated.View>
         )}

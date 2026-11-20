@@ -12,6 +12,7 @@ import { vibrar } from '../utils/feedback';
 import { significadoDe } from '../data/personajesUtil';
 import PersonajeVivo from '../components/PersonajeVivo';
 import ChapaPalabra from '../components/ChapaPalabra';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 const { width, height } = Dimensions.get('window');
 
@@ -42,7 +43,7 @@ function finesResaltados(texto, resaltar = []) {
 const infoPersonaje = (clave) => {
   const map = { taita_rimay: 'taita-rimay' };
   const p = personajes.find(x => x.id === (map[clave] || clave));
-  return { nombre: p?.nombre || 'El guía', color: p?.color || colors.tierra };
+  return { nombre: p?.nombre || 'Taita Ipaín', color: p?.color || colors.tierra };
 };
 
 // Parte un texto resaltando en dorado las entradas de vocabulario de `resaltar`.
@@ -183,6 +184,7 @@ export default function CinematicaScreen({ route, navigation }) {
       ) : (
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
       )}
+      <FondoSimbolos variante="escena" desvanecer={false} />
 
       {/* Saltar */}
       <TouchableOpacity style={s.saltarBtn} onPress={terminar} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>

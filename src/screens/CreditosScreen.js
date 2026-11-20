@@ -9,6 +9,7 @@ import { RAICES } from '../data/raices';
 import { APELLIDOS } from '../data/apellidos';
 import SolPasto from '../components/SolPasto';
 import FranjaTejida from '../components/FranjaTejida';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 export const AUTOR = 'Ing. Alexander Cuaspud';
 
@@ -48,7 +49,9 @@ function Uso({ n, txt }) {
 export default function CreditosScreen() {
   const u = usoDeLibros();
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
+    <View style={s.container}>
+      <FondoSimbolos variante="creditos" />
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
       <View style={s.cabecera}>
         <SolPasto tamano={96} />
         <Text style={s.titulo}>El Camino de la Lengua</Text>
@@ -104,7 +107,8 @@ export default function CreditosScreen() {
       </View>
 
       <Text style={s.pie}>Hecho con respeto por la lengua y el territorio Pasto.</Text>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 

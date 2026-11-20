@@ -9,6 +9,7 @@ import BotonGlow from '../components/BotonGlow';
 import PishkuMascota from '../components/PishkuMascota';
 import { sonar } from '../utils/sonidos';
 import { volverAlTerritorio } from '../utils/navegacion';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 const MECANICAS = [
   { key: 'Quiz',     emoji: '🧠', label: 'Quiz' },
@@ -63,6 +64,7 @@ export default function PracticaScreen({ navigation }) {
   if (aprendidas.length < MIN_PALABRAS) {
     return (
       <View style={[s.bg, { justifyContent: 'center', alignItems: 'center', padding: 30 }]}>
+        <FondoSimbolos variante="juego" />
         <PishkuMascota celebrando={false} tamano={88} />
         <Text style={s.gateTit}>Aún no hay mucho para repasar</Text>
         <Text style={s.gateSub}>Aprende algunas palabras en el mapa primero y vuelve a practicarlas aquí cuando quieras.</Text>
@@ -73,6 +75,7 @@ export default function PracticaScreen({ navigation }) {
 
   return (
     <View style={s.bg}>
+      <FondoSimbolos variante="juego" />
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
 
         <Text style={s.intro}>Repasa lo que ya aprendiste, a tu ritmo. No afecta tu avance en el mapa.</Text>

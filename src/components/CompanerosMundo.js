@@ -68,6 +68,7 @@ export default function CompanerosMundo({ mundoId }) {
           <View style={[s.burbuja, { borderColor: p.color }]}>
             <Text style={s.rol}>{p.rol}</Text>
             <Text style={s.txt}>{linea ? linea.texto : p.desc}</Text>
+            {p.origen ? <Text style={s.origen}>{p.origen}</Text> : null}
           </View>
         ) : (
           <Text style={s.hint}>Toca a un personaje para escucharlo</Text>
@@ -86,6 +87,7 @@ const s = StyleSheet.create({
   suelo:   { width: 36, height: 3, borderRadius: 2, marginTop: 2 },
   nom:     { fontSize: 11, fontFamily: fonts.semibold, color: colors.turquesaSuave, marginTop: 5, textAlign: 'center' },
   burbuja: { marginTop: 10, paddingHorizontal: 14, paddingVertical: 10, borderRadius: radii.md, borderWidth: 1.5, backgroundColor: 'rgba(8,26,34,0.92)' },
+  origen:  { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.medium, fontStyle: 'italic', marginTop: 8, lineHeight: 16 },
   rol:     { fontSize: 11, color: colors.turquesaSuave, fontFamily: fonts.medium, fontStyle: 'italic', marginBottom: 3 },
   txt:     { color: colors.cielo, fontSize: 14, fontFamily: fonts.semibold, lineHeight: 20 },
   hint:    { ...ui.caption, color: colors.turquesaSuave, textAlign: 'center', marginTop: 8 },

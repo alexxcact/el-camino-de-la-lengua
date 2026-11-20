@@ -13,6 +13,7 @@ import HudJugador from '../components/HudJugador';
 import SenderoMapa from '../components/SenderoMapa';
 import Onboarding from '../components/Onboarding';
 import SaludoDiario from '../components/SaludoDiario';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 export default function MapaScreen({ navigation }) {
   const { estado, cargado, getPalabraDelDia, retoDiarioDisponible, verificarDesbloqueoAvatar, toastAtuendo, setToastAtuendo, marcarOnboardingVisto, marcarSaludoHoy } = useJuego();
@@ -29,7 +30,7 @@ export default function MapaScreen({ navigation }) {
   useEffect(() => {
     verificarDesbloqueoAvatar(primeraSync.current);
     primeraSync.current = false;
-  }, [estado.mundosCompletados.size, estado.palabrasVistas.size, estado.racha]);
+  }, [estado.mundosCompletados.size, estado.palabrasVistas.size, estado.racha, (estado.petroglifosEncontrados || []).length, (estado.raicesArmadas || []).length]);
 
   // Auto-oculta el toast de atuendo nuevo
   useEffect(() => {
@@ -113,6 +114,7 @@ export default function MapaScreen({ navigation }) {
 
   return (
     <View style={s.container}>
+      <FondoSimbolos variante="mapa" />
       <SafeAreaView edges={['top']} style={s.hudSafe}>
         <HudJugador />
       </SafeAreaView>

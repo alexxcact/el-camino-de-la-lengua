@@ -187,7 +187,13 @@ test('hidratar y guardar una partida anterior conserva el progreso por ID y las 
   assert.equal(STORAGE_KEY, '@camino_lengua_estado');
   const hidratado = hidratarEstado(guardado);
   const recuperado = serializarEstado(hidratado);
-  for (const [clave, valor] of Object.entries(guardado)) assert.deepEqual(recuperado[clave], valor, clave);
+  // Una partida anterior conserva lo elegido; las categorías nuevas del avatar llegan en su valor inicial.
+  const esperado = {
+    ...guardado,
+    avatar: { cabello: 0, adorno: 0, emblema: 0, ...guardado.avatar },
+    avatarDesbloqueados: { ...guardado.avatarDesbloqueados, adorno: [0], emblema: [0] },
+  };
+  for (const [clave, valor] of Object.entries(guardado)) assert.deepEqual(recuperado[clave], esperado[clave], clave);
   assert.deepEqual(palabras.filter(p => hidratado.palabrasVistas.has(p.id)).map(p => p.id), guardado.palabrasVistas);
   assert.ok(guardado.logrosDesbloqueados.every(id => logros.some(l => l.id === id)));
 });

@@ -4,6 +4,7 @@ import { colors } from '../theme/colors';
 import { fonts } from '../theme/fonts';
 import { ui, radii } from '../theme/ui';
 import Acompanante from '../components/Acompanante';
+import PetroglifoEscondido from '../components/PetroglifoEscondido';
 import BotonGlow from '../components/BotonGlow';
 import { RAICES, TIPOS_RAIZ } from '../data/raices';
 import {
@@ -12,6 +13,7 @@ import {
 import { useJuego } from '../context/JuegoContext';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
+import FondoSimbolos from '../components/FondoSimbolos';
 
 const POR_RONDA = 5;
 
@@ -102,7 +104,9 @@ export default function RaicesScreen({ navigation, route }) {
   // ── Fin de ronda ──
   if (!item) {
     return (
-      <ScrollView style={s.container} contentContainerStyle={s.content}>
+      <View style={s.container}>
+      <FondoSimbolos variante="juego" />
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={s.content}>
         <Acompanante
           personaje="taita-rimay"
           animo="feliz"
@@ -117,6 +121,7 @@ export default function RaicesScreen({ navigation, route }) {
           <BotonGlow texto="Volver a Juegos" onPress={() => navigation.goBack()} variante="secundario" tamano="md" />
         </View>
       </ScrollView>
+      </View>
     );
   }
 
@@ -129,7 +134,11 @@ export default function RaicesScreen({ navigation, route }) {
       : idx === 0 && armadas === 0 ? INTRO : 'Busca las piezas cuyo significado forme la frase.';
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
+    <View style={s.container}>
+      <FondoSimbolos variante="juego" />
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
+      {/* El Machín, curioso investigador, se esconde entre las raíces */}
+      <PetroglifoEscondido lugar="raices" tamano={42} style={{ position: 'absolute', top: 6, right: 6, zIndex: 2 }} />
       <View style={s.progRow}>
         {lista.map((_, i) => <View key={i} style={[s.dot, i < idx && s.dotHecho, i === idx && s.dotOn]} />)}
       </View>
@@ -217,6 +226,7 @@ export default function RaicesScreen({ navigation, route }) {
         </>
       )}
     </ScrollView>
+      </View>
   );
 }
 
