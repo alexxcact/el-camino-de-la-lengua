@@ -87,6 +87,7 @@ export default function JuegosScreen({ navigation }) {
           sub={`Arma nombres de lugares con sus raíces · ${armadas}/${RAICES.length}`}
           onPress={() => navigation.navigate('Raices')}
         />
+        <Atajo icono="finger-print-outline" titulo="El secreto de tu apellido" sub="Descubre las raíces pastas de tu apellido" onPress={() => navigation.navigate('Apellido')} />
         <Atajo icono="people-outline" titulo="Duelo de 2" sub="Jueguen juntos en este dispositivo" onPress={() => navigation.navigate('Duelo')} />
       </ScrollView>
     </View>

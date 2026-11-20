@@ -36,6 +36,7 @@ import EscuchaScreen    from './src/screens/EscuchaScreen';
 import MemoriaScreen    from './src/screens/MemoriaScreen';
 import RaicesScreen     from './src/screens/RaicesScreen';
 import JuegosScreen     from './src/screens/JuegosScreen';
+import ApellidoScreen   from './src/screens/ApellidoScreen';
 import DiccionarioScreen from './src/screens/DiccionarioScreen';
 import AvatarScreen     from './src/screens/AvatarScreen';
 import EstadisticasScreen from './src/screens/EstadisticasScreen';
@@ -75,6 +76,7 @@ function JuegosStackScreen() {
       <Stack.Screen name="RetoDiario" component={RetoDiarioScreen} options={{ title: 'Reto del día' }} />
       <Stack.Screen name="Practica" component={PracticaScreen} options={{ title: 'Práctica libre' }} />
       <Stack.Screen name="Raices"   component={RaicesScreen}   options={{ title: 'Raíces de la palabra' }} />
+      <Stack.Screen name="Apellido" component={ApellidoScreen} options={{ title: 'El secreto de tu apellido' }} />
       <Stack.Screen name="Duelo"    component={DueloScreen}    options={{ headerShown: false }} />
       <Stack.Screen name="Quiz"     component={QuizScreen}     options={{ title: 'Quiz de palabras' }} />
       <Stack.Screen name="Parejas"  component={ParejasScreen}  options={{ title: 'Une las parejas' }} />
@@ -114,6 +116,7 @@ function MainTabs() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: { backgroundColor: colors.nocheHeader, borderTopWidth: 0, height: 68, paddingBottom: 10, paddingTop: 6, elevation: 0 },
         tabBarActiveTintColor:   colors.doradoNeon,
         tabBarInactiveTintColor: colors.turquesaSuave,
