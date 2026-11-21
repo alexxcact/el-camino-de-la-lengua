@@ -26,10 +26,11 @@ test('reasignar un ID conserva la ilustración del término y no hereda el dibuj
   assert.notEqual(JSON.stringify(frailejon), JSON.stringify(sol));
 });
 
-test('una palabra sin dibujo propio cae a su emoji', () => {
+test('una palabra sin dibujo propio muestra un rombo tejido, nunca su emoji', () => {
   const desconocida = representar({ id: 999, p: 'PalabraSinDibujo', emoji: '🔤' });
-  assert.equal(buscarNodo(desconocida, n => n.type === 'Svg'), undefined);
-  assert.equal(buscarNodo(desconocida, n => n.type === 'Text').props.children[0], '🔤');
+  assert.ok(buscarNodo(desconocida, n => n.type === 'Svg'));
+  assert.equal(buscarNodo(desconocida, n => n.type === 'Text'), undefined);
+  assert.ok(!JSON.stringify(desconocida).includes('🔤'));
 });
 
 test('las entradas del corpus tienen ilustración propia y no muestran emoji', () => {

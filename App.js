@@ -41,6 +41,7 @@ import DiccionarioScreen from './src/screens/DiccionarioScreen';
 import AvatarScreen     from './src/screens/AvatarScreen';
 import EstadisticasScreen from './src/screens/EstadisticasScreen';
 import CreditosScreen from './src/screens/CreditosScreen';
+import VueloScreen from './src/screens/VueloScreen';
 import { ParejasScreen, DictadoScreen } from './src/screens/MisionesScreen';
 import { PerfilScreen }  from './src/screens/PerfilScreen';
 
@@ -79,6 +80,7 @@ function JuegosStackScreen() {
       <Stack.Screen name="Raices"   component={RaicesScreen}   options={{ title: 'Raíces de la palabra' }} />
       <Stack.Screen name="Apellido" component={ApellidoScreen} options={{ title: 'El secreto de tu apellido' }} />
       <Stack.Screen name="Duelo"    component={DueloScreen}    options={{ headerShown: false }} />
+      <Stack.Screen name="Vuelo"    component={VueloScreen}    options={{ headerShown: false }} />
       <Stack.Screen name="Quiz"     component={QuizScreen}     options={{ title: 'Quiz de palabras' }} />
       <Stack.Screen name="Parejas"  component={ParejasScreen}  options={{ title: 'Une las parejas' }} />
       <Stack.Screen name="Dictado"  component={DictadoScreen}  options={{ title: 'Dictado cultural' }} />

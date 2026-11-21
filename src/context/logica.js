@@ -38,6 +38,8 @@ export const estadoInicial = {
   practicasTotal: 0,       // sesiones de práctica libre completadas (logro Repaso constante)
   mejorRacha: 0,           // mejor racha histórica de días seguidos
   diasActivos: [],         // ['YYYY-MM-DD'] con actividad, recortado a MAX_DIAS (calendario)
+  vueloRecord: 0,          // más aciertos en una partida de El vuelo de Auara (primitivo)
+  vuelosJugados: 0,        // partidas de El vuelo de Auara
   duelosJugados: 0,        // partidas de Duelo de 2 jugadas (solo para el logro; el duelo es efímero)
   cinematicasVistas: [],   // ['mundo1', ...] cinemáticas ya vistas (array, merge a default [])
   // Avatar personalizable (objetos planos: se serializan con JSON.stringify igual

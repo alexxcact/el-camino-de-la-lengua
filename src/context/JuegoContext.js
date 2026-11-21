@@ -3,6 +3,7 @@ import { AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { logros, palabras, CATS_AVATAR, atuendosDesbloqueados } from '../data/datos';
 import { setSonido } from '../utils/ajustes';
+import { puntosDeVuelo } from '../data/vueloLogica';
 import {
   STORAGE_KEY, estadoInicial, niveles, seedFecha,
   fechaHoy, agregarDiaActivo, aplicarSesion, msHastaMedianoche, normalizarHora,
@@ -221,6 +222,24 @@ export function JuegoProvider({ children }) {
     actualizarEstado(prev => ({ ...prev, duelosJugados: (prev.duelosJugados || 0) + 1 }));
   }, [actualizarEstado]);
 
+  // Termina una partida de El vuelo de Auara: guarda el récord, cuenta la partida
+  // y suma puntos con tope (puntosDeVuelo). Devuelve si fue récord nuevo.
+  const registrarVuelo = useCallback((aciertos) => {
+    const n = Math.max(0, Math.floor(aciertos || 0));
+    const record = n > (estado.vueloRecord || 0);
+    actualizarEstado(prev => {
+      const puntos = prev.puntos + puntosDeVuelo(n);
+      return {
+        ...prev,
+        vuelosJugados: (prev.vuelosJugados || 0) + 1,
+        vueloRecord: Math.max(prev.vueloRecord || 0, n),
+        puntos,
+        nivel: niveles.filter(nv => puntos >= nv.min).length,
+      };
+    });
+    return record;
+  }, [actualizarEstado, estado.vueloRecord]);
+
   // Marca una cinemática como vista (idempotente). No toca progreso ni Sets.
   const marcarCinematicaVista = useCallback((clave) => {
     actualizarEstado(prev => {
@@ -334,7 +353,7 @@ export function JuegoProvider({ children }) {
     <JuegoContext.Provider value={{
       estado, cargado, toastLogro, setToastLogro, toastAtuendo, setToastAtuendo,
       ganarPuntos, marcarPalabraVista, completarMundo,
-      completarMision, sumarQuiz, sumarParejas,
+      completarMision, sumarQuiz, sumarParejas, registrarVuelo,
       verificarLogros, getNivel, guardarNombre, cambiarSonido, marcarFinalVisto,
       getPalabraDelDia, retoDiarioDisponible, completarRetoDiario,
       cambiarNotificaciones, guardarHoraNotificacion, marcarMemoriaPerfecta,

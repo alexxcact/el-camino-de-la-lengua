@@ -428,6 +428,7 @@ export const logros = [
   { id: "consultor", nom: "Consultor", desc: "Abre el diccionario 10 veces", emoji: "📚", cond: (e) => (e.diccionarioAbierto || 0) >= 10 },
   { id: "repaso-constante", nom: "Repaso constante", desc: "Completa 10 prácticas libres", emoji: "🔁", cond: (e) => (e.practicasTotal || 0) >= 10 },
   { id: "mes-vivo", nom: "Mes vivo", desc: "30 días activos registrados", emoji: "📆", cond: (e) => (e.diasActivos || []).length >= 30 },
+  { id: "alas-de-auara", nom: "Alas de Auara", desc: "Acierta 15 palabras en un vuelo", emoji: "", cond: (e) => (e.vueloRecord || 0) >= 15 },
   { id: "duelo-competitivo", nom: "Espíritu competitivo", desc: "Juega 5 duelos de 2", emoji: "⚔️", cond: (e) => (e.duelosJugados || 0) >= 5 },
   { id: "50-palabras", nom: "Vocabulario Rico", desc: "50 palabras aprendidas", emoji: "🌟", cond: (e) => e.palabrasVistas.size >= 50 },
   { id: "75-palabras", nom: "Vocabulario completo", desc: "75 palabras aprendidas", emoji: "📚", cond: (e) => e.palabrasVistas.size >= 75 },

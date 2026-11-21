@@ -10,14 +10,19 @@ import PishkuMascota from '../components/PishkuMascota';
 import { sonar } from '../utils/sonidos';
 import { volverAlTerritorio } from '../utils/navegacion';
 import FondoSimbolos from '../components/FondoSimbolos';
+import IconoActividad from '../components/IconoActividad';
+import SimboloMundo from '../components/pasto/SimboloMundo';
+import IconoPasto from '../components/pasto/IconoPasto';
+import SelloApertura from '../components/pasto/SelloApertura';
+import { simboloDeJuego } from '../theme/pasto';
 
 const MECANICAS = [
-  { key: 'Quiz',     emoji: '🧠', label: 'Quiz' },
-  { key: 'Parejas',  emoji: '🃏', label: 'Parejas' },
-  { key: 'Dictado',  emoji: '✍️', label: 'Dictado' },
-  { key: 'Escucha',  emoji: '🎧', label: 'Escucha' },
-  { key: 'Memoria',  emoji: '🧩', label: 'Memoria' },
-  { key: 'sorpresa', emoji: '🎲', label: 'Sorpréndeme' },
+  { key: 'Quiz',     icono: 'quiz',     label: 'Quiz' },
+  { key: 'Parejas',  icono: 'parejas',  label: 'Parejas' },
+  { key: 'Dictado',  icono: 'dictado',  label: 'Dictado' },
+  { key: 'Escucha',  icono: 'escucha',  label: 'Escucha' },
+  { key: 'Memoria',  icono: 'memoria',  label: 'Memoria' },
+  { key: 'sorpresa', icono: 'sorpresa', label: 'Sorpréndeme' },
 ];
 
 const CANTIDADES = [5, 10, 15];
@@ -65,10 +70,11 @@ export default function PracticaScreen({ navigation }) {
     return (
       <View style={[s.bg, { justifyContent: 'center', alignItems: 'center', padding: 30 }]}>
         <FondoSimbolos variante="juego" />
+        <SelloApertura simbolo={simboloDeJuego('practica')} />
         <PishkuMascota celebrando={false} tamano={88} />
         <Text style={s.gateTit}>Aún no hay mucho para repasar</Text>
         <Text style={s.gateSub}>Aprende algunas palabras en el mapa primero y vuelve a practicarlas aquí cuando quieras.</Text>
-        <BotonGlow texto="🗺️ Ir al mapa" onPress={() => volverAlTerritorio(navigation)} variante="primario" tamano="lg" />
+        <BotonGlow texto="Ir al mapa" onPress={() => volverAlTerritorio(navigation)} variante="primario" tamano="lg" />
       </View>
     );
   }
@@ -76,6 +82,7 @@ export default function PracticaScreen({ navigation }) {
   return (
     <View style={s.bg}>
       <FondoSimbolos variante="juego" />
+      <SelloApertura simbolo={simboloDeJuego('practica')} />
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
 
         <Text style={s.intro}>Repasa lo que ya aprendiste, a tu ritmo. No afecta tu avance en el mapa.</Text>
@@ -86,7 +93,7 @@ export default function PracticaScreen({ navigation }) {
           <Chip on={alcance.tipo === 'todo'} onPress={() => setAlcance({ tipo: 'todo' })} texto="Todo lo aprendido" />
           {mundosConPalabras.map(m => (
             <Chip key={`m${m.id}`} on={alcance.tipo === 'mundo' && alcance.id === m.id}
-              onPress={() => setAlcance({ tipo: 'mundo', id: m.id })} texto={`${m.emoji} ${m.titulo}`} />
+              onPress={() => setAlcance({ tipo: 'mundo', id: m.id })} texto={m.titulo} mundo={m.id} />
           ))}
           {catsConPalabras.map(c => (
             <Chip key={`c${c}`} on={alcance.tipo === 'cat' && alcance.cat === c}
@@ -103,7 +110,9 @@ export default function PracticaScreen({ navigation }) {
             return (
               <TouchableOpacity key={m.key} style={[s.mecBtn, on && s.mecOn]} onPress={() => setMecanica(m.key)} activeOpacity={0.85}>
                 <View style={[s.mecIconBox, { backgroundColor: acento(i) }]}>
-                  <Text style={s.mecEmoji}>{m.emoji}</Text>
+                  {m.icono === 'sorpresa'
+                    ? <IconoPasto tipo="sorpresa" tamano={28} color="#FFFFFF" />
+                    : <IconoActividad tipo={m.icono} tamano={28} color="#FFFFFF" />}
                 </View>
                 <Text style={[s.mecLbl, on && { color: colors.sol }]}>{m.label}</Text>
               </TouchableOpacity>
@@ -134,9 +143,10 @@ export default function PracticaScreen({ navigation }) {
   );
 }
 
-function Chip({ on, onPress, texto }) {
+function Chip({ on, onPress, texto, mundo }) {
   return (
-    <TouchableOpacity style={[s.chip, on && s.chipOn]} onPress={onPress} activeOpacity={0.85}>
+    <TouchableOpacity style={[s.chip, mundo && s.chipFila, on && s.chipOn]} onPress={onPress} activeOpacity={0.85}>
+      {mundo ? <SimboloMundo mundo={mundo} tamano={15} color={on ? colors.noche : colors.doradoNeon} /> : null}
       <Text style={[s.chipTxt, on && { color: colors.noche }]}>{texto}</Text>
     </TouchableOpacity>
   );
@@ -150,6 +160,7 @@ const s = StyleSheet.create({
 
   chipsWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip:   { paddingHorizontal: 14, paddingVertical: 9, borderRadius: 18, backgroundColor: colors.nocheCard, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.3)' },
+  chipFila: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   chipOn: { backgroundColor: colors.doradoNeon, borderColor: colors.doradoNeon },
   chipTxt:{ fontSize: 13, color: colors.turquesaSuave, fontFamily: fonts.semibold },
   disponibles: { fontSize: 11, color: colors.turquesaSuave, fontStyle: 'italic', marginTop: 8 },

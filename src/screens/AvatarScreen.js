@@ -13,15 +13,16 @@ import { vibrar } from '../utils/feedback';
 import FondoSimbolos from '../components/FondoSimbolos';
 import AnillosPlato from '../components/pasto/AnillosPlato';
 import Petroglifo from '../components/Petroglifo';
+import IconoPasto from '../components/pasto/IconoPasto';
 import { laja, LAJA } from '../theme/pasto';
 
 const CATEGORIAS = [
-  { key: 'piel',      label: 'Piel',      emoji: '🧑' },
-  { key: 'cabello',   label: 'Cabello',   emoji: '💇' },
-  { key: 'ropa',      label: 'Ropa',      emoji: '🧥' },
-  { key: 'sombrero',  label: 'Cabeza',    emoji: '👒' },
-  { key: 'adorno',    label: 'Adornos',   emoji: '📿' },
-  { key: 'accesorio', label: 'Extra',     emoji: '🎒' },
+  { key: 'piel',      label: 'Piel' },
+  { key: 'cabello',   label: 'Cabello' },
+  { key: 'ropa',      label: 'Ropa' },
+  { key: 'sombrero',  label: 'Cabeza' },
+  { key: 'adorno',    label: 'Adornos' },
+  { key: 'accesorio', label: 'Extra' },
   { key: 'emblema',   label: 'Emblema',   petroglifo: 'espiralDoble' },
 ];
 
@@ -93,7 +94,7 @@ export default function AvatarScreen({ navigation }) {
             >
               {c.petroglifo
                 ? <View style={s.tabSimbolo}><Petroglifo id={c.petroglifo} tamano={26} color={cat === c.key ? colors.doradoNeon : LAJA.crema} /></View>
-                : <Text style={s.tabEmoji}>{c.emoji}</Text>}
+                : <View style={s.tabSimbolo}><IconoPasto tipo={c.key} tamano={26} color={cat === c.key ? colors.doradoNeon : LAJA.crema} /></View>}
               <Text style={[s.tabLbl, cat === c.key && s.tabLblOn]}>{c.label}</Text>
             </TouchableOpacity>
           ))}

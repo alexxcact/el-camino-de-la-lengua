@@ -13,6 +13,9 @@ import HudJugador from '../components/HudJugador';
 import TarjetaPalabraDia from '../components/TarjetaPalabraDia';
 import PetroglifoEscondido from '../components/PetroglifoEscondido';
 import FondoSimbolos from '../components/FondoSimbolos';
+import Petroglifo from '../components/Petroglifo';
+import { SIMBOLO_JUEGO, LAJA } from '../theme/pasto';
+import FiguraPishku from '../components/figuras/FiguraPishku';
 
 // Pestaña de juegos y retos: todo lo que no es el camino de los mundos.
 // El mapa queda solo para recorrer el territorio.
@@ -23,7 +26,7 @@ export function abrirRepaso(navigation, falladas) {
   });
 }
 
-function Atajo({ icono, titulo, sub, onPress, destacado = false, accessibilityLabel }) {
+function Atajo({ icono, titulo, sub, onPress, destacado = false, accessibilityLabel, simbolo }) {
   const color = destacado ? colors.sol : colors.turquesaSuave;
   return (
     <TouchableOpacity
@@ -33,6 +36,11 @@ function Atajo({ icono, titulo, sub, onPress, destacado = false, accessibilityLa
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel || `${titulo}. ${sub}`}
     >
+      {simbolo ? (
+        <View style={s.atajoSello} pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants">
+          <Petroglifo id={simbolo} tamano={64} color={colors.crema} opacity={0.07} />
+        </View>
+      ) : null}
       <View style={[s.atajoIcono, destacado && s.atajoIconoDestacado]}><Ionicons name={icono} size={25} color={color} /></View>
       <View style={s.atajoContenido}>
         <Text style={s.atajoTitulo}>{titulo}</Text>
@@ -75,6 +83,7 @@ export default function JuegosScreen({ navigation }) {
           <Atajo
             destacado
             icono="refresh"
+            simbolo={SIMBOLO_JUEGO.repaso}
             titulo="Repaso"
             sub={`Vuelve a las palabras que fallaste (${falladas.length})`}
             accessibilityLabel={`Repaso de ${falladas.length} palabras que fallaste`}
@@ -86,15 +95,39 @@ export default function JuegosScreen({ navigation }) {
           <Text style={s.seccion}>Juegos</Text>
           <PetroglifoEscondido lugar="juegos" tamano={44} />
         </View>
-        <Atajo icono="leaf-outline" titulo="Práctica libre" sub="Repasa las palabras que ya aprendiste" onPress={() => navigation.navigate('Practica')} />
+
+        {/* Juego destacado: arcade para jugar por gusto */}
+        <TouchableOpacity
+          style={s.vuelo}
+          onPress={() => navigation.navigate('Vuelo')}
+          activeOpacity={0.88}
+          accessibilityRole="button"
+          accessibilityLabel={`El vuelo de Auara. Vuela por el páramo y encuentra los significados.${estado.vueloRecord ? ` Récord ${estado.vueloRecord}.` : ''}`}
+        >
+          <View style={s.vueloSello} pointerEvents="none">
+            <Petroglifo id={SIMBOLO_JUEGO.vuelo} tamano={92} color={colors.crema} opacity={0.08} />
+          </View>
+          <View style={s.vueloAve}>
+            <FiguraPishku width={96} height={81} animo="feliz" />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={s.vueloNuevo}>¡JUEGA!</Text>
+            <Text style={s.vueloTit}>El vuelo de Auara</Text>
+            <Text style={s.vueloSub}>Vuela por el páramo y cruza la nube con el significado</Text>
+            {estado.vueloRecord ? <Text style={s.vueloRecord}>Récord: {estado.vueloRecord}</Text> : null}
+          </View>
+          <Ionicons name="play-circle" size={34} color={colors.doradoNeon} />
+        </TouchableOpacity>
+        <Atajo simbolo={SIMBOLO_JUEGO.practica} icono="leaf-outline" titulo="Práctica libre" sub="Repasa las palabras que ya aprendiste" onPress={() => navigation.navigate('Practica')} />
         <Atajo
           icono="extension-puzzle-outline"
+          simbolo={SIMBOLO_JUEGO.raices}
           titulo="Raíces de la palabra"
           sub={`Arma nombres de lugares con sus raíces · ${armadas}/${RAICES.length}`}
           onPress={() => navigation.navigate('Raices')}
         />
-        <Atajo icono="finger-print-outline" titulo="El secreto de tu apellido" sub="Descubre las raíces pastas de tu apellido" onPress={() => navigation.navigate('Apellido')} />
-        <Atajo icono="people-outline" titulo="Duelo de 2" sub="Jueguen juntos en este dispositivo" onPress={() => navigation.navigate('Duelo')} />
+        <Atajo simbolo={SIMBOLO_JUEGO.apellido} icono="finger-print-outline" titulo="El secreto de tu apellido" sub="Descubre las raíces pastas de tu apellido" onPress={() => navigation.navigate('Apellido')} />
+        <Atajo simbolo={SIMBOLO_JUEGO.duelo} icono="people-outline" titulo="Duelo de 2" sub="Jueguen juntos en este dispositivo" onPress={() => navigation.navigate('Duelo')} />
       </ScrollView>
     </View>
   );
@@ -104,10 +137,23 @@ const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.noche },
   hudSafe:   { backgroundColor: colors.nocheHeader },
   content:   { paddingTop: 12, paddingBottom: 30 },
+  vuelo: {
+    flexDirection: 'row', alignItems: 'center', gap: 10, overflow: 'hidden',
+    marginHorizontal: 16, marginBottom: 12, paddingVertical: 12, paddingRight: 14, paddingLeft: 6,
+    borderRadius: radii.md, backgroundColor: LAJA.fondo, borderWidth: 1.5, borderColor: 'rgba(250,199,117,0.6)',
+  },
+  vueloSello: { position: 'absolute', right: 40, top: 0, bottom: 0, justifyContent: 'center' },
+  vueloAve: { width: 100, alignItems: 'center' },
+  vueloNuevo: { color: colors.turquesaClaro, fontSize: 10, fontFamily: fonts.extra, letterSpacing: 2 },
+  vueloTit: { color: colors.doradoNeon, fontSize: 19, fontFamily: fonts.extra },
+  vueloSub: { color: colors.cielo, fontSize: 12, fontFamily: fonts.medium, marginTop: 2 },
+  vueloRecord: { color: colors.turquesaSuave, fontSize: 11, fontFamily: fonts.bold, marginTop: 4 },
   seccionFila: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginRight: 20, zIndex: 2 },
   seccion:   { color: colors.cielo, fontSize: 18, fontFamily: fonts.bold, marginHorizontal: 16, marginTop: 10, marginBottom: 8 },
 
+  atajoSello: { position: 'absolute', right: 34, top: 0, bottom: 0, justifyContent: 'center' },
   atajoBtn: {
+    overflow: 'hidden',
     marginHorizontal: 16, marginTop: 4, marginBottom: 10,
     paddingVertical: 12, paddingHorizontal: 14, borderRadius: radii.md,
     backgroundColor: colors.nocheCard, borderWidth: 1,

@@ -58,3 +58,15 @@ test('el mapa queda solo con el sendero y Juegos es su propia pestaña', () => {
     assert.ok(pila.includes(`name="${r}"`), `falta ${r} en la pila de Juegos`);
   }
 });
+
+test('El vuelo de Auara aparece destacado en Juegos, muestra el récord y abre el juego', () => {
+  const { app, rutas } = montar({ vueloRecord: 12 });
+  const vuelo = buscarNodo(app.tree, n => String(n.props?.accessibilityLabel || '').startsWith('El vuelo de Auara'));
+  assert.ok(vuelo, 'tarjeta del vuelo');
+  assert.ok(vuelo.props.accessibilityLabel.includes('Récord 12'));
+  vuelo.props.onPress();
+  assert.deepEqual(rutas.map(r => r[0]), ['Vuelo']);
+  const app2 = fs.readFileSync('App.js', 'utf8');
+  assert.ok(app2.includes('name="Vuelo"'));
+  app.unmount();
+});

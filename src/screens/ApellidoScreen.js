@@ -9,6 +9,8 @@ import { APELLIDOS } from '../data/apellidos';
 import { buscarApellidos, lecturaApellido, partesDe } from '../data/apellidosLogica';
 import { sonar } from '../utils/sonidos';
 import FondoSimbolos from '../components/FondoSimbolos';
+import SelloApertura from '../components/pasto/SelloApertura';
+import { simboloDeJuego } from '../theme/pasto';
 
 const INTRO = 'Muchos apellidos del pueblo Pasto guardan raíces de la lengua, como hilos de un tejido. Escribe tu apellido y busquemos su secreto.';
 
@@ -83,6 +85,7 @@ export default function ApellidoScreen() {
   return (
     <KeyboardAvoidingView style={s.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <FondoSimbolos variante="juego" />
+      <SelloApertura simbolo={simboloDeJuego('apellido')} />
       <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <Acompanante personaje="uma" animo={hallados > 0 ? 'feliz' : resultado ? 'pensativo' : 'neutral'} mensaje={mensaje} compacto />
 

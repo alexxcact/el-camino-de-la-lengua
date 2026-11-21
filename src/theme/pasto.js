@@ -32,6 +32,7 @@ export const SIMBOLO_LOGRO = {
   'repaso-constante': 'espiralDoble',
   'mes-vivo': 'monosRama',
   'duelo-competitivo': 'figurasPlato',
+  'alas-de-auara': 'perdiz',
   '50-palabras': 'espiralS',
   '75-palabras': 'espiralDoble',
   'camino-completo': 'venado',
@@ -40,3 +41,23 @@ export const SIMBOLO_LOGRO = {
 
 // Petroglifo de cada mundo (el mismo que se esconde en él).
 export const SIMBOLO_MUNDO = { 1: 'venado', 2: 'espiralS', 3: 'selloMono', 4: 'selloFigura', 5: 'espiralDoble' };
+
+// Sello de cada juego: aparece tenue al abrirlo y marca su tarjeta en Juegos.
+// Dentro de un mundo se usa el petroglifo de ese mundo.
+export const SIMBOLO_JUEGO = {
+  quiz: 'selloFigura',
+  parejas: 'monosRama',
+  dictado: 'danzante',
+  escucha: 'espiralS',
+  memoria: 'espiralDoble',
+  reto: 'venadoSalto',
+  practica: 'figurasPlato',
+  raices: 'selloMono',
+  apellido: 'mono',
+  duelo: 'venado',
+  repaso: 'espiralDoble',
+  vuelo: 'venadoSalto',
+};
+
+export const simboloDeJuego = (juego, mundoId) =>
+  (mundoId && SIMBOLO_MUNDO[mundoId]) || SIMBOLO_JUEGO[juego] || 'espiralS';

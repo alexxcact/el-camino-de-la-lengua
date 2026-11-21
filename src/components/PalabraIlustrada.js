@@ -4,7 +4,8 @@ import Svg, { Circle, Ellipse, G, Line, Path, Rect, Polygon, Polyline, Defs, Cli
 
 // Ilustraciones vectoriales propias — estilo "Pasto luminoso": íconos planos de 2 tonos,
 // trazo redondeado de tinta y paleta cultural, SIEMPRE dentro de un círculo crema.
-// La palabra (palabra.p) determina el dibujo; las entradas sin dibujo propio usan su emoji.
+// La palabra (palabra.p) determina el dibujo; las entradas sin dibujo propio
+// muestran un rombo del tejido (nunca un emoji).
 // La tarjeta contenedora da la descripción accesible, por eso el SVG es decorativo.
 export default function PalabraIlustrada({ palabra, tamano = 64, style }) {
   const lado = Number.isFinite(tamano) && tamano > 0 ? tamano : 64;
@@ -18,22 +19,25 @@ export default function PalabraIlustrada({ palabra, tamano = 64, style }) {
       importantForAccessibility="no-hide-descendants"
       pointerEvents="none"
     >
-      {dibujo ? (
+      {(
         <Svg width={lado} height={lado} viewBox="0 0 100 100" accessible={false}>
           <Defs>
             <ClipPath id="piClip"><Circle cx={50} cy={50} r={46} /></ClipPath>
           </Defs>
           <Circle cx={50} cy={50} r={46} fill="#F7F3E7" />
-          <G clipPath="url(#piClip)">{dibujo}</G>
+          <G clipPath="url(#piClip)">{dibujo || ROMBO}</G>
         </Svg>
-      ) : (
-        <Text accessible={false} style={{ fontSize: lado * 0.7, lineHeight: lado, textAlign: 'center' }}>
-          {palabra?.emoji || '◇'}
-        </Text>
       )}
     </View>
   );
 }
+
+const ROMBO = (
+  <G fill="none" stroke="#C2703D" strokeWidth="4" strokeLinejoin="round">
+    <Path d="M50 18 L82 50 L50 82 L18 50Z" />
+    <Path d="M50 34 L66 50 L50 66 L34 50Z" fill="#E8B04A" />
+  </G>
+);
 
 function ilustrar(palabra) {
   switch (palabra) {

@@ -20,6 +20,8 @@ import { distinguirDibujos, sesionAprobada } from '../utils/ejercicios';
 import { ANFITRIONES } from '../data/personajesUtil';
 import { reaccionPara, cierreSinAprobar } from '../data/reacciones';
 import FondoSimbolos from '../components/FondoSimbolos';
+import SelloApertura from '../components/pasto/SelloApertura';
+import { simboloDeJuego } from '../theme/pasto';
 
 const RONDAS = 5;
 
@@ -144,6 +146,7 @@ export default function EscuchaScreen({ route, navigation }) {
       <View style={s.resBg}>
         <LinearGradient colors={exito ? colors.gradAurora : ['#0B1F2A', '#0E2730', '#11353F']} style={StyleSheet.absoluteFill} />
         <FondoSimbolos variante="juego" />
+        <SelloApertura simbolo={simboloDeJuego(modoRepaso ? 'repaso' : 'escucha', mundoId)} />
         <ScrollView contentContainerStyle={s.resContent}>
           {exito
             ? <PishkuMascota celebrando tamano={96} personaje={ANFITRIONES.escucha} momento="fin_exito" ctx={{ nombre }} />
@@ -166,6 +169,7 @@ export default function EscuchaScreen({ route, navigation }) {
   return (
     <View style={s.bg}>
       <FondoSimbolos variante="juego" />
+      <SelloApertura simbolo={simboloDeJuego(modoRepaso ? 'repaso' : 'escucha', mundoId)} />
       <ScrollView contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
 
         <View style={s.header}>

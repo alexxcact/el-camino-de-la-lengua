@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Animated } from 'react
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
+import SimboloMundo from './pasto/SimboloMundo';
 import { fonts } from '../theme/fonts';
 
 /**
@@ -71,9 +72,10 @@ export default function TarjetaMundo({ mundo, estado, pct = 0, palVistas = 0, to
 
       {/* Centro */}
       <View style={s.center}>
-        <Text style={[s.titulo, bloqueado && s.tituloLock]} numberOfLines={1}>
-          {mundo.emoji} {mundo.titulo}
-        </Text>
+        <View style={s.tituloFila}>
+          <SimboloMundo mundo={mundo} tamano={18} color={bloqueado ? colors.turquesaSuave : colors.doradoNeon} opacity={bloqueado ? 0.5 : 1} />
+          <Text style={[s.titulo, bloqueado && s.tituloLock]} numberOfLines={1}>{mundo.titulo}</Text>
+        </View>
         <Text style={[s.sub, bloqueado && s.subLock]} numberOfLines={1}>
           {bloqueado ? 'Bloqueado' : `"${mundo.subtitulo}"`}
         </Text>
@@ -148,7 +150,8 @@ const s = StyleSheet.create({
   numTxt: { color: colors.cielo, fontSize: 11, fontFamily: fonts.extra },
 
   center: { flex: 1 },
-  titulo: { color: colors.cielo, fontSize: 16, fontFamily: fonts.bold },
+  tituloFila: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  titulo: { flexShrink: 1, color: colors.cielo, fontSize: 16, fontFamily: fonts.bold },
   tituloLock: { color: colors.turquesaClaro },
   sub: { color: colors.turquesaSuave, fontSize: 11, fontStyle: 'italic', marginTop: 1, marginBottom: 7 },
   subLock: { color: colors.turquesaClaro, fontStyle: 'normal' },

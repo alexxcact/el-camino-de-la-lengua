@@ -19,6 +19,8 @@ import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { sesionAprobada } from '../utils/ejercicios';
 import FondoSimbolos from '../components/FondoSimbolos';
+import SelloApertura from '../components/pasto/SelloApertura';
+import { simboloDeJuego } from '../theme/pasto';
 
 // ══════════════════════════════════════════════════════════
 // PAREJAS — la tejedora acompaña
@@ -106,6 +108,7 @@ export function ParejasScreen({ route, navigation }) {
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
         <FondoSimbolos variante="juego" />
+        <SelloApertura simbolo={simboloDeJuego('parejas', mundoId)} />
         <ScrollView contentContainerStyle={s.resContent}>
           <PishkuMascota
             celebrando
@@ -129,6 +132,7 @@ export function ParejasScreen({ route, navigation }) {
   return (
     <View style={s.bg}>
       <FondoSimbolos variante="juego" />
+      <SelloApertura simbolo={simboloDeJuego('parejas', mundoId)} />
       <ScrollView contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
 
         <View style={s.header}>
@@ -263,6 +267,7 @@ export function DictadoScreen({ route, navigation }) {
           style={StyleSheet.absoluteFill}
         />
         <FondoSimbolos variante="juego" />
+        <SelloApertura simbolo={simboloDeJuego('dictado', mundoId)} />
         <ScrollView contentContainerStyle={s.resContent}>
           {exito && (
             <PishkuMascota
@@ -297,6 +302,8 @@ export function DictadoScreen({ route, navigation }) {
       style={s.bg}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      <FondoSimbolos variante="juego" />
+      <SelloApertura simbolo={simboloDeJuego('dictado', mundoId)} />
       <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 
         <View style={s.header}>

@@ -92,7 +92,7 @@ export default function FinalScreen({ navigation }) {
   const salir = () => { marcarFinalVisto(); volverAlTerritorio(navigation); };
   const compartir = async () => {
     try {
-      await Share.share({ message: `¡Completé El Camino de la Lengua y aprendí ${estado.palabrasVistas.size} entradas del vocabulario Pasto! 🌿 #PuebloPasto` });
+      await Share.share({ message: `¡Completé El Camino de la Lengua y aprendí ${estado.palabrasVistas.size} entradas del vocabulario Pasto! #PuebloPasto` });
     } catch (e) {}
   };
 

@@ -45,7 +45,7 @@ export async function programarNotificacionDiaria(hora = 16, nombre = 'Caminante
     await Notifications.cancelAllScheduledNotificationsAsync();
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: `🐦 ¡Pío, ${nombre}!`,
+        title: `¡Pío, ${nombre}!`,
         body: 'Tu palabra del día te espera en El Camino de la Lengua',
       },
       trigger: {

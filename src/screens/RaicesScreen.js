@@ -14,6 +14,8 @@ import { useJuego } from '../context/JuegoContext';
 import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import FondoSimbolos from '../components/FondoSimbolos';
+import SelloApertura from '../components/pasto/SelloApertura';
+import { simboloDeJuego } from '../theme/pasto';
 
 const POR_RONDA = 5;
 
@@ -106,6 +108,7 @@ export default function RaicesScreen({ navigation, route }) {
     return (
       <View style={s.container}>
       <FondoSimbolos variante="juego" />
+      <SelloApertura simbolo={simboloDeJuego('raices')} />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={s.content}>
         <Acompanante
           personaje="taita-rimay"
@@ -136,6 +139,7 @@ export default function RaicesScreen({ navigation, route }) {
   return (
     <View style={s.container}>
       <FondoSimbolos variante="juego" />
+      <SelloApertura simbolo={simboloDeJuego('raices')} />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
       {/* El Machín, curioso investigador, se esconde entre las raíces */}
       <PetroglifoEscondido lugar="raices" tamano={42} style={{ position: 'absolute', top: 6, right: 6, zIndex: 2 }} />

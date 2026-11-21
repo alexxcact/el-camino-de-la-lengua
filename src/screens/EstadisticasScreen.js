@@ -9,6 +9,7 @@ import { palabras, mundos, categorias, TIPOS_MISION } from '../data/datos';
 import { useJuego } from '../context/JuegoContext';
 import ContadorAnimado from '../components/ContadorAnimado';
 import FondoSimbolos from '../components/FondoSimbolos';
+import SimboloMundo from '../components/pasto/SimboloMundo';
 
 const DIAS_CAL = 35; // 5 semanas
 
@@ -48,7 +49,7 @@ export default function EstadisticasScreen() {
     { v: misionesHechas,         l: `Misiones (de ${totalMis})` },
     { v: mundosComp,             l: 'Medallas (de 5)' },
     { v: estado.puntos,          l: `Puntos · Nivel ${estado.nivel}` },
-    { v: racha,                  l: `Racha 🔥 (mejor ${mejorRacha})` },
+    { v: racha,                  l: `Racha (mejor ${mejorRacha})` },
     { v: estado.retosDiariosTotal || 0, l: 'Retos diarios' },
     { v: estado.practicasTotal || 0,    l: 'Prácticas' },
   ];
@@ -74,7 +75,7 @@ export default function EstadisticasScreen() {
   const compartir = async () => {
     try {
       await Share.share({
-        message: `${nombre} ha aprendido ${aprendidas} entradas del vocabulario Pasto, completado ${mundosComp} mundos y lleva una racha de ${racha} días en El Camino de la Lengua 🌿 #PuebloPasto`,
+        message: `${nombre} ha aprendido ${aprendidas} entradas del vocabulario Pasto, completado ${mundosComp} mundos y lleva una racha de ${racha} días en El Camino de la Lengua #PuebloPasto`,
       });
     } catch (e) {}
   };
@@ -113,7 +114,10 @@ export default function EstadisticasScreen() {
           {porMundo.map(m => (
             <View key={m.id} style={s.barRow}>
               <View style={s.barRowTop}>
-                <Text style={s.barRowLbl}>{m.emoji} {m.titulo}</Text>
+                <View style={s.barRowNom}>
+                  <SimboloMundo mundo={m} tamano={16} color={m.color} />
+                  <Text style={s.barRowLbl}>{m.titulo}</Text>
+                </View>
                 <Text style={s.barRowVal}>{m.sabe}/{m.total}</Text>
               </View>
               <View style={s.barWrap}>
@@ -139,7 +143,7 @@ export default function EstadisticasScreen() {
         </View>
 
         {/* Calendario de racha */}
-        <Text style={s.seccion}>🔥 CALENDARIO (últimas 5 semanas)</Text>
+        <Text style={s.seccion}>CALENDARIO (últimas 5 semanas)</Text>
         <View style={s.calCard}>
           {filas.map((fila, i) => (
             <View key={i} style={s.calFila}>
@@ -185,6 +189,7 @@ const s = StyleSheet.create({
   listaCard: { ...ui.cardClara, padding: 14, marginBottom: 4 },
   barRow: { marginBottom: 12 },
   barRowTop: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
+  barRowNom: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   barRowLbl: { fontSize: 13, color: colors.textoCarta, fontFamily: fonts.semibold },
   barRowVal: { fontSize: 12, color: colors.textoCartaSuave, fontFamily: fonts.semibold },
 

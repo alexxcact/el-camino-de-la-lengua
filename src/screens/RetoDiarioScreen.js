@@ -19,6 +19,8 @@ import { vibrar } from '../utils/feedback';
 import { programarNotificacionDiaria } from '../utils/notificaciones';
 import { distinguirDibujos } from '../utils/ejercicios';
 import FondoSimbolos from '../components/FondoSimbolos';
+import SelloApertura from '../components/pasto/SelloApertura';
+import { simboloDeJuego } from '../theme/pasto';
 
 // Orden fijo de mecánicas del reto: 2 quiz, 2 parejas rápidas, 1 dictado
 const ORDEN = ['quiz', 'parejas', 'quiz', 'parejas', 'dictado'];
@@ -107,6 +109,7 @@ export default function RetoDiarioScreen({ navigation }) {
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
         <FondoSimbolos variante="juego" />
+        <SelloApertura simbolo={simboloDeJuego('reto')} />
         <ScrollView contentContainerStyle={s.resContent}>
           <PishkuMascota celebrando={false} tamano={92} />
           <Text style={s.resTit}>¡Reto completado, {nombre}!</Text>
@@ -129,6 +132,7 @@ export default function RetoDiarioScreen({ navigation }) {
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
         <FondoSimbolos variante="juego" />
+        <SelloApertura simbolo={simboloDeJuego('reto')} />
         <ScrollView contentContainerStyle={s.resContent}>
           <PishkuMascota celebrando tamano={96} />
           <Text style={s.resTit}>¡Reto del día logrado!</Text>
@@ -208,6 +212,7 @@ export default function RetoDiarioScreen({ navigation }) {
   return (
     <KeyboardAvoidingView style={s.bg} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <FondoSimbolos variante="juego" />
+      <SelloApertura simbolo={simboloDeJuego('reto')} />
       <ScrollView contentContainerStyle={{ padding: 14, flexGrow: 1 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 
         {/* Header con progreso */}

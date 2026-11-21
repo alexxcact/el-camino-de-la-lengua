@@ -22,6 +22,9 @@ import { vibrar } from '../utils/feedback';
 import { decirPalabra, detenerVoz } from '../utils/voz';
 import { bancoDuelo, filtrarBancoDuelo, generarPreguntaDuelo } from '../utils/duelo';
 import FondoSimbolos from '../components/FondoSimbolos';
+import SimboloMundo from '../components/pasto/SimboloMundo';
+import SelloApertura from '../components/pasto/SelloApertura';
+import { simboloDeJuego } from '../theme/pasto';
 
 // ══════════════════════════════════════════════════════════════
 // DUELO DE LA LENGUA — 2 jugadores por turnos en el MISMO dispositivo.
@@ -32,8 +35,8 @@ import FondoSimbolos from '../components/FondoSimbolos';
 
 // Dos "equipos" con avatar y color propios (cosméticos; ignoran desbloqueos)
 const EQUIPOS = [
-  { def: 'Equipo Cóndor',  color: colors.turquesa,  emoji: '🦅', avatar: { piel: 1, ropa: 1, sombrero: 2, accesorio: 1 } },
-  { def: 'Equipo Colibrí', color: colors.doradoNeon, emoji: '🐦', avatar: { piel: 2, cabello: 1, ropa: 6, sombrero: 4, adorno: 3, accesorio: 0 } },
+  { def: 'Equipo Cóndor',  color: colors.turquesa,  avatar: { piel: 1, ropa: 1, sombrero: 2, accesorio: 1 } },
+  { def: 'Equipo Colibrí', color: colors.doradoNeon, avatar: { piel: 2, cabello: 1, ropa: 6, sombrero: 4, adorno: 3, accesorio: 0 } },
 ];
 
 const OPCIONES_RONDAS = [5, 7, 10];
@@ -174,6 +177,7 @@ export default function DueloScreen({ navigation }) {
     return (
       <KeyboardAvoidingView style={s.bg} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <FondoSimbolos variante="juego" />
+        <SelloApertura simbolo={simboloDeJuego('duelo')} />
         <ScrollView contentContainerStyle={s.configContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           {/* La Perdiz, que invita al diálogo, se esconde en el duelo */}
           <PetroglifoEscondido lugar="duelo" tamano={50} style={{ position: 'absolute', top: 0, right: 0, zIndex: 2 }} />
@@ -214,8 +218,9 @@ export default function DueloScreen({ navigation }) {
           {modoCont === 'mundo' && (
             <View style={s.chipRow}>
               {mundosDisponibles.map(m => (
-                <TouchableOpacity key={m.id} style={[s.chip, mundoSel === m.id && s.chipOn]} onPress={() => setMundoSel(m.id)} activeOpacity={0.85}>
-                  <Text style={[s.chipTxt, mundoSel === m.id && s.chipTxtOn]}>{m.emoji} {m.titulo}</Text>
+                <TouchableOpacity key={m.id} style={[s.chip, s.chipFila, mundoSel === m.id && s.chipOn]} onPress={() => setMundoSel(m.id)} activeOpacity={0.85}>
+                  <SimboloMundo mundo={m} tamano={15} color={mundoSel === m.id ? colors.noche : colors.doradoNeon} />
+                  <Text style={[s.chipTxt, mundoSel === m.id && s.chipTxtOn]}>{m.titulo}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -409,7 +414,7 @@ export default function DueloScreen({ navigation }) {
               >
                 {tile.lado === 'past' ? (
                   <>
-                    <PalabraIlustrada palabra={{ p: tile.txt, emoji: tile.emoji }} tamano={40} />
+                    <PalabraIlustrada palabra={palabras.find(w => w.id === tile.id) || { p: tile.txt }} tamano={40} />
                     <Text style={s.tilePast}>{tile.txt}</Text>
                   </>
                 ) : (
@@ -434,6 +439,7 @@ export default function DueloScreen({ navigation }) {
       <View style={s.bg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
         <FondoSimbolos variante="juego" />
+        <SelloApertura simbolo={simboloDeJuego('duelo')} />
         <ScrollView contentContainerStyle={s.finalContent}>
           <PishkuMascota celebrando tamano={96} mensaje={empate ? '¡Pío! ¡Qué duelo tan parejo!' : `¡Pío pío! ¡${nom} gana!`} />
 
@@ -473,6 +479,7 @@ export default function DueloScreen({ navigation }) {
 }
 
 const s = StyleSheet.create({
+  chipFila: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   bg: { flex: 1, backgroundColor: colors.noche },
 
   // Config

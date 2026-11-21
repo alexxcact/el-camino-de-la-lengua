@@ -17,6 +17,7 @@ import PalabraIlustrada from '../components/PalabraIlustrada';
 import { RAICES } from '../data/raices';
 import { dondeViveRaiz } from '../data/raicesLogica';
 import Petroglifo from '../components/Petroglifo';
+import MarcaAgua from '../components/pasto/MarcaAgua';
 import { laja, LAJA, SIMBOLO_MUNDO } from '../theme/pasto';
 import FondoSimbolos from '../components/FondoSimbolos';
 
@@ -202,6 +203,13 @@ export default function DiccionarioScreen({ route, navigation } = {}) {
           </View>
           {abierto && (
             <View style={s.expand}>
+              {/* Al abrir la palabra, el petroglifo de su mundo aparece tenue en la esquina */}
+              <MarcaAgua id={SIMBOLO_MUNDO[item.mundo]} tamano={84} color={color} opacidad={0.14} />
+              <View style={s.divisor}>
+                <View style={s.divisorLinea} />
+                <View style={[s.divisorRombo, { borderColor: color }]} />
+                <View style={s.divisorLinea} />
+              </View>
               <Text style={s.fon}>Grafía: {item.fon} · Voz sintética de práctica</Text>
               <Text style={s.ej}>{item.ej}</Text>
               {(() => {
@@ -281,7 +289,8 @@ export default function DiccionarioScreen({ route, navigation } = {}) {
             const m = mundos.find(x => x.id === id);
             return (
               <TouchableOpacity key={'m' + id} style={s.activoTag} onPress={() => toggleMundo(id)} activeOpacity={0.8}>
-                <Text style={s.activoTxt}>{m?.emoji} {m?.titulo}  <Ionicons name="close" size={13} color="#fff" /></Text>
+                <Petroglifo id={SIMBOLO_MUNDO[id]} tamano={14} color="#fff" />
+                <Text style={[s.activoTxt, { marginLeft: 6 }]}>{m?.titulo}  <Ionicons name="close" size={13} color="#fff" /></Text>
               </TouchableOpacity>
             );
           })}
@@ -443,7 +452,10 @@ const s = StyleSheet.create({
   sello: { width: 20, height: 20, marginRight: 4, borderRadius: 3, backgroundColor: colors.doradoNeon, transform: [{ rotate: '45deg' }], alignItems: 'center', justifyContent: 'center' },
   lock:  { fontSize: 14, opacity: 0.5, paddingLeft: 8 },
 
-  expand: { marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: LAJA.borde },
+  expand: { marginTop: 8, paddingBottom: 6, minHeight: 60 },
+  divisor:      { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 },
+  divisorLinea: { flex: 1, height: 1, backgroundColor: LAJA.borde },
+  divisorRombo: { width: 8, height: 8, borderWidth: 1.5, transform: [{ rotate: '45deg' }] },
   fon: { fontSize: 12, color: colors.turquesaSuave, fontStyle: 'italic' },
   ej:  { fontSize: 13, color: colors.cielo, fontStyle: 'italic', marginTop: 4, opacity: 0.9 },
   vive:       { marginTop: 10, padding: 10, borderRadius: radii.sm, backgroundColor: 'rgba(8,26,34,0.6)' },

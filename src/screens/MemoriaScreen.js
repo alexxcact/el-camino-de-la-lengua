@@ -16,6 +16,8 @@ import { sonar } from '../utils/sonidos';
 import { vibrar } from '../utils/feedback';
 import { distinguirDibujos } from '../utils/ejercicios';
 import FondoSimbolos from '../components/FondoSimbolos';
+import SelloApertura from '../components/pasto/SelloApertura';
+import { simboloDeJuego } from '../theme/pasto';
 
 const PARES = 6;
 const COLUMNAS = 3;
@@ -182,6 +184,7 @@ export default function MemoriaScreen({ route, navigation }) {
       <View style={s.resBg}>
         <LinearGradient colors={colors.gradAurora} style={StyleSheet.absoluteFill} />
         <FondoSimbolos variante="juego" />
+        <SelloApertura simbolo={simboloDeJuego('memoria', mundoId)} />
         <ScrollView contentContainerStyle={s.resContent}>
           <PishkuMascota
             celebrando
@@ -206,6 +209,7 @@ export default function MemoriaScreen({ route, navigation }) {
   return (
     <View style={s.bg}>
       <FondoSimbolos variante="juego" />
+      <SelloApertura simbolo={simboloDeJuego('memoria', mundoId)} />
       <ScrollView contentContainerStyle={s.contenido} showsVerticalScrollIndicator={false}>
 
         <View style={s.header}>
